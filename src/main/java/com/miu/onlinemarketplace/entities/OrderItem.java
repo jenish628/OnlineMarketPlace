@@ -1,9 +1,6 @@
 package com.miu.onlinemarketplace.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,5 +18,8 @@ public class OrderItem {
     private Double tax;
     private Integer quantity;
     private Double discount;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "orderId", referencedColumnName = "orderId")
+    private Order orderId;
 
 }

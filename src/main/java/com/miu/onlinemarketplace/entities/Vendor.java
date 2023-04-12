@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class vendor {
+public class Vendor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,4 +17,7 @@ public class vendor {
     private String description;
     @Transient
     private String logo;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    private User userId;
 }

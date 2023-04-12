@@ -24,4 +24,7 @@ public class Address {
 
     @Enumerated
     private AddressType addressType;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    private User userId;
 }

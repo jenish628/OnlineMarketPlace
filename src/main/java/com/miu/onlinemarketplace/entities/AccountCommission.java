@@ -1,8 +1,6 @@
 package com.miu.onlinemarketplace.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +19,7 @@ public class AccountCommission {
     private Double orderCommission;
     private Double platformCommission;
     private Date createdDate;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "orderItemId", referencedColumnName = "orderItemId")
+    private OrderItem orderItemId;
 }

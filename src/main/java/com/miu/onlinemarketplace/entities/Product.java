@@ -20,6 +20,9 @@ public class Product {
     @Transient
     private String images;
     private Boolean isVerified;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "vendorId", referencedColumnName = "vendorId")
+    private Vendor vendorId;
 
 
 }

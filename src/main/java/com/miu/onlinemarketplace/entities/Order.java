@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.entities;
 
+import com.miu.onlinemarketplace.common.enums.AddressType;
 import com.miu.onlinemarketplace.common.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,4 +19,9 @@ public class Order {
     private String name;
     @Enumerated
     private OrderStatus orderStatus;
+    @Enumerated
+    private AddressType addressType;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    private User userId;
 }

@@ -1,9 +1,6 @@
 package com.miu.onlinemarketplace.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,5 +23,8 @@ public class EmailHistory {
     private String fromEmail;
     private String toEmail;
     private Date mailSendDate;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "orderId", referencedColumnName = "orderId")
+    private Order orderId;
 
 }
