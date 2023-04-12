@@ -1,9 +1,7 @@
 package com.miu.onlinemarketplace.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.miu.onlinemarketplace.common.enums.AddressType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,4 +21,7 @@ public class Address {
     private String state;
     private String zipCode;
     private String country;
+
+    @Enumerated
+    private AddressType addressType;
 }

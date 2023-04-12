@@ -1,9 +1,7 @@
 package com.miu.onlinemarketplace.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.miu.onlinemarketplace.common.enums.UserStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +18,6 @@ public class User {
     private String email;
     private String password;
 
-
+    @Enumerated
+    private UserStatus userStatus;
 }
