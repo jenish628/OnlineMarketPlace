@@ -17,7 +17,7 @@ public class AccountCommission {
     @GeneratedValue
     private Long accountCommissionId;
     private Long orderId;
-    private Double orderCommission;
+    private Double vendorCommission;
     private Double platformCommission;
     private Date createdDate;
 

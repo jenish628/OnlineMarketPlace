@@ -19,7 +19,7 @@ public class User {
     private String email;
     private String password;
 
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
 
     @ManyToOne(optional = false)
