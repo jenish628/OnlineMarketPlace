@@ -1,9 +1,7 @@
 package com.miu.onlinemarketplace.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.miu.onlinemarketplace.common.enums.MailType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,11 +13,11 @@ import lombok.NoArgsConstructor;
 public class EmailTemplate {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long templateId;
-    private String mailType;
+    private String fromEmail;
+    private String subject;
     @Column(columnDefinition = "text" )
     private String template;
-    private String subject;
-    private String fromEmail;
+    private MailType mailType;
 }
