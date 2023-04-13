@@ -13,6 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class AccountCommission {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GeneratedValue
     private Long accountCommissionId;
     private Long orderId;

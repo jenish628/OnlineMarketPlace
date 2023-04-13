@@ -7,9 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.Date;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +14,8 @@ import java.util.Date;
 public class CardInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long cardInfoId;
     private String cardNumber;
     private Integer expYear;

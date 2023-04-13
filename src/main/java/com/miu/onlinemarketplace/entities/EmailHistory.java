@@ -15,7 +15,7 @@ import java.util.Date;
 public class EmailHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long emailHistoryId;
     private String mailType;
     private String message;

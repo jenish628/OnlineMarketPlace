@@ -6,5 +6,5 @@ public enum MailType {
     ACCOUNT_SUSPEND,
     ORDER_CONFIRM,
     ORDER_CANCELED,
-    PAYMENT_FAIL;
+    PAYMENT_FAIL
 }

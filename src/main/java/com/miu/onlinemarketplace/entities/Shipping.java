@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 public class Shipping {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long shoppingId;
     private String deliveryInstruction;
     @Enumerated
