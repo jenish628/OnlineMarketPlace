@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.entities;
 
+import com.miu.onlinemarketplace.security.models.EnumRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
