@@ -1,11 +1,14 @@
 package com.miu.onlinemarketplace.entities;
 
-import com.miu.onlinemarketplace.common.enums.AddressType;
+
 import com.miu.onlinemarketplace.common.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -16,12 +19,19 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long OrderId;
-    private String name;
     @Enumerated
     private OrderStatus orderStatus;
-    @Enumerated
-    private AddressType addressType;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    private Boolean isCommissioned;
+//    @Enumerated
+//    private AddressType addressType;
+
+    @OneToOne
+    private Shipping shipping;
+
+    @ManyToOne
     private User userId;
+
+    private LocalDateTime orderDate;
+
+
 }

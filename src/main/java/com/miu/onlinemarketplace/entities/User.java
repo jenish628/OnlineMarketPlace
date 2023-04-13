@@ -20,4 +20,11 @@ public class User {
 
     @Enumerated
     private UserStatus userStatus;
+
+    @ManyToOne(optional = false)
+    private Role role;
+
+    @OneToOne
+    private Address address;
+
 }

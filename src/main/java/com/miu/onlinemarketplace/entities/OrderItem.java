@@ -18,7 +18,13 @@ public class OrderItem {
     private Double tax;
     private Integer quantity;
     private Double discount;
-    @ManyToOne(cascade = CascadeType.ALL)
+
+    @ManyToOne
+    @JoinColumn(name = "productId", referencedColumnName = "productId")
+    private Product product;
+
+
+    @ManyToOne()
     @JoinColumn(name = "orderId", referencedColumnName = "orderId")
     private Order orderId;
 

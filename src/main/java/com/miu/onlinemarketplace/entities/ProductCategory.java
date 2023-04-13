@@ -15,7 +15,6 @@ public class ProductCategory {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long categoryId;
     private String category;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "productId", referencedColumnName = "productId")
-    private Product productId;
+
+
 }

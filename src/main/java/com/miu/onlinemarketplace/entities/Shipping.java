@@ -18,4 +18,7 @@ public class Shipping {
     private String deliveryInstruction;
     @Enumerated
     private ShippingStatus shippingStatus;
+
+    @OneToOne
+    private Address address;
 }

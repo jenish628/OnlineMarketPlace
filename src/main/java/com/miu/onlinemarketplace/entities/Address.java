@@ -22,9 +22,10 @@ public class Address {
     private String zipCode;
     private String country;
 
-    @Enumerated
-    private AddressType addressType;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private User userId;
+//    @Enumerated
+//    private AddressType addressType;
+//
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "userId", referencedColumnName = "userId")
+//    private User userId;
 }

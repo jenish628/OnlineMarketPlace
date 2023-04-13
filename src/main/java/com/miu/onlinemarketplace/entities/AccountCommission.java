@@ -19,6 +19,7 @@ public class AccountCommission {
     private Double orderCommission;
     private Double platformCommission;
     private Date createdDate;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "orderItemId", referencedColumnName = "orderItemId")
     private OrderItem orderItemId;

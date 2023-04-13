@@ -15,9 +15,10 @@ public class Vendor {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long vendorId;
     private String description;
-    @Transient
-    private String logo;
-    @OneToOne(cascade = CascadeType.ALL)
+//    @ManyToOne
+//    private FileEntity fileEntity;   (This is Vendor logo)
+
+    @OneToOne()
     @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private User userId;
+    private User user;
 }

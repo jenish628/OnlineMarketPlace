@@ -5,13 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class ProductUnVerify {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,4 +32,6 @@ public class Product {
     @JoinColumn(name = "categoryId", referencedColumnName = "categoryId")
     private ProductCategory productCategory;
 
+    @OneToOne
+    private Product product;
 }

@@ -1,11 +1,13 @@
 package com.miu.onlinemarketplace.entities;
 
 import com.miu.onlinemarketplace.common.enums.AddressType;
+import com.miu.onlinemarketplace.common.enums.CardBrand;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -18,13 +20,17 @@ public class CardInfo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long cardInfoId;
     private String cardNumber;
-    private Date expDate;
+    private Integer expYear;
+    private Integer expMonth;
     private String cvc;
-    private  String cardBrand;
+    @Enumerated
+    private CardBrand cardBrand;
     @Enumerated
     private AddressType addressType;
-    @ManyToOne(cascade = CascadeType.ALL)
+
+    @ManyToOne()
     @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private User userId;
+    private User user;
+
 
 }
