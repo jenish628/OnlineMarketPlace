@@ -1,7 +1,6 @@
 package com.miu.onlinemarketplace.entities;
 
 import com.miu.onlinemarketplace.common.enums.FileType;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FileEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileId;
     private String uri;
     @Enumerated

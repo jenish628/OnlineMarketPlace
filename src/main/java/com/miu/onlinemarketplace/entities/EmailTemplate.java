@@ -19,5 +19,6 @@ public class EmailTemplate {
     private String subject;
     @Column(columnDefinition = "text" )
     private String template;
+    @Enumerated(EnumType.STRING)
     private MailType mailType;
 }
