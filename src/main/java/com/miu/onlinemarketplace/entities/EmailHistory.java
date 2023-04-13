@@ -23,8 +23,8 @@ public class EmailHistory {
     private String fromEmail;
     private String toEmail;
     private Date mailSendDate;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "orderId", referencedColumnName = "orderId")
-    private Order orderId;
+    private Order order;
 
 }

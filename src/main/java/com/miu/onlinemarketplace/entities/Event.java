@@ -5,25 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDate;
 
-@Data
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Vendor {
+public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long vendorId;
-    private String description;
-    @ManyToOne
-    private FileEntity logo;
+    private Long eventId;
+    private String eventDesc;
+    private String ipAddress;
+    private LocalDate date;
 
-    @OneToOne()
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "userId")
     private User user;
-
-    @ManyToMany
-    List<Payment> payments;
 }

@@ -21,7 +21,4 @@ public class Payment {
     private Long transactionId;
     @Enumerated
     private PaymentStatus paymentStatus;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "orderId", referencedColumnName = "orderId")
-    private Order orderId;
 }

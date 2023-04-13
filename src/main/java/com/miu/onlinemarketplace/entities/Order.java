@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -32,6 +33,10 @@ public class Order {
     private User userId;
 
     private LocalDateTime orderDate;
+
+
+    @ManyToMany
+    List<Payment> payments;
 
 
 }

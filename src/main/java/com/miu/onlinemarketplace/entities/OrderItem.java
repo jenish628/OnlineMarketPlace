@@ -19,12 +19,12 @@ public class OrderItem {
     private Integer quantity;
     private Double discount;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "productId", referencedColumnName = "productId")
     private Product product;
 
 
-    @ManyToOne()
+    @ManyToOne(optional = false)
     @JoinColumn(name = "orderId", referencedColumnName = "orderId")
     private Order orderId;
 
