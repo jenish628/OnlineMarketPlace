@@ -28,7 +28,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequestDTO loginRequest) {
-        log.info("Authentication API: login requested by user: ", loginRequest.getEmail());
+        log.info("Authentication API: login requested by user: ", loginRequest.getUsername());
         AuthResponseDTO authResponseDTO = authenticationService.loginUser(loginRequest);
         return new ResponseEntity<>(authResponseDTO, HttpStatus.OK);
     }
