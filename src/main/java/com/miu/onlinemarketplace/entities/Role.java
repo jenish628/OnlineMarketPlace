@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.entities;
 
+import com.miu.onlinemarketplace.security.models.EnumRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long roleId;
-    private String role;
+
+    @Enumerated(value = EnumType.STRING)
+    private EnumRole role;
 }

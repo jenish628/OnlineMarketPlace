@@ -13,10 +13,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class AccountCommission {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountCommissionId;
     private Long orderId;
-    private Double orderCommission;
+    private Double vendorCommission;
     private Double platformCommission;
     private Date createdDate;
 

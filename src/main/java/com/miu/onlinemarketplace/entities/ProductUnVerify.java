@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 public class ProductUnVerify {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long productId;
     private String name;
     private String description;

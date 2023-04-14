@@ -14,7 +14,8 @@ import java.util.List;
 public class Vendor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long vendorId;
     private String description;
     @ManyToOne

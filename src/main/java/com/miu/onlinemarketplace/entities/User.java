@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
     private String email;
     private String password;
 
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
 
     @ManyToOne(optional = false)

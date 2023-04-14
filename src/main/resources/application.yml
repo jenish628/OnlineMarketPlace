@@ -1,18 +1,26 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/pmdb?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-  sql:
-    init:
-      mode: always
+    username: ${DB_USERNAME:ea}
+    password: ${DB_PASSWORD:cs544}
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
-      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         jdbc:
           time_zone: UTC
+
+
+app:
+  cors:
+    allowedOrigins:
+      - http://localhost:3000
+      - http://localhost:8080
+  jwt:
+    token:
+      secret-key: ${JWT_SECRET_KEY:pm490-proj-secret}
+      expire-seconds: 86400
+
