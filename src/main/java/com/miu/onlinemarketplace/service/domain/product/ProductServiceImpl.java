@@ -14,8 +14,8 @@ import java.util.stream.Stream;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private ModelMapper modelMapper;
-    private ProductRepository productRepository;
+    private final ModelMapper modelMapper;
+    private final ProductRepository productRepository;
 
     public ProductServiceImpl(ModelMapper modelMapper, ProductRepository productRepository) {
         this.modelMapper = modelMapper;
@@ -26,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductDto> getAllProducts(Pageable pageable, Long categoryId) {
         Page<ProductDto> products;
         if(categoryId != null) {
-            products = productRepository.findAllByProductCategory(categoryId)
+            products = productRepository.findAllByProductCategory(pageable, categoryId)
                     .map(product -> modelMapper.map(product, ProductDto.class));
         } else {
             products = productRepository.findAll(pageable)
@@ -37,8 +37,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> getProductByName(String name) {
-        Page<ProductDto> productDtos = productRepository.findAllByName(name)
+    public Page<ProductDto> getProductByName(Pageable pageable, String name) {
+        Page<ProductDto> productDtos = productRepository.findAllByName(pageable, name)
                 .map(product -> modelMapper.map(product, ProductDto.class));
         return productDtos;
     }
