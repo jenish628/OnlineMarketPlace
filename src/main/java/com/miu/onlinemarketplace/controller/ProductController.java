@@ -15,14 +15,15 @@ import java.util.HashMap;
 @RestController
 public class ProductController {
 
-    private ProductService productService;
+    private final ProductService productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(final ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping("/products")
-    public ResponseEntity<?> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseEntity<?> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "createdAt",
+            direction = Sort.Direction.DESC) Pageable pageable,
                                           @RequestParam(required = false) Long categoryId
                                             ){
         Page page = productService.getAllProducts(pageable, categoryId);
@@ -30,8 +31,11 @@ public class ProductController {
     }
 
     @GetMapping("/products/{name}")
-    public ResponseEntity<?> getProductByName(@PathVariable String name){
-        Page page = productService.getProductByName(name);
+    public ResponseEntity<?> getProductByName(
+            @PageableDefault(page = 0, size = 10, sort = "createdAt",
+                    direction = Sort.Direction.DESC) Pageable pageable,
+            @PathVariable String name){
+        Page page = productService.getProductByName(pageable, name);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
@@ -47,7 +51,7 @@ public class ProductController {
         return new ResponseEntity<>(productDto1, HttpStatus.OK);
     }
 
-    @PostMapping("/products")
+    @PutMapping("/products")
     public ResponseEntity<?> updateProduct(ProductDto productDto){
         ProductDto productDto1 = productService.updateProduct(productDto);
         return new ResponseEntity<>(productDto1, HttpStatus.OK);
