@@ -14,7 +14,6 @@ import java.util.Date;
 public class AccountCommission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @GeneratedValue
     private Long accountCommissionId;
     private Long orderId;
     private Double orderCommission;
