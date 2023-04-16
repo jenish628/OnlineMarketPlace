@@ -26,3 +26,11 @@ app:
     port: 1
     username: dd
     password: dsd
+
+minio:
+  bucket:
+    name: pmstorage
+  access:
+    key: gQUrVcSt8Y5d3060
+    secret: h5ZUzOckMPBBC1Adx46tdyeaor1g2xfQ
+  url: http://127.0.0.1:9000
