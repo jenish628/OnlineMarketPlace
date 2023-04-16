@@ -1,29 +1,54 @@
 package com.miu.onlinemarketplace.controller;
 
 import com.miu.onlinemarketplace.common.dto.ShoppingCartDTO;
+import com.miu.onlinemarketplace.entities.Product;
+import com.miu.onlinemarketplace.service.domain.shopping.ShoppingCartService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/cart")
-@AllArgsConstructor
+@RequestMapping("/shopping-cart")
+//@AllArgsConstructor
 public class ShoppingCartController {
 
+    private final ShoppingCartService shoppingCartService;
+
+    public ShoppingCartController(ShoppingCartService shoppingCartService) {
+        this.shoppingCartService = shoppingCartService;
+    }
     //get
-//    public ShoppingCartDTO
+    public ResponseEntity<?> getShoppingCartItems(){
+        Map<String, Object> res = Map.of("res", shoppingCartService.getCartItems());
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
 
-
-    //post
-
-
+    // post
+    @PostMapping()
+    public ResponseEntity<?> addProductQtyToCart(@RequestParam Long productId, @RequestParam Integer quantity){
+        Map<String, Object> res = Map.of("res", shoppingCartService.addQty(productId, quantity));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
     //put
+    @PutMapping()
+    public ResponseEntity<?> addProductToCart(@RequestParam Long productId, @RequestParam Integer quantity){
+        Map<String, Object> res = Map.of("res", shoppingCartService.add(productId,quantity));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
 
 
-    //delete
+    //delete product from shopping cart
+    @DeleteMapping()
+    public ResponseEntity<?> removeProductFromCart(@RequestParam Long productId){
+        Map<String, Object> res = Map.of("res", shoppingCartService.remove(productId));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 }

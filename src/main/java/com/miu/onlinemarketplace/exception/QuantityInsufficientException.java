@@ -3,11 +3,11 @@ package com.miu.onlinemarketplace.exception;
 import lombok.Getter;
 
 @Getter
-public class DataNotFoundException extends RuntimeException {
+public class QuantityInsufficientException extends RuntimeException {
 
     private final String message;
 
-    public DataNotFoundException(String message) {
+    public QuantityInsufficientException(String message) {
         super(message);
         this.message = message;
     }

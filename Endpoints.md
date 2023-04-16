@@ -1,4 +1,4 @@
-# Followings are the URLs for Shopping Cart
+# Followings are the Endpoints for Shopping Cart
 
 Shopping Carts Related Products
 ```

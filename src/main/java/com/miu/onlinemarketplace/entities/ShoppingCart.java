@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
 
 @Entity
 @AllArgsConstructor
@@ -17,9 +18,11 @@ public class ShoppingCart {
     private Long cartId;
     private Integer quantity;
 
-    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne
+    @JoinColumn(name = "product_id")
+    @OneToOne
     private Product product;
 }
