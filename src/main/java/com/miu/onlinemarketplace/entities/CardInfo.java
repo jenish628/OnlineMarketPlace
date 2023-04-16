@@ -15,7 +15,6 @@ public class CardInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long cardInfoId;
     private String cardNumber;
     private Integer expYear;

@@ -12,10 +12,28 @@ import java.util.List;
 public class AppProperties {
 
     private final Cors cors = new Cors();
+    private final Jwt jwt = new Jwt();
+    private final Mail mail = new Mail();
 
     @Getter
     @Setter
     public static class Cors {
         private List<String> allowedOrigins = new ArrayList<>();
+    }
+
+    @Getter
+    @Setter
+    public static class Jwt {
+        private String secretKey;
+        private Long expireSeconds;
+    }
+
+    @Getter
+    @Setter
+    public static class Mail {
+        private String host;
+        private Integer port;
+        private String username;
+        private String password;
     }
 }

@@ -1,5 +1,5 @@
 package com.miu.onlinemarketplace.common.enums;
 
 public enum OrderStatus {
-    SHIPPED, DELIVERED
+    PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELED;
 }
