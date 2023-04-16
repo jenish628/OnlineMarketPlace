@@ -2,9 +2,7 @@ package com.miu.onlinemarketplace.config;
 
 import com.miu.onlinemarketplace.security.CustomUserDetailsService;
 import com.miu.onlinemarketplace.security.JwtTokenFilter;
-import com.miu.onlinemarketplace.security.JwtTokenParser;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,19 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-
-    @Value("${app.jwt.token.secret-key}")
-    private String secretKey;
-
     private final CustomUserDetailsService customUserDetailsService;
 
     public WebSecurityConfig(final CustomUserDetailsService customUserDetailsService) {
@@ -61,14 +50,8 @@ public class WebSecurityConfig {
                 )
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(new JwtTokenFilter(jwtTokenParser()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
-    }
-
-    @Bean
-    public JwtTokenParser jwtTokenParser() {
-        JwtTokenParser jwtTokenParser = new JwtTokenParser(secretKey);
-        return jwtTokenParser;
     }
 
     @Bean

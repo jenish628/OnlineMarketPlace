@@ -17,6 +17,7 @@ public class User {
     private Long userId;
     private String email;
     private String password;
+    private String fullName;
 
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;

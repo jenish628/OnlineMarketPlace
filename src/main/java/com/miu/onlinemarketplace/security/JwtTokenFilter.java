@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.security;
 
+import com.miu.onlinemarketplace.config.AppProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,15 +16,10 @@ import java.io.IOException;
 @Slf4j
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private JwtTokenParser jwtTokenParser;
-
-    public JwtTokenFilter(JwtTokenParser jwtTokenParser) {
-        this.jwtTokenParser = jwtTokenParser;
-    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         log.info("Invoked OncePerRequest JwtTokenFilter");
+        JwtTokenParser jwtTokenParser = new JwtTokenParser(new AppProperties().getJwt().getSecretKey());
         String token = jwtTokenParser.getTokenFromRequestHeader(request);
         if (StringUtils.hasText(token) && jwtTokenParser.validateToken(token, request)) {
             log.info("Jwt Token Filter, processing authenticated request");
