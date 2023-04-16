@@ -23,6 +23,7 @@ public class User {
     private UserStatus userStatus;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @OneToOne
