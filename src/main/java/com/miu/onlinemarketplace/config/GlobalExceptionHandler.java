@@ -3,6 +3,7 @@ package com.miu.onlinemarketplace.config;
 
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.exception.ErrorDetails;
+import com.miu.onlinemarketplace.exception.QuantityInsufficientException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,5 +33,12 @@ public class GlobalExceptionHandler {
                 .status(status)
                 .type(type)
                 .build();
+    }
+
+
+    @ExceptionHandler(QuantityInsufficientException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorDetails> handleInsufficientQuantityException(QuantityInsufficientException ex) {
+        return new ResponseEntity<>(createErrorDetails(ex.getMessage(), 404, "Invalid User Input"), HttpStatus.NOT_FOUND);
     }
 }

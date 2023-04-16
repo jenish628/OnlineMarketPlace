@@ -70,7 +70,6 @@ public class JwtTokenParser {
 //        Set<EnumRole> rolesSet = AppSecurityUtils.convertStringRolesSetToEnumSet(stringRoles);
         CustomUserDetails customUserDetails = new CustomUserDetails(userId, username, null, EnumRole.valueOf(role));
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-        return authentication;
+        return new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
     }
 }
