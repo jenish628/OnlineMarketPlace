@@ -20,12 +20,12 @@ public class OrderItem {
     private Integer quantity;
     private Double discount;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "productId", referencedColumnName = "productId")
     private Product product;
 
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", referencedColumnName = "orderId")
     private Order orderId;
 

@@ -19,7 +19,7 @@ app:
       - http://localhost:4200
       - http://localhost:8080
   jwt:
-    secretKey: ${JWT_SECRET_KEY:pm490-proj-secret}
+    secret-key: ${JWT_SECRET_KEY:pm490-proj-secret}
     expireSeconds: 86400
   mail:
     host: ff.ff

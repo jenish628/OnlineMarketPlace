@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -18,7 +19,8 @@ public class AccountCommission {
     private Long orderId;
     private Double vendorCommission;
     private Double platformCommission;
-    private Date createdDate;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
     @OneToOne()
     @JoinColumn(name = "orderItemId", referencedColumnName = "orderItemId")
