@@ -21,6 +21,7 @@ public class WebCorsConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
+                
                 .maxAge(3600).combine(configuration);
     }
 }
