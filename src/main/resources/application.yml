@@ -15,12 +15,12 @@ spring:
 
 app:
   cors:
-    allowedOrigins:
+    allowed-origins:
       - http://localhost:4200
       - http://localhost:8080
   jwt:
     secret-key: ${JWT_SECRET_KEY:pm490-proj-secret}
-    expireSeconds: 86400
+    expire-seconds: 86400
   mail:
     host: ff.ff
     port: 1
