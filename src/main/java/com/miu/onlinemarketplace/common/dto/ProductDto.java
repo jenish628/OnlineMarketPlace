@@ -2,13 +2,11 @@ package com.miu.onlinemarketplace.common.dto;
 
 import com.miu.onlinemarketplace.entities.ProductCategory;
 import com.miu.onlinemarketplace.entities.Vendor;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class ProductDto {
 
     private Long productId;
