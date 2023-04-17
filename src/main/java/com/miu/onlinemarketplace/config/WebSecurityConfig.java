@@ -20,9 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
+    private final AppProperties appProperties;
 
-    public WebSecurityConfig(final CustomUserDetailsService customUserDetailsService) {
+    public WebSecurityConfig(CustomUserDetailsService customUserDetailsService, AppProperties appProperties) {
         this.customUserDetailsService = customUserDetailsService;
+        this.appProperties = appProperties;
     }
 
     @Bean
@@ -50,7 +52,7 @@ public class WebSecurityConfig {
                 )
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(new JwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(appProperties.getJwt().getSecretKey()), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

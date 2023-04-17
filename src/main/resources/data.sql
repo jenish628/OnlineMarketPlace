@@ -5,9 +5,9 @@ VALUES (1, 'ROLE_USER'),
        (3, 'ROLE_VENDOR') ON DUPLICATE KEY
 UPDATE role_id=role_id;
 
-INSERT INTO user (user_id, email, password, user_status, role_id) -- password: admin and admin1
-VALUES (1, 'admin@gmail.com', '$2a$10$q1WklZkp3zkx6gspnQ.BHO.5mJAQ1BV6iMurqfE4xUC6TQhT/YAwy', 'ACTIVE', 2),
-       (2, 'admin1@gmail.com', '$2a$10$yGbK6FEUFHKyFlMXJs2SY.9kYCNVLVtCEJHZLINQ3LD5hmkR0bfOS', 'ACTIVE', 2) ON DUPLICATE KEY
+INSERT INTO user (user_id, email, password, user_status, role_id) -- password: test and test
+VALUES (1, 'admin@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2),
+       (2, 'admin1@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2) ON DUPLICATE KEY
 UPDATE user_id=user_id;
 
 

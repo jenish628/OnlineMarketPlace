@@ -9,6 +9,7 @@ import java.util.List;
 
 @ConfigurationProperties(prefix = "app")
 @Getter
+@Setter
 public class AppProperties {
 
     private final Cors cors = new Cors();
