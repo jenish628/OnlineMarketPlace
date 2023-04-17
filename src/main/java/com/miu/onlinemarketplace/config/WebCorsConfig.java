@@ -13,14 +13,14 @@ public class WebCorsConfig implements WebMvcConfigurer {
 
     @Autowired
     private AppProperties appProperties;
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(appProperties.getCors().getAllowedOrigins());
-        registry.addMapping("/**")
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(3600).combine(configuration);
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(appProperties.getCors().getAllowedOrigins());
+//        registry.addMapping("/**")
+//                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+//                .allowedHeaders("*")
+//                .allowCredentials(true)
+//                .maxAge(3600).combine(configuration);
+//    }
 }
