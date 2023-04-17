@@ -15,11 +15,11 @@ public class CardInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cardInfoId;
-    private String cardNumber;
-    private Integer expYear;
-    private Integer expMonth;
-    private String cvc;
+    private Long id;
+    private Integer cardNumber;
+    private Integer securityCode;
+    private Integer expiryMonth;
+    private Integer expiryYear;
     @Enumerated
     private CardBrand cardBrand;
     @Enumerated

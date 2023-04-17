@@ -31,7 +31,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         Order order = orderInvoiceRepository.findById(orderId).get();
         InvoiceDto invoiceDto = new InvoiceDto();
         invoiceDto.setOrderItemList(orderItemList);
-        invoiceDto.setPaymentMethod(order.getPayments());
+//        invoiceDto.setPaymentMethod(order.getPayments());
         invoiceDto.setShippingAddress(order.getShipping().getAddress());
         invoiceDto.setOrderNumber(order.getOrderId());
         invoiceDto.setTotal(total);

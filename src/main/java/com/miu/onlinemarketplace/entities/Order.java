@@ -35,8 +35,8 @@ public class Order {
     private LocalDateTime orderDate;
 
 
-    @ManyToMany
-    List<Payment> payments;
+//    @ManyToMany
+//    List<Payment> payments;
 
 
 }
