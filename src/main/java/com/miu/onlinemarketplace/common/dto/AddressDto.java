@@ -3,6 +3,9 @@ package com.miu.onlinemarketplace.common.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -15,4 +18,6 @@ public class AddressDto {
     private String state;
     private String zipCode;
     private String country;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 }

@@ -1,10 +1,10 @@
 package com.miu.onlinemarketplace.service.auth;
 
-import com.miu.onlinemarketplace.common.dto.UserDTO;
-import com.miu.onlinemarketplace.common.dto.VendorDTO;
+import com.miu.onlinemarketplace.common.dto.UserDto;
+import com.miu.onlinemarketplace.common.dto.VendorDto;
 
 public interface VendorService {
 
-    VendorDTO createVendor(UserDTO userDTO, VendorDTO vendorDTO);
+    VendorDto createVendor(UserDto userDTO, VendorDto vendorDTO);
 
 }

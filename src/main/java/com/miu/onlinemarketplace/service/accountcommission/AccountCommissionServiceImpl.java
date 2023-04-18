@@ -18,7 +18,7 @@ public class AccountCommissionServiceImpl implements AccountCommissionService {
     private AccountCommissionRepository accountCommissionRepository;
     private OrderItemRepository orderItemRepository;
 
-    public AccountCommissionServiceImpl(@Autowired AccountCommissionRepository accountCommissionRepository, @Autowired OrderItemRepository orderItemRepository) {
+    public AccountCommissionServiceImpl(AccountCommissionRepository accountCommissionRepository, OrderItemRepository orderItemRepository) {
         this.accountCommissionRepository = accountCommissionRepository;
         this.orderItemRepository = orderItemRepository;
     }
@@ -39,12 +39,7 @@ public class AccountCommissionServiceImpl implements AccountCommissionService {
                 orderItemRepository.save(o);
 
             }
-            try {
-                accountCommissionRepository.saveAll(accountCommissions);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                log.info(exception.getMessage());
-            }
+            accountCommissionRepository.saveAll(accountCommissions);
         }
 
         return true;

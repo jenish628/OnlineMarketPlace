@@ -1,9 +1,6 @@
 package com.miu.onlinemarketplace.controller;
 
-import com.miu.onlinemarketplace.common.dto.ShoppingCartDTO;
-import com.miu.onlinemarketplace.entities.Product;
 import com.miu.onlinemarketplace.service.domain.shopping.ShoppingCartService;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -3,6 +3,7 @@ package com.miu.onlinemarketplace.common.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,4 +20,6 @@ public class InvoiceDto {
     private List<OrderItemDto> orderItemList;
     private ShippingAddressDto shippingAddress;
     private List<PaymentDto> paymentMethod;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 }

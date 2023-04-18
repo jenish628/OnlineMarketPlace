@@ -15,8 +15,11 @@ import java.util.List;
 @RestController
 public class AccountCommissionController {
 
-    @Autowired
     private AccountCommissionService accountCommissionService;
+
+    public AccountCommissionController(AccountCommissionService accountCommissionService) {
+        this.accountCommissionService = accountCommissionService;
+    }
 
     @PostMapping("/accountcommission")
     public ResponseEntity<?> saveAccountCommission(@Validated @RequestBody List<OrderItem> orderItem) {

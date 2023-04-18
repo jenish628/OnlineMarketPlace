@@ -3,13 +3,11 @@ package com.miu.onlinemarketplace.common.dto;
 import lombok.Data;
 
 @Data
-public class VendorDTO {
+public class VendorDto {
 
     private Long vendorId;
+    private String vendorName;
     private String description;
 
-    private UserDTO userDTO;
-
-    //    private FileEntity logo;
-    //    List<Payment> payments;
+    private UserDto userDto;
 }

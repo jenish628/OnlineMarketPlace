@@ -5,6 +5,9 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -13,5 +16,7 @@ public class ProductCategoryDto {
 
     private Long categoryId;
     private String category;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
 }
