@@ -5,22 +5,46 @@ VALUES (1, 'ROLE_USER'),
        (3, 'ROLE_VENDOR') ON DUPLICATE KEY
 UPDATE role_id=role_id;
 
-INSERT INTO user (user_id, email, password, user_status, role_id) -- password: test and test
-VALUES (1, 'admin@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2),
-       (2, 'admin1@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2) ON DUPLICATE KEY
+INSERT INTO user (user_id, email, password, user_status, role_id) -- all passwords are: test
+VALUES (1, 'user@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 1),
+       (2, 'admin@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2),
+       (3, 'apple@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3),
+       (3, 'miu-shop@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE',
+        3) ON DUPLICATE KEY
 UPDATE user_id=user_id;
 
+INSERT INTO vendor (vendor_id, description, logo_file_id, user_id)
+VALUES (1,
+        'Apple Inc. is an American multinational technology manufacturing electronic gadgets and providing services. Manufactures Mac, iPhone, iPad etc. ',
+        null, 3),
+       (2,
+        'Miu Store- Shop your local store for a wide selection of items in electronics, home furniture & appliances, toys, clothing, baby gear, video games, and more',
+        null, 3) ON DUPLICATE KEY
+UPDATE vendor_id=vendor_id;
+
+INSERT INTO product_category (category_id, category)
+VALUES (1, 'Computers'),
+       (2, 'Books'),
+       (3, 'Kitchen'),
+       (4, 'Fashion'),
+       (5, 'Electronic'),
+       (6, 'Clothing') ON DUPLICATE KEY
+UPDATE category_id=category_id;
+
+INSERT INTO product (product_id, description, is_deleted, is_verified, name, quantity, category_id, vendor_id)
+VALUES (1,
+        'Apple 2023 MacBook Pro Laptop M2 Pro chip with 12‑core CPU and 19‑core GPU: 16.2-inch Liquid Retina XDR Display, 16GB Unified Memory, 512GB SSD Storage. Works with iPhone/iPad; Silver',
+        null, true, 'MacBook Pro 16 (M2 Pro)', 10, 1, 1),
+       (2, 'Practical recipes for enterprise Java developers to deliver large scale applications with Jakarta EE', null,
+        true, 'Java 17 Recipes', 50, 2, 2),
+       (3,
+        'Housewares digital Cool-Touch Rice Grain Cooker and Food Steamer, Stainless, Silver, 4-Cup (Uncooked) / 8-Cup (Cooked)',
+        null, true, 'Aroma Rice Cooker', 5, 3, 2) ON DUPLICATE KEY
+UPDATE product_id=product_id;
 
 INSERT INTO email_template (template_id, from_email, mail_type, subject, template)
 VALUES (1, 'abc@abc.com', 'ORDER_CONFIRM', 'test', 'template djdj') ON DUPLICATE KEY
 UPDATE template_id=template_id;
-
-insert into product_category(category_id, category)
-values
-       (1, 'Fashion'),
-       (2, 'Electronic'),
-       (3, 'Clothing') ON DUPLICATE KEY
-update category_id=category_id;
 
 insert into address(address_id, address1, city,country,state,zip_code)
 values(1,'1000N 4Th ST', 'Fairfield','USA','IOWA','52557') ON DUPLICATE KEY
@@ -29,16 +53,6 @@ update address_id=address_id;
 insert into shipping(shopping_id, delivery_instruction,shipping_status,address_address_id)
 values(1,'Leave infront of door',1,1) ON DUPLICATE KEY
 update shopping_id=shopping_id;
-
-insert into vendor(vendor_id, description, user_id)
-values(1, 'Online Market', 1) ON DUPLICATE KEY
-update vendor_id=vendor_id;
-
-insert into product(product_id, description,name,quantity,category_id, vendor_id)
-values(1, 'Leather jacket with good quality', 'Jacket', 120,1,1),
-      (2, 'Leather jacket with good quality', 'Jacket', 120,2,1),
-      (3, 'Leather jacket with good quality', 'Jacket', 120,3,1) ON DUPLICATE KEY
-update product_id=product_id;
 
 insert into orders(order_id, shipping_shopping_id)
 values(1,1) ON DUPLICATE KEY
