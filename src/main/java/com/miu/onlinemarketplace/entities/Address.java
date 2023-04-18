@@ -7,6 +7,9 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -23,11 +26,7 @@ public class Address {
     private String state;
     private String zipCode;
     private String country;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
-//    @Enumerated
-//    private AddressType addressType;
-//
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "userId", referencedColumnName = "userId")
-//    private User userId;
 }

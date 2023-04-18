@@ -2,7 +2,7 @@ package com.miu.onlinemarketplace.service.auth;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.miu.onlinemarketplace.common.dto.UserDTO;
+import com.miu.onlinemarketplace.common.dto.UserDto;
 import com.miu.onlinemarketplace.entities.Role;
 import com.miu.onlinemarketplace.entities.User;
 import com.miu.onlinemarketplace.repository.RoleRepository;
@@ -47,7 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserDTO createUser(RegisterUserRequestDTO registerUserRequestDTO, EnumRole enumRole) {
+    public UserDto createUser(RegisterUserRequestDTO registerUserRequestDTO, EnumRole enumRole) {
         User user = new User();
         user.setEmail(registerUserRequestDTO.getEmail());
         user.setPassword(passwordEncoder.encode(registerUserRequestDTO.getPassword()));
@@ -59,8 +59,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    private UserDTO mapUserToUserDTO(User user) {
-        UserDTO userDTO = new UserDTO();
+    private UserDto mapUserToUserDTO(User user) {
+        UserDto userDTO = new UserDto();
         userDTO.setId(user.getUserId());
         userDTO.setEmail(user.getEmail());
         return userDTO;

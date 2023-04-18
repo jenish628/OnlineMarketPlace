@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -20,11 +23,12 @@ public class CardInfo {
     private Integer expYear;
     private Integer expMonth;
     private String cvc;
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private CardBrand cardBrand;
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private AddressType addressType;
-
+    @CreationTimestamp
+    private LocalDateTime createdDate;
     @ManyToOne()
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;

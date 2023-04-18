@@ -1,10 +1,14 @@
 package com.miu.onlinemarketplace.common.dto;
 
 import com.miu.onlinemarketplace.common.enums.PaymentStatus;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -16,6 +20,8 @@ public class PaymentDto {
     private Double payAmount;
     private String cardBrand;
     private Long transactionId;
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private PaymentStatus paymentStatus;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 }

@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -18,4 +21,6 @@ public class Role {
 
     @Enumerated(value = EnumType.STRING)
     private EnumRole role;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 }

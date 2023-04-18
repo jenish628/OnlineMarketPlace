@@ -1,6 +1,6 @@
 package com.miu.onlinemarketplace.service.domain.shopping;
 
-import com.miu.onlinemarketplace.common.dto.ShoppingCartDTO;
+import com.miu.onlinemarketplace.common.dto.ShoppingCartDto;
 import com.miu.onlinemarketplace.entities.Product;
 import com.miu.onlinemarketplace.entities.ShoppingCart;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
@@ -39,10 +39,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
     }
 
     @Override
-    public List<ShoppingCartDTO> getCartItems() {
+    public List<ShoppingCartDto> getCartItems() {
         Long userId = UserUtils.getCurrentUserId();
         List<ShoppingCart> shoppingCarts = shoppingCartRepository.findAllByUser_UserId(userId);
-        return shoppingCarts.stream().map(shoppingCart -> modelMapper.map(shoppingCart, ShoppingCartDTO.class)).collect(Collectors.toList());
+        return shoppingCarts.stream().map(shoppingCart -> modelMapper.map(shoppingCart, ShoppingCartDto.class)).collect(Collectors.toList());
 
 
     }

@@ -12,11 +12,11 @@ public class ScheduledTasks {
 
     private AccountCommissionService accountCommissionService;
 
-    public ScheduledTasks(@Autowired AccountCommissionService accountCommissionService) {
+    public ScheduledTasks(AccountCommissionService accountCommissionService) {
         this.accountCommissionService = accountCommissionService;
     }
 
-//    @Scheduled(fixedRate = 5000)
+    @Scheduled(cron = "0 0 12 * * ?") // At 12:00 p.m. (noon) every day
     public void saveCommission() {
         accountCommissionService.saveCommission();
         log.info("Schedule Start ......");

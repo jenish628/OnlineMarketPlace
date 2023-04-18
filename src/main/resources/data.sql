@@ -13,11 +13,11 @@ VALUES (1, 'user@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4Rk
         3) ON DUPLICATE KEY
 UPDATE user_id=user_id;
 
-INSERT INTO vendor (vendor_id, description, logo_file_id, user_id)
-VALUES (1,
+INSERT INTO vendor (vendor_id, vendor_name, description, logo_file_id, user_id)
+VALUES (1, 'Apple',
         'Apple Inc. is an American multinational technology manufacturing electronic gadgets and providing services. Manufactures Mac, iPhone, iPad etc. ',
         null, 3),
-       (2,
+       (2, 'MIU',
         'Miu Store- Shop your local store for a wide selection of items in electronics, home furniture & appliances, toys, clothing, baby gear, video games, and more',
         null, 3) ON DUPLICATE KEY
 UPDATE vendor_id=vendor_id;
@@ -50,11 +50,11 @@ insert into address(address_id, address1, city,country,state,zip_code)
 values(1,'1000N 4Th ST', 'Fairfield','USA','IOWA','52557') ON DUPLICATE KEY
 update address_id=address_id;
 
-insert into shipping(shopping_id, delivery_instruction,shipping_status,address_address_id)
-values(1,'Leave infront of door',1,1) ON DUPLICATE KEY
-update shopping_id=shopping_id;
+insert into shipping(shipping_id, delivery_instruction,shipping_status,address_id)
+values(1,'Leave infront of door','DELIVERED',1) ON DUPLICATE KEY
+update shipping_id=shipping_id;
 
-insert into orders(order_id, shipping_shopping_id)
+insert into orders(order_id, shipping_id)
 values(1,1) ON DUPLICATE KEY
 update order_id=order_id;
 
@@ -66,7 +66,7 @@ values
 update order_item_id=order_item_id;
 
 insert into payment(payment_id, card_brand, card_holder_name, card_number, pay_amount, payment_status, transaction_id)
-values(1, 'Visa', 'Sanjaya koju', '123456', 2600, 2,1) ON DUPLICATE KEY
+values(1, 'Visa', 'Sanjaya koju', '123456', 2600, 'CONFIRMED',1) ON DUPLICATE KEY
 update payment_id=payment_id;
 
 insert into orders_payments(order_order_id, payments_payment_id)

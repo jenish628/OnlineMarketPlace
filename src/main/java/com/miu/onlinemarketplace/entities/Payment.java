@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -20,6 +23,8 @@ public class Payment {
     private Double payAmount;
     private String cardBrand;
     private Long transactionId;
-    @Enumerated
+    @CreationTimestamp
+    private LocalDateTime createdDate;
+    @Enumerated(value = EnumType.STRING)
     private PaymentStatus paymentStatus;
 }

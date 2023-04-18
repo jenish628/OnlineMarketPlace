@@ -13,7 +13,7 @@ public class InvoiceController {
 
     private InvoiceService invoiceService;
 
-    public InvoiceController(@Autowired InvoiceService invoiceService) {
+    public InvoiceController(InvoiceService invoiceService) {
         this.invoiceService = invoiceService;
     }
 

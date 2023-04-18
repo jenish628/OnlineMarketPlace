@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,19 +21,17 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long OrderId;
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
-//    @Enumerated
-//    private AddressType addressType;
-
+    @CreationTimestamp
+    private LocalDateTime orderDate;
     @OneToOne
+    @JoinColumn(name = "shippingId")
     private Shipping shipping;
 
     @ManyToOne
-    private User userId;
-
-    private LocalDateTime orderDate;
-
+    @JoinColumn(name = "userId")
+    private User user;
 
     @ManyToMany
     List<Payment> payments;

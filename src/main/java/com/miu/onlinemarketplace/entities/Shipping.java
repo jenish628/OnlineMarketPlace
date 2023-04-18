@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -15,11 +18,14 @@ public class Shipping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    private Long shoppingId;
+    private Long shippingId;
     private String deliveryInstruction;
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private ShippingStatus shippingStatus;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
     @OneToOne
+    @JoinColumn(name = "addressId")
     private Address address;
 }
