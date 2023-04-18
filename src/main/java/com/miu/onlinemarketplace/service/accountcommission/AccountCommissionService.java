@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface AccountCommissionService {
 
-    boolean saveCommission(List<OrderItem> orderItem);
+    boolean saveCommission();
+
+    Double getOrderDetail(Long orderId);
 }

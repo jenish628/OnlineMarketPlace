@@ -22,7 +22,6 @@ public class Order {
     private Long OrderId;
     @Enumerated
     private OrderStatus orderStatus;
-    private Boolean isCommissioned;
 //    @Enumerated
 //    private AddressType addressType;
 

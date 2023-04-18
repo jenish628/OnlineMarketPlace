@@ -21,7 +21,7 @@ public class AccountCommissionController {
     @PostMapping("/accountcommission")
     public ResponseEntity<?> saveAccountCommission(@Validated @RequestBody List<OrderItem> orderItem) {
         if(accountCommissionService != null) {
-            accountCommissionService.saveCommission(orderItem);
+            accountCommissionService.saveCommission();
             return new ResponseEntity<>("Account Commission Save Successfully!!!", HttpStatus.OK);
         }
         return new ResponseEntity<>("Account Commission Save Successfully!!!", HttpStatus.BAD_REQUEST);

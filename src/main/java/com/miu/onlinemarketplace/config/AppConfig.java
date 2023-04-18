@@ -2,6 +2,7 @@ package com.miu.onlinemarketplace.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class AppConfig {
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = JsonMapper.builder()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+//                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
                 .addModule(new JavaTimeModule())
                 .build();
         return mapper;

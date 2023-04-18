@@ -2,6 +2,8 @@ package com.miu.onlinemarketplace.service.domain.product;
 
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.entities.Product;
+import com.miu.onlinemarketplace.entities.ProductCategory;
+import com.miu.onlinemarketplace.entities.Vendor;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
@@ -64,8 +66,10 @@ public class ProductServiceImpl implements ProductService {
         product.setQuantity(productDto.getQuantity());
         product.setIsVerified(productDto.getIsVerified());
         product.setIsDeleted(productDto.getIsDeleted());
-        product.setVendor(productDto.getVendor());
-        product.setProductCategory(productDto.getProductCategory());
+        Vendor vendor = modelMapper.map(productDto.getVendor(), Vendor.class);
+        ProductCategory productCategory = modelMapper.map(productDto.getProductCategory(), ProductCategory.class);
+        product.setVendor(vendor);
+        product.setProductCategory(productCategory);
         return modelMapper.map(product, ProductDto.class);
     }
 
