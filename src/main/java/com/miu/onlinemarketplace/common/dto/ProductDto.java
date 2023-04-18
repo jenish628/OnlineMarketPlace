@@ -20,6 +20,6 @@ public class ProductDto {
     private Boolean isVerified;
     private Boolean isDeleted;
 
-    private Vendor vendor;
-    private ProductCategory productCategory;
+    private VendorDTO vendor;
+    private ProductCategoryDto productCategory;
 }

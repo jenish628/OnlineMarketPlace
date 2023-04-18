@@ -1,6 +1,6 @@
-package com.miu.onlinemarketplace.entities;
+package com.miu.onlinemarketplace.common.dto;
 
-import jakarta.persistence.*;
+import com.miu.onlinemarketplace.entities.OrderItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,20 +8,14 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountCommission {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class AccountCommissionDto {
     private Long accountCommissionId;
     private Double vendorCommission;
     private Double platformCommission;
     @CreationTimestamp
     private LocalDateTime createdDate;
-
-    @OneToOne()
-    @JoinColumn(name = "orderItemId", referencedColumnName = "orderItemId")
     private OrderItem orderItem;
 }

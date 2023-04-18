@@ -1,4 +1,4 @@
-package com.miu.onlinemarketplace.repository.accountcommission;
+package com.miu.onlinemarketplace.repository;
 
 import com.miu.onlinemarketplace.entities.AccountCommission;
 import org.springframework.data.jpa.repository.JpaRepository;

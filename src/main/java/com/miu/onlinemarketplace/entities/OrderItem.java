@@ -19,6 +19,7 @@ public class OrderItem {
     private Double tax;
     private Integer quantity;
     private Double discount;
+    private Boolean isCommissioned;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "productId", referencedColumnName = "productId")
@@ -27,6 +28,6 @@ public class OrderItem {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", referencedColumnName = "orderId")
-    private Order orderId;
+    private Order order;
 
 }

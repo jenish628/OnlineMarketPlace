@@ -2,5 +2,5 @@ package com.miu.onlinemarketplace.common.enums;
 
 
 public enum UserStatus {
-    VERIFIED, UNVERIFIED, SUSPENDED;
+    VERIFIED, UNVERIFIED, SUSPENDED, ACTIVE;
 }
