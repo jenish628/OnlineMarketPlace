@@ -65,6 +65,7 @@ public class ProductServiceImpl implements ProductService {
         product.setIsVerified(productDto.getIsVerified());
         product.setIsDeleted(productDto.getIsDeleted());
         product.setVendor(productDto.getVendor());
+        product.setPrice(productDto.getPrice());
         product.setProductCategory(productDto.getProductCategory());
         return modelMapper.map(product, ProductDto.class);
     }

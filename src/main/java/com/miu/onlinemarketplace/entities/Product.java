@@ -23,6 +23,7 @@ public class Product {
 
     private Boolean isVerified;
     private Boolean isDeleted;
+    private Double price;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "vendorId", referencedColumnName = "vendorId")
