@@ -31,8 +31,4 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToOne
-    @JoinColumn(name = "addressId")
-    private Address address;
-
 }

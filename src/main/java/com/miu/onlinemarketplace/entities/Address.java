@@ -1,9 +1,7 @@
 package com.miu.onlinemarketplace.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.miu.onlinemarketplace.common.enums.AddressType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +14,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Address {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
@@ -26,7 +23,11 @@ public class Address {
     private String state;
     private String zipCode;
     private String country;
+    @Enumerated(EnumType.STRING)
+    private AddressType addressType;
     @CreationTimestamp
     private LocalDateTime createdDate;
-
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

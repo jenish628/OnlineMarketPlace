@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.common.dto;
 
+import com.miu.onlinemarketplace.common.enums.AddressType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class AddressDto {
     private String state;
     private String zipCode;
     private String country;
+    private AddressType addressType;
     @CreationTimestamp
     private LocalDateTime createdDate;
 }
