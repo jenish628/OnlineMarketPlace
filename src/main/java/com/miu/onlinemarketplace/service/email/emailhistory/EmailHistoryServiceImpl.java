@@ -6,6 +6,7 @@ import com.miu.onlinemarketplace.common.dto.EmailHistorySaveDto;
 import com.miu.onlinemarketplace.entities.EmailHistory;
 import com.miu.onlinemarketplace.repository.EmailHistoryRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,11 @@ import java.util.stream.Collectors;
 public class EmailHistoryServiceImpl implements EmailHistoryService {
 
     private final EmailHistoryRepository emailHistoryRepository;
+    private final ModelMapper modelMapper;
 
-    public EmailHistoryServiceImpl(EmailHistoryRepository emailHistoryRepository) {
+    public EmailHistoryServiceImpl(EmailHistoryRepository emailHistoryRepository, ModelMapper modelMapper) {
         this.emailHistoryRepository = emailHistoryRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -34,9 +37,9 @@ public class EmailHistoryServiceImpl implements EmailHistoryService {
         AllEmailHistoryPage allEmailHistoryPage = new AllEmailHistoryPage();
         allEmailHistoryPage.setTotalPage(emailHistoryPage.getTotalPages());
         allEmailHistoryPage.setTotalItem(emailHistoryPage.getTotalElements());
-        allEmailHistoryPage.setEmailHistoryDtos(
+        allEmailHistoryPage.setEmailHistory(
                 emailHistoryPage.get()
-                        .map(emailHistory -> new EmailHistoryDto())
+                        .map(emailHistory -> modelMapper.map(emailHistory, EmailHistoryDto.class))
                         .collect(Collectors.toList()));
         return allEmailHistoryPage;
     }

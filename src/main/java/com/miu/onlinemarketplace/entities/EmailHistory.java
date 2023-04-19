@@ -18,6 +18,7 @@ public class EmailHistory {
     private Long emailHistoryId;
     @Enumerated(EnumType.STRING)
     private MailType mailType;
+    @Column(columnDefinition = "TEXT")
     private String message;
     private String subject;
     private String fromEmail;
