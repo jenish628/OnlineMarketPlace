@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -21,12 +24,15 @@ public class User {
 
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "role_id")
     private Role role;
 
     @OneToOne
+    @JoinColumn(name = "addressId")
     private Address address;
 
 }

@@ -1,7 +1,9 @@
-package com.miu.onlinemarketplace.entities;
+package com.miu.onlinemarketplace.common.dto;
 
 import com.miu.onlinemarketplace.common.enums.ShippingStatus;
-import jakarta.persistence.*;
+import com.miu.onlinemarketplace.entities.Address;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,23 +11,16 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Shipping {
+public class ShippingAddressDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long shippingId;
+    private Long shoppingId;
     private String deliveryInstruction;
     @Enumerated(value = EnumType.STRING)
     private ShippingStatus shippingStatus;
+    private AddressDto address;
     @CreationTimestamp
     private LocalDateTime createdDate;
-
-    @OneToOne
-    @JoinColumn(name = "addressId")
-    private Address address;
 }

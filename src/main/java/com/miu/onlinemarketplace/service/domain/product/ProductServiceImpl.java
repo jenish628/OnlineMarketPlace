@@ -2,14 +2,14 @@ package com.miu.onlinemarketplace.service.domain.product;
 
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.entities.Product;
+import com.miu.onlinemarketplace.entities.ProductCategory;
+import com.miu.onlinemarketplace.entities.Vendor;
+import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -59,26 +59,24 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto updateProduct( ProductDto productDto) {
-        Product product = productRepository.findById(productDto.getProductId()).get();
-        if(product == null){
-            return null;
-        }
+        Product product = productRepository.findById(productDto.getProductId())
+                .orElseThrow( () -> new DataNotFoundException("Product not found"));
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
         product.setQuantity(productDto.getQuantity());
         product.setIsVerified(productDto.getIsVerified());
         product.setIsDeleted(productDto.getIsDeleted());
-        product.setVendor(productDto.getVendor());
-        product.setProductCategory(productDto.getProductCategory());
+        Vendor vendor = modelMapper.map(productDto.getVendor(), Vendor.class);
+        ProductCategory productCategory = modelMapper.map(productDto.getProductCategory(), ProductCategory.class);
+        product.setVendor(vendor);
+        product.setProductCategory(productCategory);
         return modelMapper.map(product, ProductDto.class);
     }
 
     @Override
     public Boolean deleteProduct(ProductDto productDto ) {
-        Product product = productRepository.findById(productDto.getProductId()).get();
-        if(product == null){
-            return  false;
-        }
+        Product product = productRepository.findById(productDto.getProductId())
+                .orElseThrow( () -> new DataNotFoundException("Product not found"));
         productRepository.deleteById(product.getProductId());
         return true;
     }

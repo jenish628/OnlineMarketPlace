@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -18,9 +21,8 @@ public class ProductUnVerify {
     private String name;
     private String description;
     private Integer quantity;
-
-//    @ManyToMany
-//    List<FileEntity> images;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
     private Boolean isVerified;
     private Boolean isDeleted;
@@ -34,5 +36,6 @@ public class ProductUnVerify {
     private ProductCategory productCategory;
 
     @OneToOne
+    @JoinColumn(name = "productId")
     private Product product;
 }

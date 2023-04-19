@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 import java.util.*;
 @Entity
 @Data
@@ -17,12 +20,10 @@ public class Product {
     private String name;
     private String description;
     private Integer quantity;
-
-//    @ManyToMany
-//    List<FileEntity> images;
-
     private Boolean isVerified;
     private Boolean isDeleted;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "vendorId", referencedColumnName = "vendorId")

@@ -1,4 +1,4 @@
-package com.miu.onlinemarketplace.repository.invoice;
+package com.miu.onlinemarketplace.repository;
 
 import com.miu.onlinemarketplace.entities.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,9 +8,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderItemInvoiceRepository extends JpaRepository<OrderItem, Long> {
+public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
-    @Query(value = "Select * from order_item where order_id = ?1", nativeQuery = true)
+    @Query(value = "Select oi from OrderItem oi where oi.order.OrderId = ?1")
     List<OrderItem> findAllOrderItemByOrderId(Long orderId);
+
+    List<OrderItem> findAllByIsCommissionedFalse();
 
 }

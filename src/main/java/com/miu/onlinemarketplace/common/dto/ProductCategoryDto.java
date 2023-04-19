@@ -1,8 +1,6 @@
-package com.miu.onlinemarketplace.entities;
+package com.miu.onlinemarketplace.common.dto;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,14 +9,11 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductCategory {
+public class ProductCategoryDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
     private String category;
     @CreationTimestamp

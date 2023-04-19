@@ -1,9 +1,5 @@
-package com.miu.onlinemarketplace.entities;
+package com.miu.onlinemarketplace.common.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,14 +7,10 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Address {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class AddressDto {
     private Long addressId;
     private String address1;
     private String address2;
@@ -28,5 +20,4 @@ public class Address {
     private String country;
     @CreationTimestamp
     private LocalDateTime createdDate;
-
 }

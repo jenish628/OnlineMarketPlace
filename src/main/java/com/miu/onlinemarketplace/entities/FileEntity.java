@@ -15,7 +15,7 @@ public class FileEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileId;
     private String uri;
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private FileType fileType;
 
 }
