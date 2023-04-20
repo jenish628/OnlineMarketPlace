@@ -22,7 +22,7 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<?> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "createdAt",
+    public ResponseEntity<?> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "productId",
             direction = Sort.Direction.DESC) Pageable pageable,
                                           @RequestParam(required = false) Long categoryId
                                             ){
@@ -32,7 +32,7 @@ public class ProductController {
 
     @GetMapping("/products/{name}")
     public ResponseEntity<?> getProductByName(
-            @PageableDefault(page = 0, size = 10, sort = "createdAt",
+            @PageableDefault(page = 0, size = 10, sort = "productId",
                     direction = Sort.Direction.DESC) Pageable pageable,
             @PathVariable String name){
         Page page = productService.getProductByName(pageable, name);

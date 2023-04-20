@@ -1,7 +1,7 @@
 package com.miu.onlinemarketplace.controller;
 
-import com.miu.onlinemarketplace.common.dto.UserDTO;
-import com.miu.onlinemarketplace.common.dto.VendorDTO;
+import com.miu.onlinemarketplace.common.dto.UserDto;
+import com.miu.onlinemarketplace.common.dto.VendorDto;
 import com.miu.onlinemarketplace.security.models.EnumRole;
 import com.miu.onlinemarketplace.service.auth.AuthenticationService;
 import com.miu.onlinemarketplace.service.auth.VendorService;
@@ -36,15 +36,15 @@ public class AuthenticationController {
     @PostMapping("/register-user")
     public ResponseEntity<?> registerUser(@RequestBody RegisterUserRequestDTO registerUserRequestDTO) {
         log.info("Authentication API: registerUser: ", registerUserRequestDTO.getEmail());
-        UserDTO userDTO = authenticationService.createUser(registerUserRequestDTO, EnumRole.ROLE_USER);
+        UserDto userDTO = authenticationService.createUser(registerUserRequestDTO, EnumRole.ROLE_USER);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @PostMapping("/register-vendor")
     public ResponseEntity<?> registerVendor(@RequestBody RegisterVendorRequestDTO registerVendorRequestDTO) {
         log.info("Vendor API: registerVendor: ", registerVendorRequestDTO);
-        UserDTO userDTO = authenticationService.createUser(registerVendorRequestDTO.getRegisterUser(), EnumRole.ROLE_VENDOR);
-        VendorDTO vendorDTO = vendorService.createVendor(userDTO, registerVendorRequestDTO.getVendorDTO());
+        UserDto userDTO = authenticationService.createUser(registerVendorRequestDTO.getRegisterUser(), EnumRole.ROLE_VENDOR);
+        VendorDto vendorDTO = vendorService.createVendor(userDTO, registerVendorRequestDTO.getVendorDTO());
         return new ResponseEntity<>(vendorDTO, HttpStatus.OK);
     }
 

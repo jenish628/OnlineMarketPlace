@@ -1,6 +1,6 @@
 package com.miu.onlinemarketplace.service.domain.shopping;
 
-import com.miu.onlinemarketplace.common.dto.ShoppingCartDTO;
+import com.miu.onlinemarketplace.common.dto.ShoppingCartDto;
 import com.miu.onlinemarketplace.entities.Product;
 import com.miu.onlinemarketplace.entities.ShoppingCart;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
@@ -19,30 +19,23 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@NoArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService{
 
-    private ShoppingCartRepository shoppingCartRepository;
-    private ProductRepository productRepository;
-    private ModelMapper modelMapper;
+    private final ShoppingCartRepository shoppingCartRepository;
+    private final ProductRepository productRepository;
+    private final ModelMapper modelMapper;
 
-    public ShoppingCartServiceImpl(ModelMapper modelMapper) {
+    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ModelMapper modelMapper) {
+        this.shoppingCartRepository = shoppingCartRepository;
+        this.productRepository = productRepository;
         this.modelMapper = modelMapper;
     }
 
-    public ShoppingCartServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
-
-    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository) {
-        this.shoppingCartRepository = shoppingCartRepository;
-    }
-
     @Override
-    public List<ShoppingCartDTO> getCartItems() {
+    public List<ShoppingCartDto> getCartItems() {
         Long userId = UserUtils.getCurrentUserId();
         List<ShoppingCart> shoppingCarts = shoppingCartRepository.findAllByUser_UserId(userId);
-        return shoppingCarts.stream().map(shoppingCart -> modelMapper.map(shoppingCart, ShoppingCartDTO.class)).collect(Collectors.toList());
+        return shoppingCarts.stream().map(shoppingCart -> modelMapper.map(shoppingCart, ShoppingCartDto.class)).collect(Collectors.toList());
 
 
     }
@@ -54,19 +47,23 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
             return new DataNotFoundException("Product Not found for id:"+productId);
         });
         Long userId = UserUtils.getCurrentUserId();
-        Optional<ShoppingCart> shoppingCartOptional = shoppingCartRepository.findByProduct_ProductIdAndUser_UserId(userId, productId);
-        if(shoppingCartOptional.isPresent()){
-            ShoppingCart shoppingCart = shoppingCartOptional.get();
+        System.out.println("#######User####### "+ userId);
+        System.out.println("#######Product####### "+ productId);
+        ShoppingCart shoppingCart = shoppingCartRepository.findByProduct_ProductIdAndUser_UserId(productId, userId)
+                .orElseThrow(() -> new DataNotFoundException("Product not found in cart for userId:"+ userId + ", ProductId:"+productId));
+//        if(shoppingCartOptional.isPresent()){
+//            ShoppingCart shoppingCart = shoppingCartOptional.get();
             if(qty>shoppingCart.getProduct().getQuantity()){
                 log.error("Insufficient Product Quantity for ProductId:"+productId+"Qty Entered:"+qty);
                 throw new QuantityInsufficientException("Insufficient Product Quantity");
             } else {
                 shoppingCart.setQuantity(qty);
             }
-        } else {
-            log.error("Product not found in cart for userId:"+ userId + ", ProductId:"+productId);
-            throw new DataNotFoundException("Product not found in cart for userId:"+ userId + ", ProductId:"+productId);
-        }
+//        } else {
+//            log.error("Product not found in cart for userId:"+ userId + ", ProductId:"+productId);
+//            throw new DataNotFoundException("Product not found in cart for userId:"+ userId + ", ProductId:"+productId);
+//        }
+        shoppingCartRepository.save(shoppingCart);
         return true;
     }
 

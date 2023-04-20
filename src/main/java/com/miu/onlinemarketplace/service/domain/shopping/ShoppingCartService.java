@@ -1,7 +1,6 @@
 package com.miu.onlinemarketplace.service.domain.shopping;
 
-import com.miu.onlinemarketplace.common.dto.ShoppingCartDTO;
-import org.springframework.stereotype.Service;
+import com.miu.onlinemarketplace.common.dto.ShoppingCartDto;
 
 import java.util.List;
 
@@ -9,7 +8,7 @@ import java.util.List;
 public interface ShoppingCartService {
 
     //get
-    public List<ShoppingCartDTO> getCartItems();
+    public List<ShoppingCartDto> getCartItems();
 
     //post change qty from cart page
     boolean addQty(Long productId, Integer quantity);

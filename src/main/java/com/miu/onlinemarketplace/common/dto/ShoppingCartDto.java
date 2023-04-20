@@ -2,7 +2,6 @@ package com.miu.onlinemarketplace.common.dto;
 
 import com.miu.onlinemarketplace.entities.Product;
 import com.miu.onlinemarketplace.entities.User;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,15 +9,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class ShoppingCartDTO {
+public class ShoppingCartDto {
 
     private Long cartId;
     private Integer quantity;
 
-//    @ManyToOne
-    private User user;
+    //    @ManyToOne
+    private UserDto user;
 
-//    @ManyToOne
-    private Product product;
+    //    @ManyToOne
+    private ProductDto product;
 }

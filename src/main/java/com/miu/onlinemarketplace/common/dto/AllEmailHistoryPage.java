@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 public class AllEmailHistoryPage {
-    private List<EmailHistoryDto> emailHistoryDtos;
+    private List<EmailHistoryDto> emailHistory;
     private Integer totalPage;
     private Long totalItem;
 }

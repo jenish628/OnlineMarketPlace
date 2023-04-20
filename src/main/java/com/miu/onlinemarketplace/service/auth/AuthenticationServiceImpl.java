@@ -2,9 +2,10 @@ package com.miu.onlinemarketplace.service.auth;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.miu.onlinemarketplace.common.dto.UserDTO;
+import com.miu.onlinemarketplace.common.dto.UserDto;
 import com.miu.onlinemarketplace.entities.Role;
 import com.miu.onlinemarketplace.entities.User;
+import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.RoleRepository;
 import com.miu.onlinemarketplace.repository.UserRepository;
 import com.miu.onlinemarketplace.security.JwtTokenProvider;
@@ -37,6 +38,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
             String token = jwtTokenProvider.createToken(authentication);
             AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+            User user = userRepository.findByEmail(loginRequest.getUsername()).orElseThrow(() -> new DataNotFoundException("Error, while fetching user"));
+            authResponseDTO.setUserId(user.getUserId());
+            authResponseDTO.setFullName(user.getFullName());
+            authResponseDTO.setUsername(user.getEmail());
+            authResponseDTO.setEmail(user.getEmail());
+            authResponseDTO.setRole(user.getRole().getRole().getValue());
             authResponseDTO.setToken(token);
             return authResponseDTO;
         } catch (AuthenticationException e) {
@@ -47,9 +54,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserDTO createUser(RegisterUserRequestDTO registerUserRequestDTO, EnumRole enumRole) {
+    public UserDto createUser(RegisterUserRequestDTO registerUserRequestDTO, EnumRole enumRole) {
         User user = new User();
         user.setEmail(registerUserRequestDTO.getEmail());
+        user.setFullName(registerUserRequestDTO.getFullName());
         user.setPassword(passwordEncoder.encode(registerUserRequestDTO.getPassword()));
 
         Role userRole = roleRepository.findOneByRole(enumRole);
@@ -59,8 +67,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    private UserDTO mapUserToUserDTO(User user) {
-        UserDTO userDTO = new UserDTO();
+    private UserDto mapUserToUserDTO(User user) {
+        UserDto userDTO = new UserDto();
         userDTO.setId(user.getUserId());
         userDTO.setEmail(user.getEmail());
         return userDTO;
