@@ -79,7 +79,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             log.error("Send Mail using Template failed Exception {} to user with email {} of mail type {}", e.getMessage(), mailSenderDto.getToEmail(), MailType.SIGNUP_VERIFICATION_CODE);
             send = false;
         }
-        emailHistoryDto.setSend(send);
+        emailHistoryDto.setIsSend(send);
         emailHistoryService.saveEmailHistory(emailHistoryDto);
         return send;
     }
@@ -118,7 +118,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             log.error("Send Mail using Template failed Exception {} to user with email {} of mail type {}", e.getMessage(), passwordMailSenderDto.getToEmail(), mailType);
             send = false;
         }
-        emailHistoryDto.setSend(send);
+        emailHistoryDto.setIsSend(send);
         emailHistoryService.saveEmailHistory(emailHistoryDto);
         return send;
     }
@@ -195,7 +195,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             log.error("Send Mail using Template failed Exception {} to user with email {} of mail type {}", e.getMessage(), user.getEmail(), mailType);
             send = false;
         }
-        emailHistoryDto.setSend(send);
+        emailHistoryDto.setIsSend(send);
         emailHistoryService.saveEmailHistory(emailHistoryDto);
         return send;
     }

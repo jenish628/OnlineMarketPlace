@@ -26,7 +26,6 @@ public class EmailHistoryController {
                                             @RequestParam(defaultValue = "emailHistoryId", required = false) String sortBy,
                                             @RequestParam(defaultValue = "ASC", required = false) String order
     ) {
-        System.out.println(perPage);
         Pageable pageable = PageRequest.of(page - 1, perPage, Sort.by(Sort.Direction.valueOf(order), sortBy));
         return emailHistoryService.getEmailHistoryPage(pageable);
     }

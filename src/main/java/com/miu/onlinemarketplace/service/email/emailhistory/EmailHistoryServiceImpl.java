@@ -33,7 +33,7 @@ public class EmailHistoryServiceImpl implements EmailHistoryService {
 
     @Override
     public AllEmailHistoryPage getEmailHistoryPage(Pageable pageable) {
-        Page<EmailHistory> emailHistoryPage = emailHistoryRepository.findAll(pageable);
+        Page<EmailHistory> emailHistoryPage = emailHistoryRepository.findAllByIsSend(pageable, true);
         AllEmailHistoryPage allEmailHistoryPage = new AllEmailHistoryPage();
         allEmailHistoryPage.setTotalPage(emailHistoryPage.getTotalPages());
         allEmailHistoryPage.setTotalItem(emailHistoryPage.getTotalElements());

@@ -17,20 +17,20 @@ public class EmailHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long emailHistoryId;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private MailType mailType;
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
+    @Column(nullable = false)
     private String subject;
+    @Column(nullable = false)
     private String fromEmail;
+    @Column(nullable = false)
     private String toEmail;
     @CreationTimestamp
     private LocalDateTime creationDateTime;
     @UpdateTimestamp
     private LocalDateTime mailSendDateTime;
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "orderId", referencedColumnName = "orderId")
-    private Order order;
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private User toUser;
+    @Column(name = "is_send", nullable = false, columnDefinition = "boolean default false")
+    private Boolean isSend;
 }

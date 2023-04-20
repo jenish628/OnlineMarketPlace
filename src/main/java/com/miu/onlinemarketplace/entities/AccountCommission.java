@@ -21,7 +21,7 @@ public class AccountCommission {
     @CreationTimestamp
     private LocalDateTime createdDate;
 
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "orderItemId", referencedColumnName = "orderItemId")
     private OrderItem orderItem;
 }
