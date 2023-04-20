@@ -32,20 +32,20 @@ public class UserServiceImpl implements UserService{
     public UserCardInfoDto findInfoById(Long id) {
 
         UserCardInfoDto dto = new UserCardInfoDto();
-        Optional<User> userOpt = userRepository.findById(id);
-        if(userOpt.isPresent()) {
-           User user = userOpt.get();
+        Optional<ShoppingCart> shoppingCartOpt = shoppingCartRepository.findByUserUserId(id);
+        if(shoppingCartOpt.isPresent()) {
+           ShoppingCart shoppingCart = shoppingCartOpt.get();
            dto.setUserId(id);
-           dto.setFullName(user.getFullName());
-           Optional<CardInfo> cardInfoOpt = cardInfoRepository.findByUserUserId(user.getUserId());
+           dto.setFullName(shoppingCart.getUser().getFullName());
+           dto.setQuantity(shoppingCart.getQuantity());
+//           dto.setPrice(shoppingCart.getProduct().getP);
+           Optional<CardInfo> cardInfoOpt = cardInfoRepository.findByUserUserId(id);
            System.out.println("----------address :::: "+cardInfoOpt.toString());
            cardInfoOpt.ifPresent(cardInfo -> dto.setCardInfoDto(modelMapper.map(cardInfo, CardInfoDto.class)));
 
-           Optional<Address> addressOpt = addressRepository.findByUser(user);
+           Optional<Address> addressOpt = addressRepository.findByUser(shoppingCart.getUser());
            addressOpt.ifPresent(address -> dto.setAddressDto(modelMapper.map(address, AddressDto.class)));
-
-//           Optional<ShoppingCart> shoppingCartOpt = shoppingCartRepository.
-                   System.out.println(addressOpt.toString());
+           System.out.println(addressOpt.toString());
         }
         return dto;
     }

@@ -11,7 +11,9 @@ public class UserCardInfoDto {
     private String fullName;
 
     private AddressDto addressDto;
-
     private CardInfoDto cardInfoDto;
+
+    private float price;
+    private Integer quantity;
 
 }
