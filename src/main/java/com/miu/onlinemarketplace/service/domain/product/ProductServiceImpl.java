@@ -1,6 +1,7 @@
 package com.miu.onlinemarketplace.service.domain.product;
 
 import com.miu.onlinemarketplace.common.dto.ProductDto;
+import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.entities.Product;
 
 import com.miu.onlinemarketplace.entities.ProductCategory;
@@ -31,14 +32,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> getAllProducts(Pageable pageable, Long categoryId) {
-        Page<ProductDto> products;
+    public Page<ProductResponseDto> getAllProducts(Pageable pageable, Long categoryId) {
+        Page<ProductResponseDto> products;
         if(categoryId != null) {
             products = productRepository.findAllByProductCategory(pageable, categoryId)
-                    .map(product -> modelMapper.map(product, ProductDto.class));
+                    .map(product -> modelMapper.map(product, ProductResponseDto.class));
         } else {
             products = productRepository.findAll(pageable)
-                    .map(product -> modelMapper.map(product, ProductDto.class));
+                    .map(product -> modelMapper.map(product, ProductResponseDto.class));
         }
 
         return products;

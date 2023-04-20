@@ -33,15 +33,15 @@ VALUES (1, 'Computers'),
        (6, 'Clothing') ON DUPLICATE KEY
 UPDATE category_id=category_id;
 
-INSERT INTO product (product_id, description, is_deleted, is_verified, name, quantity, category_id, vendor_id)
+INSERT INTO product (product_id, description, is_deleted, is_verified, name, price, quantity, category_id, vendor_id)
 VALUES (1,
         'Apple 2023 MacBook Pro Laptop M2 Pro chip with 12‑core CPU and 19‑core GPU: 16.2-inch Liquid Retina XDR Display, 16GB Unified Memory, 512GB SSD Storage. Works with iPhone/iPad; Silver',
-        null, true, 'MacBook Pro 16 (M2 Pro)', 10, 1, 1),
+        null, true, 'MacBook Pro 16 (M2 Pro)', 10, 10, 1, 1),
        (2, 'Practical recipes for enterprise Java developers to deliver large scale applications with Jakarta EE', null,
-        true, 'Java 17 Recipes', 50, 2, 2),
+        true, 'Java 17 Recipes', 20, 50, 2, 2),
        (3,
         'Housewares digital Cool-Touch Rice Grain Cooker and Food Steamer, Stainless, Silver, 4-Cup (Uncooked) / 8-Cup (Cooked)',
-        null, true, 'Aroma Rice Cooker', 5, 3, 2) ON DUPLICATE KEY
+        null, true, 'Aroma Rice Cooker',15, 5, 3, 2) ON DUPLICATE KEY
 UPDATE product_id=product_id;
 
 INSERT INTO email_template (template_id, from_email, mail_type, subject, template)
