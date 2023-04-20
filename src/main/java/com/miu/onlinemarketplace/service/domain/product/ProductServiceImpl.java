@@ -10,9 +10,11 @@ import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.ProductCategoryRepository;
 import com.miu.onlinemarketplace.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
+import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -92,5 +94,16 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow( () -> new DataNotFoundException("Product not found"));
         productRepository.deleteById(product.getProductId());
         return true;
+    }
+
+    @Override
+    public Page<ProductDto> filterProductData(GenericFilterRequestDTO<ProductDto> genericFilterRequest, Pageable pageable) {
+        Specification<Product> specification = Specification
+                .where(ProductSearchSpecification.processDynamicProductFilter(genericFilterRequest))
+                .and(Specification.where(ProductSearchSpecification.getProductByVendor(genericFilterRequest)))
+                .and(Specification.where(ProductSearchSpecification.getProductByCategory(genericFilterRequest)));
+        Page<ProductDto> filteredProducts = productRepository.findAll(specification, pageable).map(product ->
+                modelMapper.map(product, ProductDto.class));
+        return filteredProducts;
     }
 }
