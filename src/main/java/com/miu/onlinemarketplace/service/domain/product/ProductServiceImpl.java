@@ -53,9 +53,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto getByProductId(Long id) {
-        ProductDto productDto = productRepository.findById(id)
-                .map(product -> modelMapper.map(product, ProductDto.class)).get();
+    public ProductResponseDto getByProductId(Long id) {
+        ProductResponseDto productDto = productRepository.findById(id)
+                .map(product -> modelMapper.map(product, ProductResponseDto.class)).orElseThrow(()->{
+            log.error("Product category with id {} not found!!");
+            throw new DataNotFoundException("Product category with id  not found!!");
+        });;
         return productDto;
     }
 

@@ -1,6 +1,7 @@
 package com.miu.onlinemarketplace.controller;
 
 import com.miu.onlinemarketplace.common.dto.ProductDto;
+import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.service.domain.product.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class ProductController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
-    @GetMapping("/products/{name}")
+    @GetMapping("/products/name/{name}")
     public ResponseEntity<?> getProductByName(
             @PageableDefault(page = 0, size = 10, sort = "productId",
                     direction = Sort.Direction.DESC) Pageable pageable,
@@ -40,8 +41,8 @@ public class ProductController {
     }
 
     @GetMapping("/products/{productId}")
-    public ResponseEntity<?> getByProductId(@PathVariable Long id){
-        ProductDto productDto = productService.getByProductId(id);
+    public ResponseEntity<?> getByProductId(@PathVariable Long productId){
+        ProductResponseDto productDto = productService.getByProductId(productId);
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
