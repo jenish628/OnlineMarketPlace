@@ -5,21 +5,23 @@ VALUES (1, 'ROLE_USER'),
        (3, 'ROLE_VENDOR') ON DUPLICATE KEY
 UPDATE role_id=role_id;
 
-INSERT INTO user (user_id, email, password, user_status, role_id) -- all passwords are: test
-VALUES (1, 'user@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 1),
-       (2, 'admin@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2),
-       (3, 'apple@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3),
-       (3, 'miu-shop@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE',
-        3) ON DUPLICATE KEY
+
+INSERT INTO user (user_id, email, password, user_status, role_id, full_name) -- all passwords are: test
+VALUES (1, 'user@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 1, 'Demo User'),
+       (2, 'test@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 1, 'Test User'),
+       (3, 'admin@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2, 'Test Admin'),
+       (4, 'vendor@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'Test Vendor'),
+       (5, 'apple@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'Apple Inc'),
+       (6, 'miu-shop@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'MIU Shop') ON DUPLICATE KEY
 UPDATE user_id=user_id;
 
 INSERT INTO vendor (vendor_id, vendor_name, description, logo_file_id, user_id)
 VALUES (1, 'Apple',
         'Apple Inc. is an American multinational technology manufacturing electronic gadgets and providing services. Manufactures Mac, iPhone, iPad etc. ',
-        null, 3),
+        null, 5),
        (2, 'MIU',
         'Miu Store- Shop your local store for a wide selection of items in electronics, home furniture & appliances, toys, clothing, baby gear, video games, and more',
-        null, 3) ON DUPLICATE KEY
+        null, 6) ON DUPLICATE KEY
 UPDATE vendor_id=vendor_id;
 
 INSERT INTO product_category (category_id, category)
