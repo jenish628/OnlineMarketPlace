@@ -22,6 +22,9 @@ public class Product {
     private Integer quantity;
     private Boolean isVerified;
     private Boolean isDeleted;
+
+    private Double price;
+
     @CreationTimestamp
     private LocalDateTime createdDate;
 

@@ -18,6 +18,10 @@ import java.time.LocalDateTime;
 public class ProductCategory {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long categoryId;
+    private String category;
+    
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
     private String category;
