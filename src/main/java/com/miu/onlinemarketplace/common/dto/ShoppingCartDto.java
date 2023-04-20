@@ -9,15 +9,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class ShoppingCartDto {
 
     private Long cartId;
     private Integer quantity;
 
-//    @ManyToOne
-    private User user;
+    //    @ManyToOne
+    private UserDto user;
 
-//    @ManyToOne
-    private Product product;
+    //    @ManyToOne
+    private ProductDto product;
 }

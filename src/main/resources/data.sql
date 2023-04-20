@@ -74,3 +74,9 @@ update payment_id=payment_id;
 insert into orders_payments(order_order_id, payments_payment_id)
 values(1,1) ON DUPLICATE KEY
 update order_order_id=order_order_id and payments_payment_id=payments_payment_id;
+
+INSERT INTO shopping_cart (cart_id, created_date, quantity, product_id, user_id)
+VALUES (1, '2023-04-19', 1, 1, 1)
+ON DUPLICATE KEY
+update cart_id=cart_id;
+
