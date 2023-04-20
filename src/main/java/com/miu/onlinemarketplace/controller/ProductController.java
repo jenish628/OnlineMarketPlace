@@ -1,6 +1,7 @@
 package com.miu.onlinemarketplace.controller;
 
 import com.miu.onlinemarketplace.common.dto.ProductDto;
+import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.service.domain.product.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class ProductController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
-    @GetMapping("/products/{name}")
+    @GetMapping("/products/name/{name}")
     public ResponseEntity<?> getProductByName(
             @PageableDefault(page = 0, size = 10, sort = "productId",
                     direction = Sort.Direction.DESC) Pageable pageable,
@@ -40,26 +41,26 @@ public class ProductController {
     }
 
     @GetMapping("/products/{productId}")
-    public ResponseEntity<?> getByProductId(@PathVariable Long id){
-        ProductDto productDto = productService.getByProductId(id);
+    public ResponseEntity<?> getByProductId(@PathVariable Long productId){
+        ProductResponseDto productDto = productService.getByProductId(productId);
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
     @PostMapping("/products")
-    public ResponseEntity<?> createProduct(ProductDto productDto){
+    public ResponseEntity<?> createProduct(@RequestBody ProductDto productDto){
         ProductDto productDto1 = productService.createProduct(productDto);
         return new ResponseEntity<>(productDto1, HttpStatus.OK);
     }
 
     @PutMapping("/products")
-    public ResponseEntity<?> updateProduct(ProductDto productDto){
+    public ResponseEntity<?> updateProduct(@RequestBody ProductDto productDto){
         ProductDto productDto1 = productService.updateProduct(productDto);
         return new ResponseEntity<>(productDto1, HttpStatus.OK);
     }
 
     @DeleteMapping("/products")
-    public ResponseEntity<?> deleteProduct(ProductDto productDto){
-        Boolean product = productService.deleteProduct(productDto);
+    public ResponseEntity<?> deleteProduct(@RequestParam Long productId){
+        Boolean product = productService.deleteProduct(productId);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
