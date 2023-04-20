@@ -40,7 +40,7 @@ public class ShoppingCartController {
     //put
     @PutMapping()
     public ResponseEntity<?> addProductToCart(@RequestParam Long productId, @RequestParam Integer quantity){
-        Map<String, Object> res = Map.of("res", shoppingCartService.add(productId,quantity));
+        boolean res = shoppingCartService.add(productId,quantity);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

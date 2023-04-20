@@ -3,10 +3,13 @@ package com.miu.onlinemarketplace.service.domain.shopping;
 import com.miu.onlinemarketplace.common.dto.ShoppingCartDto;
 import com.miu.onlinemarketplace.entities.Product;
 import com.miu.onlinemarketplace.entities.ShoppingCart;
+import com.miu.onlinemarketplace.entities.User;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.exception.QuantityInsufficientException;
 import com.miu.onlinemarketplace.repository.ProductRepository;
 import com.miu.onlinemarketplace.repository.ShoppingCartRepository;
+import com.miu.onlinemarketplace.repository.UserRepository;
+import com.miu.onlinemarketplace.security.AppSecurityUtils;
 import com.miu.onlinemarketplace.utils.UserUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +28,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
 
-    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ModelMapper modelMapper) {
+    private final UserRepository userRepository;
+
+    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ModelMapper modelMapper, UserRepository userRepository) {
         this.shoppingCartRepository = shoppingCartRepository;
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -73,7 +79,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
             log.error("Product Not found for id:"+productId);
             return new DataNotFoundException("Product Not found for id:"+productId);
         });
-        Optional<ShoppingCart> shoppingCartOptional = shoppingCartRepository.findByProduct_ProductIdAndUser_UserId(UserUtils.getCurrentUserId(), productId);
+
+        Long userId = AppSecurityUtils.getCurrentUserId().orElseThrow(()-> new DataNotFoundException("User ID Not Found"));
+        Optional<ShoppingCart> shoppingCartOptional = shoppingCartRepository.findByProduct_ProductIdAndUser_UserId(productId, userId);
         ShoppingCart shoppingCart = shoppingCartOptional.orElse(new ShoppingCart());
         if(shoppingCartOptional.isPresent()){
                 // if product is already in cart // then increase qty
@@ -88,10 +96,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
             //else add new records
             shoppingCart.setProduct(product);
             shoppingCart.setQuantity(quantity);
-            //shoppingCart.setUser(UserUtils.getCurrentUser()); // TODO: add User
         }
+        User user = userRepository.findById(userId).orElseThrow(()-> new DataNotFoundException("User ID Not Found"));
+        shoppingCart.setUser(user);
         shoppingCartRepository.save(shoppingCart);
-
         return true;
 
     }
