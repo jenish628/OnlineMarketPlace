@@ -5,11 +5,11 @@ VALUES (1, 'ROLE_USER'),
        (3, 'ROLE_VENDOR') ON DUPLICATE KEY
 UPDATE role_id=role_id;
 
-INSERT INTO user (user_id, email, password, user_status, role_id) -- all passwords are: test
-VALUES (1, 'user@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 1),
-       (2, 'admin@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2),
-       (3, 'apple@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3),
-       (3, 'miu-shop@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE',
+INSERT INTO user (user_id, email, full_name, password, user_status, role_id) -- all passwords are: test
+VALUES (1, 'user@gmail.com', 'Supriya Ghising', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 1),
+       (2, 'admin@gmail.com', 'Anna Purna', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2),
+       (3, 'apple@gmail.com', 'Nita Sharma', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3),
+       (3, 'miu-shop@gmail.com', 'Oliva Dreg', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE',
         3) ON DUPLICATE KEY
 UPDATE user_id=user_id;
 
@@ -72,3 +72,11 @@ update payment_id=payment_id;
 insert into orders_payments(order_order_id, payments_payment_id)
 values(1,1) ON DUPLICATE KEY
 update order_order_id=order_order_id and payments_payment_id=payments_payment_id;
+
+INSERT INTO address (address_id, address1, address2, city,  zip_code, country,user_id)
+values(51, '1000N 4th St', '1001N 5th St','Fairfield', '52557', 'USA',1),
+    (52,'5000N 4th St', '5001N 5th St','Fairfieldd', '525555', 'UK',2);
+
+INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month,cvc, card_brand,address_type,user_id)
+values(51,'1234567891',1,1,'111','VISA','SHIPPING',1),
+      (52,'1234567892',2,2,222,'MASTERCARD', 'SHIPPING',2);
