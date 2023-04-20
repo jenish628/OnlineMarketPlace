@@ -14,6 +14,6 @@ public interface ProductService {
     ProductDto getByProductId(Long id);
     ProductDto createProduct(ProductDto productDto);
     ProductDto updateProduct(ProductDto productDto );
-    Boolean deleteProduct(ProductDto productDto) ;
+    Boolean deleteProduct(Long productId) ;
 
 }

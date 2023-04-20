@@ -18,14 +18,8 @@ public class ProductDto {
     private String description;
     private Integer quantity;
     private Double price;
-
-//    @ManyToMany
-//    List<FileEntity> images;
-
-@CreationTimestamp
-    private LocalDateTime createdDate;
     private Boolean isVerified;
     private Boolean isDeleted;
-    private VendorDto vendor;
-    private ProductCategoryDto productCategory;
+    private Long vendorId;
+    private Long categoryId;
 }

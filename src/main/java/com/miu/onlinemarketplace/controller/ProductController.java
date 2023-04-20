@@ -46,20 +46,20 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public ResponseEntity<?> createProduct(ProductDto productDto){
+    public ResponseEntity<?> createProduct(@RequestBody ProductDto productDto){
         ProductDto productDto1 = productService.createProduct(productDto);
         return new ResponseEntity<>(productDto1, HttpStatus.OK);
     }
 
     @PutMapping("/products")
-    public ResponseEntity<?> updateProduct(ProductDto productDto){
+    public ResponseEntity<?> updateProduct(@RequestBody ProductDto productDto){
         ProductDto productDto1 = productService.updateProduct(productDto);
         return new ResponseEntity<>(productDto1, HttpStatus.OK);
     }
 
     @DeleteMapping("/products")
-    public ResponseEntity<?> deleteProduct(ProductDto productDto){
-        Boolean product = productService.deleteProduct(productDto);
+    public ResponseEntity<?> deleteProduct(@RequestParam Long productId){
+        Boolean product = productService.deleteProduct(productId);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
