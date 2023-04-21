@@ -23,6 +23,7 @@ public class Order {
     private Long OrderId;
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
+    private String orderCode;
     @CreationTimestamp
     private LocalDateTime orderDate;
     @OneToOne
