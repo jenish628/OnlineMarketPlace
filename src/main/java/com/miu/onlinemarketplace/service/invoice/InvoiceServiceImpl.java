@@ -55,6 +55,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 //            BeanUtils.copyProperties(oiDto, orderItem);
 //            return oiDto;
 //        }).collect(Collectors.toList());
+        invoiceDto.setOrderPlaced(orderDto.getOrderDate());
         invoiceDto.setOrderItemList(orderItemDtoList);
         invoiceDto.setPaymentMethod(orderDto.getPayments());
         invoiceDto.setShippingAddress(orderDto.getShipping());
