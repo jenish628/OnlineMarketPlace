@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service;
 
 public interface UserService {
 
-    UserCardInfoDto findInfoById(Long id);
+    UserCardInfoDto findInfoById();
 
 }

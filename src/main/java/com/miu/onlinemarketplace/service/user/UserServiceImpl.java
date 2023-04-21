@@ -7,10 +7,12 @@ import com.miu.onlinemarketplace.entities.Address;
 import com.miu.onlinemarketplace.entities.CardInfo;
 import com.miu.onlinemarketplace.entities.ShoppingCart;
 import com.miu.onlinemarketplace.entities.User;
+import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.AddressRepository;
 import com.miu.onlinemarketplace.repository.CardInfoRepository;
 import com.miu.onlinemarketplace.repository.ShoppingCartRepository;
 import com.miu.onlinemarketplace.repository.UserRepository;
+import com.miu.onlinemarketplace.security.AppSecurityUtils;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -29,17 +31,18 @@ public class UserServiceImpl implements UserService{
     private final ModelMapper modelMapper;
 
     @Override
-    public UserCardInfoDto findInfoById(Long id) {
+    public UserCardInfoDto findInfoById() {
 
         UserCardInfoDto dto = new UserCardInfoDto();
-        Optional<ShoppingCart> shoppingCartOpt = shoppingCartRepository.findByUserUserId(id);
+        Long userId = AppSecurityUtils.getCurrentUserId().orElseThrow(()-> new DataNotFoundException("User ID Not Found"));
+        Optional<ShoppingCart> shoppingCartOpt = shoppingCartRepository.findByUserUserId(userId);
         if(shoppingCartOpt.isPresent()) {
            ShoppingCart shoppingCart = shoppingCartOpt.get();
-           dto.setUserId(id);
+           dto.setUserId(userId);
            dto.setFullName(shoppingCart.getUser().getFullName());
            dto.setQuantity(shoppingCart.getQuantity());
 //           dto.setPrice(shoppingCart.getProduct().getP);
-           Optional<CardInfo> cardInfoOpt = cardInfoRepository.findByUserUserId(id);
+           Optional<CardInfo> cardInfoOpt = cardInfoRepository.findByUserUserId(userId);
            System.out.println("----------address :::: "+cardInfoOpt.toString());
            cardInfoOpt.ifPresent(cardInfo -> dto.setCardInfoDto(modelMapper.map(cardInfo, CardInfoDto.class)));
 

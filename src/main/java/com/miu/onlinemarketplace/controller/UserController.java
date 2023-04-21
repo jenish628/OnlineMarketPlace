@@ -18,9 +18,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserCardInfoDto> findUserById(@PathVariable Long id){
-        UserCardInfoDto userCardInfoDto = userService.findInfoById(id);
+    @GetMapping("/info")
+    public ResponseEntity<UserCardInfoDto> findUserById(){
+        UserCardInfoDto userCardInfoDto = userService.findInfoById();
         return new ResponseEntity<>(userCardInfoDto, HttpStatus.OK);
     }
 
