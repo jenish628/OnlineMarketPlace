@@ -2,6 +2,8 @@ package com.miu.onlinemarketplace.controller;
 
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
+import com.miu.onlinemarketplace.entities.Product;
+import com.miu.onlinemarketplace.entities.ProductTemp;
 import com.miu.onlinemarketplace.service.domain.product.ProductService;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-
 @RestController
 @Slf4j
 public class ProductController {
@@ -25,7 +25,8 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/products")
+// Get All Products for Admin
+    @GetMapping("/allProducts")
     public ResponseEntity<?> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "productId",
             direction = Sort.Direction.DESC) Pageable pageable,
                                           @RequestParam(required = false) Long categoryId
@@ -34,6 +35,16 @@ public class ProductController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
+    // Get All Products for Customer
+    @GetMapping("/products")
+    public ResponseEntity<?> getCustomerProducts(@PageableDefault(page = 0, size = 10, sort = "productId",
+            direction = Sort.Direction.DESC) Pageable pageable,
+                                            @RequestParam(required = false) Long categoryId
+    ){
+        Page page = productService.getCustomerProducts(pageable, categoryId);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+    // Get All Products form Name
     @GetMapping("/products/name/{name}")
     public ResponseEntity<?> getProductByName(
             @PageableDefault(page = 0, size = 10, sort = "productId",
@@ -43,6 +54,13 @@ public class ProductController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
+    //for admin
+    @GetMapping("/allProducts/{productId}")
+    public ResponseEntity<?> getAllProductId(@PathVariable Long productId){
+        ProductResponseDto productDto = productService.getProductByProductId(productId);
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
+    }
+    // Get Products for Customer
     @GetMapping("/products/{productId}")
     public ResponseEntity<?> getByProductId(@PathVariable Long productId){
         ProductResponseDto productDto = productService.getByProductId(productId);
@@ -50,11 +68,16 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public ResponseEntity<?> createProduct(@RequestBody ProductDto productDto){
-        ProductDto productDto1 = productService.createProduct(productDto);
+    public ResponseEntity<?> createNewProduct(@RequestBody ProductDto productDto){
+        ProductDto productDto1 = productService.createNewProduct(productDto);
         return new ResponseEntity<>(productDto1, HttpStatus.OK);
     }
 
+    @GetMapping("/products/verify")
+    public ResponseEntity<?> verifyProduct(@RequestParam Long productId){
+        ProductResponseDto productDto = productService.verifyProduct(productId);
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
+    }
     @PutMapping("/products")
     public ResponseEntity<?> updateProduct(@RequestBody ProductDto productDto){
         ProductDto productDto1 = productService.updateProduct(productDto);

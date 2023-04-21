@@ -13,4 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     Page<Product>findAllByName (Pageable pageable, String name);
     Page<Product> findAllByProductCategory(Pageable pageable, Long categoryId);
+
+    Page<Product> findByIsDeletedAndIsVerified(Pageable pageable, Boolean isVerified, Boolean isDeleted);
 }
