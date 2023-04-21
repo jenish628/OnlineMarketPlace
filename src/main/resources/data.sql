@@ -56,8 +56,8 @@ insert into shipping(shipping_id, delivery_instruction,shipping_status,address_i
 values(1,'Leave infront of door','DELIVERED',1) ON DUPLICATE KEY
 update shipping_id=shipping_id;
 
-insert into orders(order_id, shipping_id)
-values(1,1) ON DUPLICATE KEY
+insert into orders(order_id, order_code, shipping_id)
+values(1,'12345',1) ON DUPLICATE KEY
 update order_id=order_id;
 
 insert into order_item(order_item_id, discount, price, quantity, tax, is_commissioned, order_id, product_id)

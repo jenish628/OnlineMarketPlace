@@ -1,10 +1,13 @@
 package com.miu.onlinemarketplace.config;
 
 import com.miu.onlinemarketplace.service.accountcommission.AccountCommissionService;
+import com.miu.onlinemarketplace.utils.GenerateRandom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.util.random.RandomGenerator;
 
 @Component
 @Slf4j

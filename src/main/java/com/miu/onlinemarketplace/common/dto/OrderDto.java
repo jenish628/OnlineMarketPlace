@@ -16,6 +16,7 @@ public class OrderDto {
 
     private Long OrderId;
     private OrderStatus orderStatus;
+    private String orderCode;
     private ShippingAddressDto shipping;
     private UserDto user;
     @CreationTimestamp
