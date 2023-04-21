@@ -24,6 +24,13 @@ public class VendorController {
         this.vendorService = vendorService;
     }
 
+    @PutMapping()
+    public ResponseEntity<?> verifyVendor(@RequestBody VendorDto vendorDto) {
+        if(vendorDto!=null)
+            return new ResponseEntity<>(vendorService.verifyVendor(vendorDto), HttpStatus.OK);
+        return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
+    }
+
     @GetMapping()
     public ResponseEntity<?> getAllVendors(@PageableDefault(page = 0, size = 10, sort = "vendorId",
             direction = Sort.Direction.DESC) Pageable pageable) {

@@ -51,5 +51,12 @@ public class VendorServiceImpl implements VendorService {
         return null;
     }
 
+    @Override
+    public VendorDto verifyVendor(VendorDto vendorDto) {
+        Vendor vendor = modelMapper.map(vendorDto, Vendor.class);
+        Vendor updatedVendor = vendorRepository.save(vendor);
+        return modelMapper.map(updatedVendor, VendorDto.class);
+    }
+
 
 }
