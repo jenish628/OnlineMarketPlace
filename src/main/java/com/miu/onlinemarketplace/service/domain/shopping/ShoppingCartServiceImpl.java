@@ -110,7 +110,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
             log.error("Product Not found for id:"+productId);
             return new DataNotFoundException("Product Not found for id:"+productId);
         });
-        Optional<ShoppingCart> shoppingCartOptional = shoppingCartRepository.findByProduct_ProductIdAndUser_UserId(UserUtils.getCurrentUserId(), productId);
+        Optional<ShoppingCart> shoppingCartOptional = shoppingCartRepository.findByProduct_ProductIdAndUser_UserId(productId, UserUtils.getCurrentUserId());
         if(shoppingCartOptional.isPresent()){
             ShoppingCart shoppingCart = shoppingCartOptional.get();
             shoppingCartRepository.delete(shoppingCart);
