@@ -16,5 +16,6 @@ public interface VendorService {
 
     Page<VendorDto> filterVendorData(GenericFilterRequestDTO<VendorDto> genericFilterRequest, Pageable pageable);
 
+    VendorDto verifyVendor(VendorDto vendorDto);
 
 }

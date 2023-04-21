@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -85,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
             throw new DataNotFoundException("Product category with id "+productDto.getCategoryId()+" not found!!");
         });
         product.setProductCategory(productCategory);
-        return modelMapper.map(product, ProductDto.class);
+        return modelMapper.map(productRepository.save(product), ProductDto.class);
     }
 
     @Override
