@@ -27,7 +27,7 @@ public class EmailHistoryServiceImpl implements EmailHistoryService {
 
     @Override
     public void saveEmailHistory(EmailHistorySaveDto emailHistoryDto) {
-        EmailHistory emailHistory = new EmailHistory();//TODO: implement Model Mapper
+        EmailHistory emailHistory = modelMapper.map(emailHistoryDto, EmailHistory.class);//TODO: implement Model Mapper
         emailHistoryRepository.save(emailHistory);
     }
 

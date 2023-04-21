@@ -29,14 +29,16 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     private final EmailTemplateService emailTemplateService;
     private final EmailHistoryService emailHistoryService;
     private final UserRepository userRepository;
+    private final JavaMailSender javaMailSender;
 
 //    private final OrderRepository orderRepository;
 
 
-    public EmailSenderServiceImpl(EmailTemplateService emailTemplateService, EmailHistoryService emailHistoryService, UserRepository userRepository) {
+    public EmailSenderServiceImpl(EmailTemplateService emailTemplateService, EmailHistoryService emailHistoryService, UserRepository userRepository, JavaMailSender javaMailSender) {
         this.emailTemplateService = emailTemplateService;
         this.emailHistoryService = emailHistoryService;
         this.userRepository = userRepository;
+        this.javaMailSender = javaMailSender;
     }
 
     private static void createMimeMessageHelper(String fromEmail, String toEmail, MimeMessage mimeMessage, String subject, String htmlBody) throws MessagingException {
@@ -51,7 +53,6 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     @Override
     public Boolean sendSignupMail(SignUpMailSenderDto mailSenderDto) {
-        JavaMailSender javaMailSender = MailSenderUtil.getInstance();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         EmailTemplate emailTemplate = emailTemplateService.getTemplateByMailType(MailType.SIGNUP_VERIFICATION_CODE);
         EmailHistorySaveDto emailHistoryDto = new EmailHistorySaveDto();
@@ -64,9 +65,10 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             String htmlBody = emailTemplate.getTemplate();
 
             htmlBody = htmlBody.replace("${name}", user.getFullName());
-            htmlBody = htmlBody.replace("${code}", mailSenderDto.getVerificationCode());
+            htmlBody = htmlBody.replace("${verificationCode}", mailSenderDto.getVerificationCode());
+            htmlBody = htmlBody.replace("${verificationLink}", "http://localhost:4200/verification/" + mailSenderDto.getVerificationCode());
 
-            createMimeMessageHelper(mailSenderDto.getToEmail(), emailTemplate.getFromEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
+            createMimeMessageHelper(emailTemplate.getFromEmail(), mailSenderDto.getToEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
 
             emailHistoryDto.setFromEmail(emailTemplate.getFromEmail());
             emailHistoryDto.setToEmail(mailSenderDto.getToEmail());
@@ -76,7 +78,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
-            log.error("Send Mail using Template failed Exception {} to user with email {} of mail type {}", e.getMessage(), mailSenderDto.getToEmail(), MailType.SIGNUP_VERIFICATION_CODE);
+            log.error("Send Mail using Template failed Exception to user with email {} of mail type {}: {} ", mailSenderDto.getToEmail(), MailType.SIGNUP_VERIFICATION_CODE, e.getMessage());
             send = false;
         }
         emailHistoryDto.setIsSend(send);
@@ -167,8 +169,8 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         JavaMailSender javaMailSender = MailSenderUtil.getInstance();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MailType mailType;
-        if (userStatus == UserStatus.VERIFIED) mailType = MailType.ACCOUNT_APPROVE;
-        else if (userStatus == UserStatus.SUSPENDED) mailType = MailType.ACCOUNT_SUSPEND;
+        if (userStatus == UserStatus.VERIFIED) mailType = MailType.ACCOUNT_APPROVE_NOTIFICATION;
+        else if (userStatus == UserStatus.SUSPENDED) mailType = MailType.ACCOUNT_SUSPEND_NOTIFICATION;
         else return false;
         EmailTemplate emailTemplate = emailTemplateService.getTemplateByMailType(mailType);
         EmailHistorySaveDto emailHistoryDto = new EmailHistorySaveDto();

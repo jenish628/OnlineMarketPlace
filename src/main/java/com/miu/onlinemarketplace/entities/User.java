@@ -27,7 +27,7 @@ public class User {
     @CreationTimestamp
     private LocalDateTime createdDate;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
 
