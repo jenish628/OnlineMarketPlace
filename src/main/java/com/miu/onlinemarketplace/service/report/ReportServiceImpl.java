@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.service.report;
 
+import com.miu.onlinemarketplace.common.enums.ReportType;
 import com.miu.onlinemarketplace.exception.JasperTemplateNotFound;
 import com.miu.onlinemarketplace.exception.JasperTemplateProcessingException;
 import lombok.extern.slf4j.Slf4j;
@@ -21,21 +22,7 @@ public class ReportServiceImpl implements ReportService {
     public ReportServiceImpl(ReportExporterService reportExporterService) {
         this.reportExporterService = reportExporterService;
     }
-
-    @Override
     public byte[] getVendorSalesReport(LocalDate fromDate, LocalDate toDate) {
-//        <field name="createdBy" class="java.lang.String"/>
-//	<field name="fromDate" class="java.lang.String"/>
-//	<field name="toDate" class="java.lang.String"/>
-//	<field name="id" class="java.lang.Integer"/>
-//	<field name="productName" class="java.lang.String"/>
-//	<field name="quantity" class="java.lang.Integer"/>
-//	<field name="rate" class="java.lang.Double"/>
-//	<field name="subTotal" class="java.lang.Double"/>
-//	<field name="discount" class="java.lang.Double"/>
-//	<field name="tax" class="java.lang.Double"/>
-//	<field name="total" class="java.lang.Double"/>
-//	<field name="purchaseDate" class="java.lang.String"/>
         Map<String, Object> data = new HashMap<>();
         data.put("createdBy", "Prabeen Soti");
         data.put("fromDate", "2022-02-12");
@@ -64,7 +51,7 @@ public class ReportServiceImpl implements ReportService {
         product2.put("purchaseDate", "2022-02-12");
         dataList.add(product2);
         try {
-            return reportExporterService.exportToPdf("vendor_report", data, dataList);
+            return reportExporterService.exportToPdf(ReportType.PRODUCT_SALES_REPORT_FOR_VENDOR, data, dataList);
         } catch (IOException e) {
             log.error("Jasper template \"vendor_report\" not found!");
             throw new JasperTemplateNotFound("Jasper template \"vendor_report\" not found!");
@@ -72,5 +59,20 @@ public class ReportServiceImpl implements ReportService {
             log.error("Jasper template processing error:" + e.getMessage());
             throw new JasperTemplateProcessingException("Jasper template \"vendor_report\" processing error!!");
         }
+    }
+
+    @Override
+    public byte[] getProductSalesReportForVendor(LocalDate fromDate, LocalDate toDate) {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] getProductSalesReportForAdmin(LocalDate fromDate, LocalDate toDate) {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] getVendorSalesReportForAdmin(LocalDate fromDate, LocalDate toDate) {
+        return new byte[0];
     }
 }

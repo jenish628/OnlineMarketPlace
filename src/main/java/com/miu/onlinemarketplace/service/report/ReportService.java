@@ -4,5 +4,10 @@ import java.time.LocalDate;
 
 public interface ReportService {
 
-    byte[] getVendorSalesReport(LocalDate fromDate, LocalDate toDate);
+    byte[] getProductSalesReportForVendor(LocalDate fromDate, LocalDate toDate);
+
+    byte[] getProductSalesReportForAdmin(LocalDate fromDate, LocalDate toDate);
+
+    byte[] getVendorSalesReportForAdmin(LocalDate fromDate, LocalDate toDate);
+
 }

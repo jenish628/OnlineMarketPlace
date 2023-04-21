@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.service.report;
 
+import com.miu.onlinemarketplace.common.enums.ReportType;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -28,19 +29,24 @@ public class ReportExporterServiceImpl implements ReportExporterService {
     }
 
     @Override
-    public byte[] exportToPdf(String report, Map<String, Object> data, List<Map<String, Object>> dataList) throws IOException, JRException {
+    public byte[] exportToPdf(ReportType reportType, Map<String, Object> data, List<Map<String, Object>> dataList) throws IOException, JRException {
         JasperPrint jasperPrint;
         if (dataList.isEmpty()) {
-            jasperPrint = getJasperPrint(report, data);
+            jasperPrint = getJasperPrint(reportType.getName(), data);
         } else {
-            jasperPrint = getJasperPrint(report, data, dataList);
+            jasperPrint = getJasperPrint(reportType.getName(), data, dataList);
         }
         return JasperExportManager.exportReportToPdf(jasperPrint);
     }
 
     @Override
-    public byte[] exportToHtml(String report, Map<String, Object> data) throws IOException, JRException {
-        JasperPrint jasperPrint = getJasperPrint(report, data);
+    public byte[] exportToHtml(ReportType reportType, Map<String, Object> data, List<Map<String, Object>> dataList) throws IOException, JRException {
+        JasperPrint jasperPrint;
+        if (dataList.isEmpty()) {
+            jasperPrint = getJasperPrint(reportType.getName(), data);
+        } else {
+            jasperPrint = getJasperPrint(reportType.getName(), data, dataList);
+        }
         HtmlExporter htmlExporter = new HtmlExporter();
         htmlExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
