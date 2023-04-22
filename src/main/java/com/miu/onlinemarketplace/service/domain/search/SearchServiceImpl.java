@@ -19,8 +19,11 @@ public class SearchServiceImpl implements SearchService{
     EntityManager entityManager;
 
     @Override
-    public Page<Product> advanceSearch(String name, String categoryName, Double minPrice, Double maxPrice,String sortedPrice, Pageable pageable) {
-        String queryString = "SELECT p FROM Product p INNER JOIN p.productCategory c";
+    public Page<Product> advanceSearch(String name, String categoryName, Double minPrice, Double maxPrice, String sortedPrice, Pageable pageable) {
+        double minPriceValue = minPrice != null ? minPrice : 0.0;
+        double maxPriceValue = maxPrice != null ? maxPrice : 0.0;
+
+        String queryString = "SELECT p FROM Product p JOIN p.productCategory c";
         boolean whereClauseAdded = false;
         if (name != null && !name.isEmpty()) {
             queryString += " WHERE p.name LIKE CONCAT('%', :name, '%')";
@@ -28,30 +31,38 @@ public class SearchServiceImpl implements SearchService{
         }
         if (categoryName != null && !categoryName.isEmpty()) {
             if (whereClauseAdded) {
-                queryString += " OR c.category LIKE CONCAT('%', :categoryName, '%')";
+                queryString += " AND c.category LIKE CONCAT('%', :categoryName, '%')";
             } else {
                 queryString += " WHERE c.category LIKE CONCAT('%', :categoryName, '%')";
                 whereClauseAdded = true;
             }
         }
-        if (minPrice > 0 && maxPrice > 0) {
+        if (minPriceValue > 0 && maxPriceValue > 0) {
             if (whereClauseAdded) {
-                queryString += " OR p.price BETWEEN :minPrice AND :maxPrice";
+                queryString += " AND p.price BETWEEN :minPriceValue AND :maxPriceValue";
             } else {
-                queryString += " WHERE p.price BETWEEN :minPrice AND :maxPrice";
+                queryString += " WHERE p.price BETWEEN :minPriceValue AND :maxPriceValue";
             }
-        } else if (minPrice > 0) {
+        } else if (minPriceValue > 0) {
             if (whereClauseAdded) {
-                queryString += " OR p.price >= :minPrice";
+                queryString += " AND p.price >= :minPriceValue";
             } else {
-                queryString += " WHERE p.price >= :minPrice";
+                queryString += " WHERE p.price >= :minPriceValue";
             }
-        } else if (maxPrice > 0) {
+        } else if (maxPriceValue > 0) {
             if (whereClauseAdded) {
-                queryString += " OR p.price <= :maxPrice";
+                queryString += " AND p.price <= :maxPriceValue";
             } else {
-                queryString += " WHERE p.price <= :maxPrice";
+                queryString += " WHERE p.price <= :maxPriceValue";
             }
+        }
+        if (sortedPrice != null && !sortedPrice.isEmpty()){
+            if(sortedPrice.equals("ASC")) {
+                queryString += " ORDER BY p.price ASC";
+            } else {
+                queryString += " ORDER BY p.price DESC";
+            }
+
         }
 
         TypedQuery<Product> query = entityManager.createQuery(queryString, Product.class);
@@ -61,14 +72,17 @@ public class SearchServiceImpl implements SearchService{
         if (categoryName != null && !categoryName.isEmpty()) {
             query.setParameter("categoryName", categoryName);
         }
-        if (minPrice > 0 && maxPrice > 0) {
-            query.setParameter("minPrice", minPrice);
-            query.setParameter("maxPrice", maxPrice);
-        } else if (minPrice > 0) {
-            query.setParameter("minPrice", minPrice);
-        } else if (maxPrice > 0) {
-            query.setParameter("maxPrice", maxPrice);
+        if (minPriceValue > 0 && maxPriceValue > 0) {
+            query.setParameter("minPriceValue", minPriceValue);
+            query.setParameter("maxPriceValue", maxPriceValue);
+        } else if (minPriceValue > 0) {
+            query.setParameter("minPriceValue", minPriceValue);
+        } else if (maxPriceValue > 0) {
+            query.setParameter("maxPriceValue", maxPriceValue);
         }
+//        if (sortedPrice != null && !sortedPrice.isEmpty()) {
+//            query.setParameter("sortedPrice", sortedPrice);
+//        }
         int totalCount = query.getResultList().size();
         query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
         query.setMaxResults(pageable.getPageSize());
