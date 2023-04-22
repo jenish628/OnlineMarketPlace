@@ -21,7 +21,9 @@ VALUES (1, 'Apple',
         null, 5),
        (2, 'MIU',
         'Miu Store- Shop your local store for a wide selection of items in electronics, home furniture & appliances, toys, clothing, baby gear, video games, and more',
-        null, 6) ON DUPLICATE KEY
+        null, 6),
+       (3, 'MI-Xiaomi',
+        'MI Phone, appliances, toys, and more', null, 4)ON DUPLICATE KEY
 UPDATE vendor_id=vendor_id;
 
 INSERT INTO product_category (category_id, category)
@@ -41,7 +43,10 @@ VALUES (1,
         true, 'Java 17 Recipes', 20, 50, 2, 2),
        (3,
         'Housewares digital Cool-Touch Rice Grain Cooker and Food Steamer, Stainless, Silver, 4-Cup (Uncooked) / 8-Cup (Cooked)',
-        null, true, 'Aroma Rice Cooker',15, 5, 3, 2) ON DUPLICATE KEY
+        null, true, 'Aroma Rice Cooker',15, 5, 3, 2),
+       (4,
+        'Xiaomi Pad 5 comes equipped with large 11 screen, slim, stylish design,Qualcomm Snapdragon 860, WQHD+ 120Hz display,8720mAh (typ) high-capacity battery.',
+        null, true, 'Xiaomi Pad 5',50, 15, 5, 3)ON DUPLICATE KEY
 UPDATE product_id=product_id;
 
 INSERT INTO email_template (template_id, from_email, mail_type, subject, template)
@@ -56,15 +61,16 @@ insert into shipping(shipping_id, delivery_instruction,shipping_status,address_i
 values(1,'Leave infront of door','DELIVERED',1) ON DUPLICATE KEY
 update shipping_id=shipping_id;
 
-insert into orders(order_id, order_code, shipping_id)
-values(1,'12345',1) ON DUPLICATE KEY
+insert into orders(order_id, order_code, shipping_id, user_id)
+values(1,'12345',1, 1) ON DUPLICATE KEY
 update order_id=order_id;
 
 insert into order_item(order_item_id, discount, price, quantity, tax, is_commissioned, order_id, product_id)
 values
-       (1, 12, 200, 2, 10, 0, 1,1),
-       (2, 10, 100, 2, 10, 0, 1,2),
-       (3, 8, 500, 4, 10, 0, 1,3) ON DUPLICATE KEY
+       (1, 12, 200, 2, 10, 0, 1, 1),
+       (2, 10, 100, 2, 10, 0, 1, 2),
+       (3, 8, 500, 4, 10, 0, 1, 3),
+       (4, 8, 500, 4, 10, 0, 1, 4) ON DUPLICATE KEY
 update order_item_id=order_item_id;
 
 insert into payment(payment_id, card_brand, card_holder_name, card_number, pay_amount, payment_status, transaction_id)
