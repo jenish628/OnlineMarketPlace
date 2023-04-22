@@ -20,7 +20,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    private Long OrderId;
+    private Long orderId;
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
     private String orderCode;

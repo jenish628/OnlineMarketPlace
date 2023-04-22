@@ -37,4 +37,10 @@ public class AppSecurityUtils {
         return optionalUserId;
     }
 
+    public static Optional<EnumRole> getCurrentUserRole() {
+        Optional<EnumRole> optionalUserRole = Optional.ofNullable(getCurrentUserPrinciple())
+                .map(customUserDetails -> customUserDetails.getRole());
+        return optionalUserRole;
+    }
+
 }
