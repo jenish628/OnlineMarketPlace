@@ -1,7 +1,6 @@
 package com.miu.onlinemarketplace.service.generic.dtos;
 
 import lombok.Data;
-import org.springframework.http.HttpStatus;
 
 @Data
 public class GenericResponseDTO<T> {
@@ -10,8 +9,10 @@ public class GenericResponseDTO<T> {
 
     private T response;
 
-    private long totalElements;
+    public GenericResponseDTO() {
+    }
 
-    private HttpStatus httpStatus;
-
+    public GenericResponseDTO(T response) {
+        this.response = response;
+    }
 }

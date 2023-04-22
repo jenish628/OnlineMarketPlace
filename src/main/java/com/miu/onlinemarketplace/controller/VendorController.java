@@ -1,8 +1,7 @@
 package com.miu.onlinemarketplace.controller;
 
-import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.VendorDto;
-import com.miu.onlinemarketplace.service.auth.VendorService;
+import com.miu.onlinemarketplace.service.domain.users.VendorService;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
