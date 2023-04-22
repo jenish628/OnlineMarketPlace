@@ -5,20 +5,19 @@ import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.entities.Product;
 
 import com.miu.onlinemarketplace.entities.ProductCategory;
-import com.miu.onlinemarketplace.entities.Vendor;
+import com.miu.onlinemarketplace.entities.ProductTemp;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.ProductCategoryRepository;
 import com.miu.onlinemarketplace.repository.ProductRepository;
+import com.miu.onlinemarketplace.repository.ProductTempRepository;
 import lombok.extern.slf4j.Slf4j;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -26,11 +25,13 @@ public class ProductServiceImpl implements ProductService {
 
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
+    private final ProductTempRepository productTempRepository;
     private final ProductCategoryRepository productCategoryRepository;
 
-    public ProductServiceImpl(ModelMapper modelMapper, ProductRepository productRepository, ProductCategoryRepository productCategoryRepository) {
+    public ProductServiceImpl(ModelMapper modelMapper, ProductRepository productRepository, ProductTempRepository productTempRepository, ProductCategoryRepository productCategoryRepository) {
         this.modelMapper = modelMapper;
         this.productRepository = productRepository;
+        this.productTempRepository = productTempRepository;
         this.productCategoryRepository = productCategoryRepository;
     }
 
@@ -44,7 +45,18 @@ public class ProductServiceImpl implements ProductService {
             products = productRepository.findAll(pageable)
                     .map(product -> modelMapper.map(product, ProductResponseDto.class));
         }
-
+        return products;
+    }
+    @Override
+    public Page<ProductResponseDto> getCustomerProducts(Pageable pageable, Long categoryId) {
+        Page<ProductResponseDto> products;
+        if(categoryId != null) {
+            products = productRepository.findByIsDeletedAndIsVerified(pageable, true, false)
+                    .map(product -> modelMapper.map(product, ProductResponseDto.class));
+        } else {
+            products = productRepository.findAll(pageable)
+                    .map(product -> modelMapper.map(product, ProductResponseDto.class));
+        }
         return products;
     }
 
@@ -54,7 +66,12 @@ public class ProductServiceImpl implements ProductService {
                 .map(product -> modelMapper.map(product, ProductDto.class));
         return productDtos;
     }
-
+    @Override
+    public ProductResponseDto getProductByProductId(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow();
+        return modelMapper.map(product, ProductResponseDto.class);
+    }
     @Override
     public ProductResponseDto getByProductId(Long id) {
         ProductResponseDto productDto = productRepository.findById(id)
@@ -64,12 +81,20 @@ public class ProductServiceImpl implements ProductService {
         });;
         return productDto;
     }
-
     @Override
-    public ProductDto createProduct(ProductDto productDto) {
-        Product product = modelMapper.map(productDto, Product.class);
+    public ProductDto createNewProduct(ProductDto productDto) {
+        ProductTemp productTemp = modelMapper.map(productDto, ProductTemp.class);
+        productTemp = productTempRepository.save(productTemp);
+        return modelMapper.map(productTemp, ProductDto.class);
+    }
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public ProductResponseDto verifyProduct(Long productId) {
+        Product product = productRepository.findById(productId).get();
+        product.setIsVerified(true);
         product = productRepository.save(product);
-        return modelMapper.map(product, ProductDto.class);
+        productTempRepository.deleteById(productId);
+        return modelMapper.map(product, ProductResponseDto.class);
     }
 
     @Override
@@ -79,21 +104,25 @@ public class ProductServiceImpl implements ProductService {
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
         product.setQuantity(productDto.getQuantity());
-        product.setIsVerified(productDto.getIsVerified());
-        product.setIsDeleted(productDto.getIsDeleted());
+        product.setPrice(productDto.getPrice());
+        product.setIsVerified(false);
+        product.setIsDeleted(false);
         ProductCategory productCategory = productCategoryRepository.findById(productDto.getCategoryId()).orElseThrow(()->{
             log.error("Product category with id {} not found!!",productDto.getCategoryId());
             throw new DataNotFoundException("Product category with id "+productDto.getCategoryId()+" not found!!");
         });
         product.setProductCategory(productCategory);
-        return modelMapper.map(productRepository.save(product), ProductDto.class);
+
+        ProductTemp productTemp = modelMapper.map(product, ProductTemp.class);
+        return modelMapper.map(productTempRepository.save(productTemp), ProductDto.class);
     }
 
     @Override
     public Boolean deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow( () -> new DataNotFoundException("Product not found"));
-        productRepository.deleteById(product.getProductId());
+        product.setIsDeleted(true);
+        productRepository.save(product);
         return true;
     }
 
