@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.service.order;
 
+import com.miu.onlinemarketplace.common.dto.CheckingOrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderItemDto;
 import com.miu.onlinemarketplace.entities.Order;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class OrderServiceImpl implements OrderService{
+public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
     private OrderItemRepository orderItemRepository;
@@ -56,16 +57,23 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<OrderItemDto> getAllOrderItemsByOrderCode(String orderCode) {
-        Order order = orderRepository.findByOrderCode(orderCode);
-        if (order!= null) {
+    public CheckingOrderDto getAllOrderItemsByOrderCode(String orderCode) {
+        try {
+            Order order = orderRepository.findByOrderCode(orderCode);
             List<OrderItem> orderItems = orderItemRepository.findAllOrderItemByOrderId(order.getOrderId());
             List<OrderItemDto> orderItemDtoList = orderItems.stream()
                     .map(orderItem -> modelMapper.map(orderItem, OrderItemDto.class))
                     .collect(Collectors.toList());
-            return orderItemDtoList;
-
+            CheckingOrderDto checkingOrderDto = new CheckingOrderDto();
+            checkingOrderDto.setOrderId(order.getOrderId());
+            checkingOrderDto.setOrderDate(order.getOrderDate());
+            checkingOrderDto.setOrderStatus(order.getOrderStatus());
+            checkingOrderDto.setOrderCode(order.getOrderCode());
+            checkingOrderDto.setOrderItemDto(orderItemDtoList);
+            checkingOrderDto.setShippingStatus(order.getShipping().getShippingStatus());
+            return checkingOrderDto;
+        } catch (NullPointerException ex) {
+            throw new RuntimeException();
         }
-        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.service.order;
 
+import com.miu.onlinemarketplace.common.dto.CheckingOrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderItemDto;
 
@@ -17,5 +18,5 @@ public interface OrderService {
 
     List<OrderDto> getAllOrderByUserId(Long userId);
 
-    List<OrderItemDto> getAllOrderItemsByOrderCode(String orderCode);
+    CheckingOrderDto getAllOrderItemsByOrderCode(String orderCode);
 }
