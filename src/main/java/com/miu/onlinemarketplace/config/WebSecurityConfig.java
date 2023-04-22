@@ -42,9 +42,9 @@ public class WebSecurityConfig {
         return http.cors(Customizer.withDefaults())
                 .csrf().disable().httpBasic().and()
                 .authorizeHttpRequests(ar -> ar
-//                                .requestMatchers("/**").permitAll().anyRequest().authenticated()
-                                .requestMatchers("/", "/actuator/**", "/auth/**", "/public/**").permitAll()
-                                .anyRequest().authenticated()
+                                .requestMatchers("/**").permitAll().anyRequest().authenticated()
+//                                .requestMatchers("/", "/actuator/**", "/auth/**", "/public/**").permitAll()
+//                                .anyRequest().authenticated()
                 )
                 .exceptionHandling(eh -> eh
                         .authenticationEntryPoint((request, response, authException) ->
