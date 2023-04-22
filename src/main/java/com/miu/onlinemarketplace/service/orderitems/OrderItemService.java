@@ -1,7 +1,6 @@
 package com.miu.onlinemarketplace.service.orderitems;
 
 import com.miu.onlinemarketplace.common.dto.OrderItemDto;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

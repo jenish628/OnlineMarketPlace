@@ -1,6 +1,5 @@
 package com.miu.onlinemarketplace.service.domain.users;
 
-import com.miu.onlinemarketplace.common.dto.UserDto;
 import com.miu.onlinemarketplace.common.dto.VendorDto;
 import com.miu.onlinemarketplace.service.domain.users.dtos.VendorRegistrationRequest;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;

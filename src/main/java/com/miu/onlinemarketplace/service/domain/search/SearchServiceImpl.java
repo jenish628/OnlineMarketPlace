@@ -1,7 +1,6 @@
 package com.miu.onlinemarketplace.service.domain.search;
 
 import com.miu.onlinemarketplace.entities.Product;
-import com.miu.onlinemarketplace.repository.SearchRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SearchServiceImpl implements SearchService{
+public class SearchServiceImpl implements SearchService {
 
     @Autowired
     EntityManager entityManager;
@@ -56,8 +55,8 @@ public class SearchServiceImpl implements SearchService{
                 queryString += " WHERE p.price <= :maxPriceValue";
             }
         }
-        if (sortedPrice != null && !sortedPrice.isEmpty()){
-            if(sortedPrice.equals("ASC")) {
+        if (sortedPrice != null && !sortedPrice.isEmpty()) {
+            if (sortedPrice.equals("ASC")) {
                 queryString += " ORDER BY p.price ASC";
             } else {
                 queryString += " ORDER BY p.price DESC";

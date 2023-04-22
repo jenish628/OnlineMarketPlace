@@ -1,7 +1,6 @@
 package com.miu.onlinemarketplace.controller;
 
 import com.miu.onlinemarketplace.common.dto.OrderDto;
-import com.miu.onlinemarketplace.exception.ErrorDetails;
 import com.miu.onlinemarketplace.service.order.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -16,7 +16,6 @@ DELETE      /shoppping-cart?productId=4                 Remove Product From Shop
 
 ```
 
-
 // Must require role
 // EnumRole currentUserRole = AppSecurityUtils.getCurrentUserRole()
 // .orElseThrow(new AppSecurityException("Required Role, but not available"));

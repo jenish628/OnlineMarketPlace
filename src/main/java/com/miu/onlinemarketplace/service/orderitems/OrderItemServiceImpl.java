@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class OrderItemServiceImpl implements OrderItemService{
+public class OrderItemServiceImpl implements OrderItemService {
 
     private OrderItemRepository orderItemRepository;
     private ModelMapper modelMapper;

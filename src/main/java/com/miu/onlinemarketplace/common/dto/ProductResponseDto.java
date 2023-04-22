@@ -1,6 +1,5 @@
 package com.miu.onlinemarketplace.common.dto;
 
-import jdk.jfr.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

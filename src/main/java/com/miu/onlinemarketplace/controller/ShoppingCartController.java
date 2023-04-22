@@ -23,7 +23,7 @@ public class ShoppingCartController {
     }
     //get
     @GetMapping()
-    public ResponseEntity<?> getShoppingCartItems(){
+    public ResponseEntity<?> getShoppingCartItems() {
 //        Map<String, Object> res = Map.of("res", shoppingCartService.getCartItems());
         List<ShoppingCartDto> cartItems = shoppingCartService.getCartItems();
         return new ResponseEntity<>(cartItems, HttpStatus.OK);
@@ -40,7 +40,7 @@ public class ShoppingCartController {
     //put
     @PutMapping()
     public ResponseEntity<?> addProductToCart(@RequestParam Long productId, @RequestParam Integer quantity){
-        boolean res = shoppingCartService.add(productId,quantity);
+        boolean res = shoppingCartService.add(productId, quantity);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

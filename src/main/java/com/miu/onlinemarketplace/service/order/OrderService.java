@@ -2,7 +2,6 @@ package com.miu.onlinemarketplace.service.order;
 
 import com.miu.onlinemarketplace.common.dto.CheckingOrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderDto;
-import com.miu.onlinemarketplace.common.dto.OrderItemDto;
 
 import java.util.List;
 

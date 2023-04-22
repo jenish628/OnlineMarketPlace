@@ -2,11 +2,9 @@ package com.miu.onlinemarketplace.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -17,9 +15,14 @@ import java.util.Arrays;
 
 @Configuration
 public class AppConfig {
-
-    @Autowired
-    private AppProperties appProperties;
+//    @Value("${app.mail.host}")
+//    private String host;
+//    @Value("${app.mail.port}")
+//    private Integer port;
+//    @Value("${app.mail.username}")
+//    private String username;
+//    @Value("${app.mail.password}")
+//    private String password;
 
     @Bean
     public ModelMapper modelMapper() {
@@ -51,5 +54,20 @@ public class AppConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+//    @Bean
+//    public JavaMailSender javaMailSender() {
+//        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//        mailSender.setHost(host);
+//        mailSender.setPort(port);
+//        mailSender.setUsername(username);
+//        mailSender.setPassword(password);
+//
+//        Properties props = mailSender.getJavaMailProperties();
+//        props.put("mail.transport.protocol", "smtp");
+//        props.put("mail.smtp.auth", "true");
+//        props.put("mail.smtp.starttls.enable", "true");
+//        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+//        return mailSender;
+//    }
 
 }
