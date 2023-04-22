@@ -16,12 +16,6 @@ public class ProductCategoryController {
     public ProductCategoryController(ProductCategoryService productCategoryService) {
         this.productCategoryService = productCategoryService;
     }
-
-    @GetMapping("/category")
-    public ResponseEntity<?> GetAllCategory(){
-        List<ProductCategoryDto> categories = productCategoryService.getAllCategory();
-        return new ResponseEntity<>(categories, HttpStatus.OK);
-    }
     @PostMapping("/category")
     public ResponseEntity<?> createCategory(@RequestBody ProductCategoryDto productCategory){
         ProductCategoryDto newCategory = productCategoryService.createCategory(productCategory);
