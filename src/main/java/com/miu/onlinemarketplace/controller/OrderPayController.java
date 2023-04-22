@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.controller;
 
+import com.miu.onlinemarketplace.attest.Attest;
 import com.miu.onlinemarketplace.common.dto.OrderPayDto;
 import com.miu.onlinemarketplace.common.dto.OrderPayResponseDto;
 import com.miu.onlinemarketplace.common.dto.ShoppingCartDto;
@@ -14,18 +15,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/order/pay")
-@AllArgsConstructor
 public class OrderPayController {
 
     private final OrderPayService orderPayService;
 
+    public OrderPayController(OrderPayService orderPayService){
+        this.orderPayService = orderPayService;
+    }
+
     @PostMapping("/info")
-    public ResponseEntity<OrderPayInfoDto> getOrderPayInfo(@RequestBody List<ShoppingCartDto> shoppingCartDtos) {
+    public ResponseEntity<OrderPayInfoDto> getOrderPayInfo(@Attest @RequestBody List<ShoppingCartDto> shoppingCartDtos) {
         return new ResponseEntity<>(orderPayService.findOrderPayInfo(shoppingCartDtos), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<OrderPayResponseDto> createOrderPay(@RequestBody OrderPayDto orderPayDto){
+    public ResponseEntity<OrderPayResponseDto> createOrderPay(@Attest @RequestBody OrderPayDto orderPayDto){
         System.out.println("======orderPayDto====================================");
         return new ResponseEntity<>(orderPayService.createOrderPay(orderPayDto), HttpStatus.OK);
     }
