@@ -97,15 +97,17 @@ ON DUPLICATE KEY
     update shipping_id=shipping_id;
 
 insert into orders(order_id, order_code, shipping_id, user_id)
-values (1, '12345', 1, 1)
+values
+    (1, '12345', 1, 1),
+    (2, '12345', 1, 1)
 ON DUPLICATE KEY
     update order_id=order_id;
 
 insert into order_item(order_item_id, discount, price, quantity, tax, is_commissioned, order_id, product_id)
 values (1, 12, 200, 2, 10, 0, 1, 1),
        (2, 10, 100, 2, 10, 0, 1, 2),
-       (3, 8, 500, 4, 10, 0, 1, 3),
-       (4, 8, 500, 4, 10, 0, 1, 4)
+       (3, 8, 500, 4, 10, 0, 2, 3),
+       (4, 8, 500, 4, 10, 0, 2, 4)
 ON DUPLICATE KEY
     update order_item_id=order_item_id;
 

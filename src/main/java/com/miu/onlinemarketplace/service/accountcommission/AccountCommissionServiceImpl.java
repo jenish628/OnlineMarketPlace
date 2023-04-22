@@ -34,6 +34,7 @@ public class AccountCommissionServiceImpl implements AccountCommissionService {
                 accountCommission.setOrderItem(o);
                 accountCommission.setVendorCommission(o.getPrice() * o.getQuantity() * 0.80 - o.getDiscount());
                 accountCommission.setPlatformCommission(o.getPrice() * o.getQuantity() * 0.20 - o.getDiscount());
+                accountCommission.setTax(o.getTax());
                 accountCommissions.add(accountCommission);
                 o.setIsCommissioned(true);
                 orderItemRepository.save(o);

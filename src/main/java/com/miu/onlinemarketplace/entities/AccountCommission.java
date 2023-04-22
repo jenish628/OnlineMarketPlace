@@ -18,6 +18,7 @@ public class AccountCommission {
     private Long accountCommissionId;
     private Double vendorCommission;
     private Double platformCommission;
+    private Double tax;
     @CreationTimestamp
     private LocalDateTime createdDate;
 

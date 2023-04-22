@@ -57,9 +57,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public CheckingOrderDto getAllOrderItemsByOrderCode(String orderCode) {
+    public CheckingOrderDto getAllOrderItemsByOrderCode(String orderIdAndCode) {
         try {
-            Order order = orderRepository.findByOrderCode(orderCode);
+            String st[] = orderIdAndCode.split("-");
+            Long orderId = Long.valueOf(st[0]);
+            String orderCode = st[1];
+            Order order = orderRepository.findByIdAndOrderCode(orderId, orderCode);
             List<OrderItem> orderItems = orderItemRepository.findAllOrderItemByOrderId(order.getOrderId());
             List<OrderItemDto> orderItemDtoList = orderItems.stream()
                     .map(orderItem -> modelMapper.map(orderItem, OrderItemDto.class))
