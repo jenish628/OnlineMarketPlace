@@ -49,7 +49,8 @@ VALUES (1, 'abc@abc.com', 'ORDER_CONFIRM', 'test', 'template djdj') ON DUPLICATE
 UPDATE template_id=template_id;
 
 insert into address(address_id, address1, city,country,state,zip_code)
-values(1,'1000N 4Th ST', 'Fairfield','USA','IOWA','52557') ON DUPLICATE KEY
+values(1,'1000N 4Th ST', 'Fairfield','USA','IOWA','52557'),
+      (2,'5000N 4Th ST', '555Fairfield','5USA','5IOWA','552557') ON DUPLICATE KEY
 update address_id=address_id;
 
 insert into shipping(shipping_id, delivery_instruction,shipping_status,address_id)
@@ -77,7 +78,7 @@ update order_order_id=order_order_id and payments_payment_id=payments_payment_id
 
 INSERT INTO address (address_id, address1, address2, city,  zip_code, country,user_id)
 values(51, '1000N 4th St', '1001N 5th St','Fairfield', '52557', 'USA',1),
-    (52,'5000N 4th St', '5001N 5th St','Fairfieldd', '525555', 'UK',2);
+    (52,'5000N 4th St', '5001N 5th St','Fairfieldd', '525555', 'UK',1);
 
 INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month,cvc, card_brand,address_type,user_id)
 values(51,'1234567891',1,1,'111','VISA','SHIPPING',1),

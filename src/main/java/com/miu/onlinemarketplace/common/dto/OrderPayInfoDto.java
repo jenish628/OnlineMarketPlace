@@ -3,17 +3,19 @@ package com.miu.onlinemarketplace.common.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
-public class UserCardInfoDto {
+public class OrderPayInfoDto {
 
     private Long userId;
     private String fullName;
 
-    private AddressDto addressDto;
-    private CardInfoDto cardInfoDto;
+    private List<AddressDto> addressDtos;
+    private List<CardInfoDto> cardInfoDtos;
 
-    private float price;
+    private double price;
     private Integer quantity;
 
 }
