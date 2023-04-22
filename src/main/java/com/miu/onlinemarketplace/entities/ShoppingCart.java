@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +22,7 @@ public class ShoppingCart {
     @CreationTimestamp
     private LocalDateTime createdDate;
 
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 

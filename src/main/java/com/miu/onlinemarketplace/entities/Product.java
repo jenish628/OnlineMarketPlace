@@ -7,13 +7,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.*;
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
@@ -22,13 +20,12 @@ public class Product {
     private Integer quantity;
     private Boolean isVerified;
     private Boolean isDeleted;
+    private Double price;
     @CreationTimestamp
     private LocalDateTime createdDate;
-
     @ManyToOne(optional = false)
     @JoinColumn(name = "vendorId", referencedColumnName = "vendorId")
     private Vendor vendor;
-
     @ManyToOne(optional = false)
     @JoinColumn(name = "categoryId", referencedColumnName = "categoryId")
     private ProductCategory productCategory;

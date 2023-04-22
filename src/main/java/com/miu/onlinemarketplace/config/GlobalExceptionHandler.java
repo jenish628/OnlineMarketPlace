@@ -1,6 +1,7 @@
 package com.miu.onlinemarketplace.config;
 
 
+import com.miu.onlinemarketplace.exception.AppSecurityException;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.exception.ErrorDetails;
 import com.miu.onlinemarketplace.exception.QuantityInsufficientException;
@@ -39,6 +40,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(QuantityInsufficientException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorDetails> handleInsufficientQuantityException(QuantityInsufficientException ex) {
+        return new ResponseEntity<>(createErrorDetails(ex.getMessage(), 404, "Invalid User Input"), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AppSecurityException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorDetails> handleAppSecurityException(AppSecurityException ex) {
         return new ResponseEntity<>(createErrorDetails(ex.getMessage(), 404, "Invalid User Input"), HttpStatus.NOT_FOUND);
     }
 }

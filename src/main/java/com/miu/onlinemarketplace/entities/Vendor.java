@@ -26,6 +26,7 @@ public class Vendor {
     @ManyToOne
     @JoinColumn(name = "logoFileId")
     private FileEntity logo;
+    private Boolean isVerified;
 
     @OneToOne()
     @JoinColumn(name = "userId", referencedColumnName = "userId")

@@ -10,9 +10,13 @@ import java.util.List;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
-    @Query(value = "Select oi from OrderItem oi where oi.order.OrderId = ?1")
+    @Query(value = "Select oi from OrderItem oi where oi.order.orderId = :orderId")
     List<OrderItem> findAllOrderItemByOrderId(Long orderId);
 
     List<OrderItem> findAllByIsCommissionedFalse();
+
+    // TODO - recheck this query
+    @Query(value = "Select oi from OrderItem oi where oi.order.orderId = :orderId and oi.product.vendor.vendorId = :vendorId")
+    List<OrderItem> findAllOrderItemByOrderIdAndVendorId(Long orderId, Long vendorId);
 
 }

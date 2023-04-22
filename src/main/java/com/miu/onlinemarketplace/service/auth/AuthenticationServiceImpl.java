@@ -13,6 +13,7 @@ import com.miu.onlinemarketplace.security.models.EnumRole;
 import com.miu.onlinemarketplace.service.auth.dtos.AuthResponseDTO;
 import com.miu.onlinemarketplace.service.auth.dtos.LoginRequestDTO;
 import com.miu.onlinemarketplace.service.auth.dtos.RegisterUserRequestDTO;
+import com.miu.onlinemarketplace.service.generic.dtos.GenericResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -64,6 +65,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setRole(userRole);
         User returnedUser = userRepository.save(user);
         return mapUserToUserDTO(returnedUser);
+    }
+
+    @Override
+    public GenericResponseDTO<Boolean> checkEmailAvailability(String email) {
+        boolean exists = userRepository.existsByEmail(email);
+        return new GenericResponseDTO<>(!exists);
     }
 
 

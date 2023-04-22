@@ -1,17 +1,13 @@
 package com.miu.onlinemarketplace.service.invoice;
 
-import com.fasterxml.jackson.databind.BeanProperty;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.miu.onlinemarketplace.common.dto.InvoiceDto;
 import com.miu.onlinemarketplace.common.dto.OrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderItemDto;
 import com.miu.onlinemarketplace.entities.Order;
 import com.miu.onlinemarketplace.entities.OrderItem;
-import com.miu.onlinemarketplace.repository.OrderRepository;
 import com.miu.onlinemarketplace.repository.OrderItemRepository;
+import com.miu.onlinemarketplace.repository.OrderRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,6 +51,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 //            BeanUtils.copyProperties(oiDto, orderItem);
 //            return oiDto;
 //        }).collect(Collectors.toList());
+        invoiceDto.setOrderPlaced(orderDto.getOrderDate());
         invoiceDto.setOrderItemList(orderItemDtoList);
         invoiceDto.setPaymentMethod(orderDto.getPayments());
         invoiceDto.setShippingAddress(orderDto.getShipping());

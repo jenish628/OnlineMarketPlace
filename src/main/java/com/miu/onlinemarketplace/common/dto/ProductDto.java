@@ -1,9 +1,10 @@
 package com.miu.onlinemarketplace.common.dto;
 
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,12 +15,9 @@ public class ProductDto {
     private String name;
     private String description;
     private Integer quantity;
-    @CreationTimestamp
-    private LocalDateTime createdDate;
-
+    private Double price;
     private Boolean isVerified;
     private Boolean isDeleted;
-
-    private VendorDto vendor;
-    private ProductCategoryDto productCategory;
+    private Long vendorId;
+    private Long categoryId;
 }

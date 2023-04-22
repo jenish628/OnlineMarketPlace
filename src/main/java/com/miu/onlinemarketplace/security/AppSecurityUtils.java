@@ -1,6 +1,5 @@
 package com.miu.onlinemarketplace.security;
 
-import com.miu.onlinemarketplace.entities.Role;
 import com.miu.onlinemarketplace.security.models.CustomUserDetails;
 import com.miu.onlinemarketplace.security.models.EnumRole;
 import org.springframework.security.core.Authentication;
@@ -35,6 +34,12 @@ public class AppSecurityUtils {
         Optional<Long> optionalUserId = Optional.ofNullable(getCurrentUserPrinciple())
                 .map(customUserDetails -> customUserDetails.getId());
         return optionalUserId;
+    }
+
+    public static Optional<EnumRole> getCurrentUserRole() {
+        Optional<EnumRole> optionalUserRole = Optional.ofNullable(getCurrentUserPrinciple())
+                .map(customUserDetails -> customUserDetails.getRole());
+        return optionalUserRole;
     }
 
 }

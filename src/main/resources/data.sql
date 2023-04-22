@@ -21,8 +21,11 @@ VALUES (1, 'Apple',
         null, 5),
        (2, 'MIU',
         'Miu Store- Shop your local store for a wide selection of items in electronics, home furniture & appliances, toys, clothing, baby gear, video games, and more',
-        null, 6) ON DUPLICATE KEY
-UPDATE vendor_id=vendor_id;
+        null, 6),
+       (3, 'MI-Xiaomi',
+        'MI Phone, appliances, toys, and more', null, 4)
+ON DUPLICATE KEY
+    UPDATE vendor_id=vendor_id;
 
 INSERT INTO product_category (category_id, category)
 VALUES (1, 'Computers'),
@@ -30,18 +33,56 @@ VALUES (1, 'Computers'),
        (3, 'Kitchen'),
        (4, 'Fashion'),
        (5, 'Electronic'),
-       (6, 'Clothing') ON DUPLICATE KEY
-UPDATE category_id=category_id;
+       (6, 'Clothing')
+ON DUPLICATE KEY
+    UPDATE category_id=category_id;
 
-INSERT INTO product (product_id, description, is_deleted, is_verified, name, quantity, category_id, vendor_id)
+INSERT INTO product (product_id, description, is_deleted, is_verified, name, price, quantity, category_id, vendor_id)
 VALUES (1,
         'Apple 2023 MacBook Pro Laptop M2 Pro chip with 12‑core CPU and 19‑core GPU: 16.2-inch Liquid Retina XDR Display, 16GB Unified Memory, 512GB SSD Storage. Works with iPhone/iPad; Silver',
-        null, true, 'MacBook Pro 16 (M2 Pro)', 10, 1, 1),
+        null, true, 'MacBook Pro 16 (M2 Pro)', 10, 10, 1, 1),
        (2, 'Practical recipes for enterprise Java developers to deliver large scale applications with Jakarta EE', null,
-        true, 'Java 17 Recipes', 50, 2, 2),
+        true, 'Java 17 Recipes', 20, 50, 2, 2),
        (3,
         'Housewares digital Cool-Touch Rice Grain Cooker and Food Steamer, Stainless, Silver, 4-Cup (Uncooked) / 8-Cup (Cooked)',
-        null, true, 'Aroma Rice Cooker', 5, 3, 2)
+        null, true, 'Aroma Rice Cooker', 15, 5, 3, 2),
+       (4,
+        'Xiaomi Pad 5 comes equipped with large 11 screen, slim, stylish design,Qualcomm Snapdragon 860, WQHD+ 120Hz display,8720mAh (typ) high-capacity battery.',
+        null, true, 'Xiaomi Pad 5', 50, 15, 5, 3),
+       (5,
+        ' 70% Nylon, 25% Polyester, 5% Spandex Pull On closureGusseted Crotch: Gusseted crotch for greater freedom of movement, Flatlock seams reduce irritation caused by chafing',
+        null, true,
+        'OQQ Women 3 Piece High Waist Workout Shorts Butt Lifting Tummy Control Ruched Booty Smile Yoga Short Pants',
+        31, 15, 4, 3),
+       (6,
+        'Samsung Galaxy S24 Plus 5G Smartphone with Exynos 2200 chip: 6.8-inch Dynamic AMOLED 2X Display, 16GB RAM, 512GB Internal Storage, 108MP Camera, 4500mAh Battery. Works with Samsung Galaxy Watch; Phantom Black',
+        null, true, 'Samsung Galaxy S24 Plus', 1000, 20, 1, 3),
+       (7,
+        'The Lean Startup: How Today’s Entrepreneurs Use Continuous Innovation to Create Radically Successful Businesses',
+        null, true, 'The Lean Startup', 15, 30, 2, 2),
+       (8,
+        'Stainless Steel 3-Piece Mixing Bowl Set with Non-Slip Silicone Base, Easy Pour Spout, Measurement Marks, and Nesting Design',
+        null, true, 'Mixing Bowl Set', 25, 8, 3, 1),
+       (9,
+        'Canon EOS R7 Mirrorless Camera with RF24-105mm F4-7.1 IS STM Lens: 30.1 Megapixel Full-frame CMOS Sensor, Dual Pixel CMOS AF, DIGIC X Image Processor, 4K Video Recording. Works with Canon Connect App; Black',
+        null, true, 'Canon EOS R7', 1500, 12, 5, 3),
+       (10,
+        'Men’s Slim-Fit Dress Shirt with Spread Collar, French Cuffs, and Non-Iron Fabric. Available in White and Blue.',
+        null, true, 'Slim-Fit Dress Shirt', 45, 25, 4, 2),
+       (11,
+        'Samsung Galaxy S22 Ultra 5G with 6.8-inch AMOLED display, Exynos 2200 processor, 12GB RAM, 512GB storage, quad camera setup, 5000mAh battery',
+        null, true, 'Samsung Galaxy S22 Ultra 5G', 1299, 20, 3, 1),
+       (12,
+        'Bose QuietComfort 45 Noise Cancelling Headphones with 24-hour battery life, Alexa/Google Assistant voice control, and comfortable ear cushions',
+        null, true, 'Bose QuietComfort 45', 329, 30, 1, 1),
+       (13,
+        'Amazon Basics 10-Piece Non-Stick Cookware Set with PFOA-free coating, comfortable grip handles, and easy-to-clean design',
+        null, true, 'Amazon Basics 10-Piece Cookware Set', 69, 10, 3, 2),
+       (14, 'Sony PlayStation 5 Gaming Console with 4K UHD Blu-Ray Drive and DualSense Wireless Controller',
+        null, true, 'Sony PlayStation 5', 499, 5, 6, 1),
+       (15,
+        'Samsung 55-inch QLED QN90A Series Smart TV with 4K UHD resolution, Quantum HDR 32X, and Object Tracking Sound',
+        null, true, 'Samsung 55-inch QN90A Smart TV', 1799, 8, 1, 3)
 ON DUPLICATE KEY
     UPDATE product_id=product_id;
 
@@ -55,15 +96,16 @@ values (1, 'Leave infront of door', 'DELIVERED', 1)
 ON DUPLICATE KEY
     update shipping_id=shipping_id;
 
-insert into orders(order_id, shipping_id)
-values (1, 1)
+insert into orders(order_id, order_code, shipping_id, user_id)
+values (1, '12345', 1, 1)
 ON DUPLICATE KEY
     update order_id=order_id;
 
 insert into order_item(order_item_id, discount, price, quantity, tax, is_commissioned, order_id, product_id)
 values (1, 12, 200, 2, 10, 0, 1, 1),
        (2, 10, 100, 2, 10, 0, 1, 2),
-       (3, 8, 500, 4, 10, 0, 1, 3)
+       (3, 8, 500, 4, 10, 0, 1, 3),
+       (4, 8, 500, 4, 10, 0, 1, 4)
 ON DUPLICATE KEY
     update order_item_id=order_item_id;
 
@@ -76,6 +118,11 @@ insert into orders_payments(order_order_id, payments_payment_id)
 values (1, 1)
 ON DUPLICATE KEY
     update order_order_id=order_order_id and payments_payment_id = payments_payment_id;
+
+INSERT INTO shopping_cart (cart_id, created_date, quantity, product_id, user_id)
+VALUES (1, '2023-04-19', 1, 1, 1)
+ON DUPLICATE KEY
+    update cart_id=cart_id;
 
 INSERT INTO email_template (template_id, from_email, mail_type, subject, template)
 VALUES (1, 'prabeensoti@gmail.com', 'SIGNUP_VERIFICATION_CODE', 'Signup Verification', '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" style="font-family:arial, ''helvetica neue'', helvetica, sans-serif"><head><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1" name="viewport"><meta name="x-apple-disable-message-reformatting"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta content="telephone=no" name="format-detection"><title>Signup Verification</title><!--[if (mso 16)]><style type="text/css">     a {text-decoration: none;}     </style><![endif]--><!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]--><!--[if gte mso 9]><xml> <o:OfficeDocumentSettings> <o:AllowPNG></o:AllowPNG> <o:PixelsPerInch>96</o:PixelsPerInch> </o:OfficeDocumentSettings> </xml><![endif]--><style type="text/css">#outlook a {	padding:0;}.es-button {	mso-style-priority:100!important;	text-decoration:none!important;}a[x-apple-data-detectors] {	color:inherit!important;	text-decoration:none!important;	font-size:inherit!important;	font-family:inherit!important;	font-weight:inherit!important;	line-height:inherit!important;}.es-desk-hidden {	display:none;	float:left;	overflow:hidden;	width:0;	max-height:0;	line-height:0;	mso-hide:all;}@media only screen and (max-width:600px) {p, ul li, ol li, a { line-height:150%!important } h1, h2, h3, h1 a, h2 a, h3 a { line-height:120% } h1 { font-size:30px!important; text-align:left } h2 { font-size:24px!important; text-align:left } h3 { font-size:20px!important; text-align:left } .es-header-body h1 a, .es-content-body h1 a, .es-footer-body h1 a { font-size:30px!important; text-align:left } .es-header-body h2 a, .es-content-body h2 a, .es-footer-body h2 a { font-size:24px!important; text-align:left } .es-header-body h3 a, .es-content-body h3 a, .es-footer-body h3 a { font-size:20px!important; text-align:left } .es-menu td a { font-size:14px!important } .es-header-body p, .es-header-body ul li, .es-header-body ol li, .es-header-body a { font-size:14px!important } .es-content-body p, .es-content-body ul li, .es-content-body ol li, .es-content-body a { font-size:14px!important } .es-footer-body p, .es-footer-body ul li, .es-footer-body ol li, .es-footer-body a { font-size:14px!important } .es-infoblock p, .es-infoblock ul li, .es-infoblock ol li, .es-infoblock a { font-size:12px!important } *[class="gmail-fix"] { display:none!important } .es-m-txt-c, .es-m-txt-c h1, .es-m-txt-c h2, .es-m-txt-c h3 { text-align:center!important } .es-m-txt-r, .es-m-txt-r h1, .es-m-txt-r h2, .es-m-txt-r h3 { text-align:right!important } .es-m-txt-l, .es-m-txt-l h1, .es-m-txt-l h2, .es-m-txt-l h3 { text-align:left!important } .es-m-txt-r img, .es-m-txt-c img, .es-m-txt-l img { display:inline!important } .es-button-border { display:inline-block!important } a.es-button, button.es-button { font-size:18px!important; display:inline-block!important } .es-adaptive table, .es-left, .es-right { width:100%!important } .es-content table, .es-header table, .es-footer table, .es-content, .es-footer, .es-header { width:100%!important; max-width:600px!important } .es-adapt-td { display:block!important; width:100%!important } .adapt-img { width:100%!important; height:auto!important } .es-m-p0 { padding:0px!important } .es-m-p0r { padding-right:0px!important } .es-m-p0l { padding-left:0px!important } .es-m-p0t { padding-top:0px!important } .es-m-p0b { padding-bottom:0!important } .es-m-p20b { padding-bottom:20px!important } .es-mobile-hidden, .es-hidden { display:none!important } tr.es-desk-hidden, td.es-desk-hidden, table.es-desk-hidden { width:auto!important; overflow:visible!important; float:none!important; max-height:inherit!important; line-height:inherit!important } tr.es-desk-hidden { display:table-row!important } table.es-desk-hidden { display:table!important } td.es-desk-menu-hidden { display:table-cell!important } .es-menu td { width:1%!important } table.es-table-not-adapt, .esd-block-html table { width:auto!important } table.es-social { display:inline-block!important } table.es-social td { display:inline-block!important } .es-desk-hidden { display:table-row!important; width:auto!important; overflow:visible!important; max-height:inherit!important } }</style></head>
