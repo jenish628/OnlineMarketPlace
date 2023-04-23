@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.miu.onlinemarketplace.common.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class OrderDto {
     private String orderCode;
     private ShippingAddressDto shipping;
     private UserDto user;
-    @CreationTimestamp
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderDate;
     List<PaymentDto> payments;
 }

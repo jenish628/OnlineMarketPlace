@@ -5,6 +5,7 @@ import com.miu.onlinemarketplace.service.accountcommission.AccountCommissionServ
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,8 @@ public class AccountCommissionController {
         this.accountCommissionService = accountCommissionService;
     }
 
+    // TODO - Please check the use of this method. If required implement and also integrate with UI, else remove.
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/accountcommission")
     public ResponseEntity<?> saveAccountCommission(@Validated @RequestBody List<OrderItem> orderItem) {
         if(accountCommissionService != null) {

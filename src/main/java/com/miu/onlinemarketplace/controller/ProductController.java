@@ -56,9 +56,9 @@ public class ProductController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    @GetMapping("/products/verify")
-    public ResponseEntity<?> verifyProduct(@RequestParam Long productId) {
-        ProductResponseDto productDto = productService.verifyProduct(productId);
+    @PutMapping("/products/verify")
+    public ResponseEntity<?> verifyProduct(@RequestParam("productId") Long productId, @RequestParam("isVerified") boolean isVerified) {
+        ProductResponseDto productDto = productService.verifyProduct(productId, isVerified);
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 

@@ -4,10 +4,12 @@ import com.miu.onlinemarketplace.common.dto.OrderDto;
 import com.miu.onlinemarketplace.service.order.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders")
+@PreAuthorize("isAuthenticated()")
 public class OrderController {
 
     private OrderService orderService;
@@ -28,6 +30,7 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getOrderById(orderId), HttpStatus.OK);
     }
 
+    // TODO - move this code to public endpoint
     @GetMapping()
     public ResponseEntity<?> getOrderItemList(@RequestParam String productCode) {
         return new ResponseEntity<>(orderService.getAllOrderItemsByOrderCode(productCode), HttpStatus.OK);

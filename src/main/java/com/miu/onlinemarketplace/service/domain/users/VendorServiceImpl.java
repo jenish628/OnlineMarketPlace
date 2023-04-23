@@ -1,17 +1,25 @@
 package com.miu.onlinemarketplace.service.domain.users;
 
+import com.miu.onlinemarketplace.common.dto.SignUpMailSenderDto;
 import com.miu.onlinemarketplace.common.dto.UserDto;
 import com.miu.onlinemarketplace.common.dto.VendorDto;
+import com.miu.onlinemarketplace.common.enums.UserStatus;
+import com.miu.onlinemarketplace.config.AppProperties;
 import com.miu.onlinemarketplace.entities.Role;
 import com.miu.onlinemarketplace.entities.User;
 import com.miu.onlinemarketplace.entities.Vendor;
+import com.miu.onlinemarketplace.exception.CustomAppException;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.RoleRepository;
 import com.miu.onlinemarketplace.repository.UserRepository;
 import com.miu.onlinemarketplace.repository.VendorRepository;
 import com.miu.onlinemarketplace.security.models.EnumRole;
 import com.miu.onlinemarketplace.service.domain.users.dtos.VendorRegistrationRequest;
+import com.miu.onlinemarketplace.service.email.emailsender.EmailSenderService;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
+import com.miu.onlinemarketplace.service.payment.PaymentProvider;
+import com.miu.onlinemarketplace.service.payment.dtos.TransactionResponseDto;
+import com.miu.onlinemarketplace.utils.GenerateRandom;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,6 +27,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +42,11 @@ public class VendorServiceImpl implements VendorService {
     private final PasswordEncoder passwordEncoder;
 
     private final ModelMapper modelMapper;
+
+    private final AppProperties appProperties;
+    private final EmailSenderService emailSenderService;
+
+    private final PaymentProvider paymentProvider;
 
     @Override
     public Page<VendorDto> getAllVendors(Pageable pageable) {
@@ -58,6 +73,13 @@ public class VendorServiceImpl implements VendorService {
         user.setPassword(passwordEncoder.encode(vendorRegistrationRequest.getPassword()));
         Role vendorRole = roleRepository.findOneByRole(EnumRole.ROLE_VENDOR);
         user.setRole(vendorRole);
+
+        String signUpPasswordVerCode = GenerateRandom.generateRandomAlphaNumericString(20);
+        long verificationCodeExpirationSeconds = appProperties.getMail().getVerificationCodeExpirationSeconds();
+        user.setEmailVerificationCodeExpiresAt(LocalDateTime.now().plusSeconds(verificationCodeExpirationSeconds));
+        user.setEmailVerificationCode(signUpPasswordVerCode);
+        user.setUserStatus(UserStatus.UNVERIFIED);
+
         User returnedUser = userRepository.save(user);
 
         // Save to Vendor
@@ -67,9 +89,18 @@ public class VendorServiceImpl implements VendorService {
         vendor.setUser(returnedUser);
         vendorRepository.save(vendor);
 
-        // TODO vendor payment, if failed, the whole transaction rolls back automatically
-        // Payment - send CardInfo, amount, PaymentType
-        // paymentService.vendorPayment(vendorRegistrationRequest.getCardInfo())
+        // Vendor payment
+        double amount = 20000; // VendorType.GLOBAL
+        TransactionResponseDto transactionResponseDto = paymentProvider.pay("", amount);
+        if (!transactionResponseDto.isPaid()) {
+            throw new CustomAppException("Payment failed, please retry again or use different card");
+        }
+
+        // Sign up verification email
+        SignUpMailSenderDto signUpMailSenderDto = new SignUpMailSenderDto();
+        signUpMailSenderDto.setToEmail(user.getEmail());
+        signUpMailSenderDto.setVerificationCode(signUpPasswordVerCode);
+        emailSenderService.sendSignupMail(signUpMailSenderDto);
 
         VendorDto vendorDto = modelMapper.map(vendor, VendorDto.class);
         vendorDto.setUserDto(modelMapper.map(vendor.getUser(), UserDto.class));
@@ -84,6 +115,9 @@ public class VendorServiceImpl implements VendorService {
     @Override
     public VendorDto verifyVendor(VendorDto vendorDto) {
         Vendor vendor = modelMapper.map(vendorDto, Vendor.class);
+        User user = userRepository.findById(vendor.getUser().getUserId())
+                .orElseThrow(() -> new CustomAppException("Vendor doesn't have linked userId"));
+        user.setUserStatus(UserStatus.ACTIVE);
         Vendor updatedVendor = vendorRepository.save(vendor);
         return modelMapper.map(updatedVendor, VendorDto.class);
     }

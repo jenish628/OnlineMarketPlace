@@ -23,7 +23,7 @@ public interface ProductService {
 
     ProductDto createNewProduct(ProductDto productDto);
 
-    ProductResponseDto verifyProduct(Long productId);
+    ProductResponseDto verifyProduct(Long productId, boolean isVerified);
 
     ProductDto updateProduct(ProductDto productDto);
 

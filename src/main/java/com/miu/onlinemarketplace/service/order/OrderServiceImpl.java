@@ -57,17 +57,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public CheckingOrderDto getAllOrderItemsByOrderCode(String orderCode) {
+    public CheckingOrderDto getAllOrderItemsByOrderCode(String orderIdAndCode) {
         try {
-            Order order = orderRepository.findByOrderCode(orderCode);
+            String st[] = orderIdAndCode.split("-");
+            Long orderId = Long.valueOf(st[0]);
+            String orderCode = st[1];
+            Order order = orderRepository.findByIdAndOrderCode(orderId, orderCode);
             List<OrderItem> orderItems = orderItemRepository.findAllOrderItemByOrderId(order.getOrderId());
             List<OrderItemDto> orderItemDtoList = orderItems.stream()
                     .map(orderItem -> modelMapper.map(orderItem, OrderItemDto.class))
                     .collect(Collectors.toList());
+            double total = 0.0;
+            for (OrderItemDto o: orderItemDtoList) {
+                total += (o.getQuantity() * o.getPrice()) - o.getDiscount() - o.getTax();
+            }
             CheckingOrderDto checkingOrderDto = new CheckingOrderDto();
             checkingOrderDto.setOrderId(order.getOrderId());
             checkingOrderDto.setOrderDate(order.getOrderDate());
             checkingOrderDto.setOrderStatus(order.getOrderStatus());
+            checkingOrderDto.setTotal(total);
             checkingOrderDto.setOrderCode(order.getOrderCode());
             checkingOrderDto.setOrderItemDto(orderItemDtoList);
             checkingOrderDto.setShippingStatus(order.getShipping().getShippingStatus());

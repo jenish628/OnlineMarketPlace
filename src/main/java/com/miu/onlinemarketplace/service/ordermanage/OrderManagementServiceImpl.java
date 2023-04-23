@@ -72,9 +72,14 @@ public class OrderManagementServiceImpl implements OrderManagementService {
         List<OrderItemDto> orderItemDtoList = orderItemList.stream()
                 .map(orderItem -> modelMapper.map(orderItem, OrderItemDto.class))
                 .toList();
+        double total = 0.0;
+        for(OrderItemDto o: orderItemDtoList) {
+            total += (o.getQuantity() * o.getPrice()) + o.getTax() - o.getDiscount();
+        }
         // returning OrderResponseDto
         OrderResponseDto orderResponseDto = new OrderResponseDto();
         orderResponseDto.setOrderDto(orderDto);
+        orderResponseDto.setTotal(total);
         orderResponseDto.setRelatedOrderItems(orderItemDtoList);
         return orderResponseDto;
     }
