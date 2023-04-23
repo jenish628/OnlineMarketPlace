@@ -30,12 +30,6 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getOrderById(orderId), HttpStatus.OK);
     }
 
-    // TODO - move this code to public endpoint
-    @GetMapping()
-    public ResponseEntity<?> getOrderItemList(@RequestParam String productCode) {
-        return new ResponseEntity<>(orderService.getAllOrderItemsByOrderCode(productCode), HttpStatus.OK);
-    }
-
     // use this to ship order by admin
     @PatchMapping()
     public ResponseEntity<?> patch(@RequestBody OrderDto orderDto) {

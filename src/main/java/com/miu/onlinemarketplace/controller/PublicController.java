@@ -5,6 +5,7 @@ import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.service.domain.product.ProductCategoryService;
 import com.miu.onlinemarketplace.service.domain.product.ProductService;
 import com.miu.onlinemarketplace.service.file.FileService;
+import com.miu.onlinemarketplace.service.order.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +24,13 @@ public class PublicController {
 
     private final ProductService productService;
     private ProductCategoryService productCategoryService;
+    private OrderService orderService;
 
 
-    public PublicController(ProductService productService,ProductCategoryService productCategoryService ) {
+    public PublicController(ProductService productService,ProductCategoryService productCategoryService, OrderService orderService ) {
         this.productService = productService;
         this.productCategoryService = productCategoryService;
+        this.orderService = orderService;
     }
     @GetMapping("/products")
     public ResponseEntity<?> getCustomerProducts(@PageableDefault(page = 0, size = 10, sort = "productId",
@@ -64,6 +67,11 @@ public class PublicController {
     public ResponseEntity<?> GetAllCategory(){
         List<ProductCategoryDto> categories = productCategoryService.getAllCategory();
         return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<?> getOrderItemList(@RequestParam String productCode) {
+        return new ResponseEntity<>(orderService.getAllOrderItemsByOrderCode(productCode), HttpStatus.OK);
     }
 
 }
