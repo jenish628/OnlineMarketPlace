@@ -118,4 +118,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return false;
 
     }
+
+    @Override
+    public boolean removeProduct() {
+// remove Product by checking current userID from ShoppingCart
+        Long userId = UserUtils.getCurrentUserId();
+        List<ShoppingCart> shoppingCarts = shoppingCartRepository.findAllByUser_UserId(userId);
+        shoppingCartRepository.deleteAll(shoppingCarts);
+        return true;
+    }
 }

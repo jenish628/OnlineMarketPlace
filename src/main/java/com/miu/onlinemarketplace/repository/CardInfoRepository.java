@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface CardInfoRepository extends JpaRepository<CardInfo, Long> {
 
     List<CardInfo> findByUserUserId(Long userId);
+
+    Optional<CardInfo> findByLastFourDigits(Integer lastFourDigits);
 }

@@ -1,21 +1,31 @@
 package com.miu.onlinemarketplace.service.payment;
 
-import com.miu.onlinemarketplace.service.payment.dtos.TransactionResponseDto;
+import com.miu.onlinemarketplace.utils.Utility;
+import com.stripe.Stripe;
 import com.stripe.model.Charge;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class StripePaymentServiceImpl implements StripePaymentService {
+    public StripePaymentServiceImpl() {
+        Stripe.apiKey = Utility.SECRET_KEY;
+    }
+
     @Override
-    public TransactionResponseDto pay(String code, Double totalAmount) {
-        Charge charge = new Charge();
-        charge.setPaid(true);
-        TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
-        transactionResponseDto.setTransactionId(UUID.randomUUID().toString());
-        transactionResponseDto.setAmount(totalAmount);
-        transactionResponseDto.setPaid(true);
-        return transactionResponseDto;
+    public Charge pay(String code, Double totalAmount) {
+        try{
+            Map<String, Object> chargeParams = new HashMap<>();
+            chargeParams.put("amount", (int)(totalAmount * 100));
+            chargeParams.put("currency", "USD");
+            chargeParams.put("source", code);
+            Charge charge = Charge.create(chargeParams);
+            return charge;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 }

@@ -13,7 +13,7 @@ public class CardInfoDto {
 
     private Long cardInfoId;
     private String cardNumber;
-    private int lastFourDigits;
+    private int last4;
     private String nameOnCard;
     private Integer expYear;
     private Integer expMonth;

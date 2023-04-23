@@ -18,6 +18,7 @@ import com.miu.onlinemarketplace.service.domain.users.dtos.VendorRegistrationReq
 import com.miu.onlinemarketplace.service.email.emailsender.EmailSenderService;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import com.miu.onlinemarketplace.service.payment.PaymentProvider;
+import com.miu.onlinemarketplace.service.payment.StripePaymentService;
 import com.miu.onlinemarketplace.service.payment.dtos.TransactionResponseDto;
 import com.miu.onlinemarketplace.utils.GenerateRandom;
 import jakarta.transaction.Transactional;
@@ -46,7 +47,7 @@ public class VendorServiceImpl implements VendorService {
     private final AppProperties appProperties;
     private final EmailSenderService emailSenderService;
 
-    private final PaymentProvider paymentProvider;
+    private final StripePaymentService paymentProvider;
 
     @Override
     public Page<VendorDto> getAllVendors(Pageable pageable) {
@@ -91,8 +92,8 @@ public class VendorServiceImpl implements VendorService {
 
         // Vendor payment
         double amount = 20000; // VendorType.GLOBAL
-        TransactionResponseDto transactionResponseDto = paymentProvider.pay("", amount);
-        if (!transactionResponseDto.isPaid()) {
+
+        if (!paymentProvider.pay("", amount).getPaid()) {
             throw new CustomAppException("Payment failed, please retry again or use different card");
         }
 

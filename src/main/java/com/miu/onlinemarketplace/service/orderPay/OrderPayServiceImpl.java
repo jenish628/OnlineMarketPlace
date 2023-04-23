@@ -8,12 +8,13 @@ import com.miu.onlinemarketplace.entities.*;
 import com.miu.onlinemarketplace.exception.ConflictException;
 import com.miu.onlinemarketplace.repository.*;
 import com.miu.onlinemarketplace.security.AppSecurityUtils;
+import com.miu.onlinemarketplace.service.domain.shopping.ShoppingCartService;
 import com.miu.onlinemarketplace.service.email.emailsender.EmailSenderService;
+import com.miu.onlinemarketplace.service.payment.StripePaymentService;
 import com.miu.onlinemarketplace.service.thirdParty.ThirdPartyService;
 import com.miu.onlinemarketplace.utils.Utility;
-import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
 import lombok.AllArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,8 @@ public class OrderPayServiceImpl implements OrderPayService{
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final CardInfoRepository cardInfoRepository;
+
+    private final ShoppingCartService shoppingCartService;
     private final ShoppingCartRepository shoppingCartRepository;
     private final OrderPayRepository orderPayRepository;
 
@@ -41,6 +44,7 @@ public class OrderPayServiceImpl implements OrderPayService{
     private final ModelMapper modelMapper;
 
     private final ThirdPartyService thirdPartyService;
+    private final StripePaymentService stripePaymentService;
     private final EmailSenderService emailSenderService;
 
 
@@ -54,7 +58,7 @@ public class OrderPayServiceImpl implements OrderPayService{
         OrderPayInfoDto infoDto = new OrderPayInfoDto();
         if(getLoggedInUserId() != null)
             checkForLoggedInUser().accept(infoDto);
-        checkOrderCalculation(shoppingCartDtos, infoDto);
+        checkCalculation(shoppingCartDtos, infoDto);
 
         return infoDto;
     }
@@ -65,9 +69,10 @@ public class OrderPayServiceImpl implements OrderPayService{
         for (ShoppingCartDto dto: shoppingCartDtos) {
             totalPrice += dto.getProduct().getPrice() * dto.getQuantity();
             totalPrice += totalPrice * Utility.TAX/100;
-            totalPrice = Double.valueOf(String.format("%.2f", totalPrice));
             totalQuantity += dto.getQuantity();
         }
+        totalPrice = totalPrice + Utility.SHIPPING_CHARGE;
+        totalPrice = Double.valueOf(String.format("%.2f", totalPrice));
         infoDto.setPrice(totalPrice);
         infoDto.setQuantity(totalQuantity);
         return infoDto;
@@ -109,33 +114,36 @@ public class OrderPayServiceImpl implements OrderPayService{
     @Override
     public OrderPayResponseDto createOrderPay(OrderPayDto orderPayDto) {
 
-        try {
-            boolean addressFlag = false, cardInfoFlag = false;
-            thirdPartyService.validateStripe(orderPayDto);
-            OrderPayInfoDto infoDto = checkCalculation(orderPayDto.getShoppingCartDtos(), new OrderPayInfoDto());
-            validateUser(orderPayDto, infoDto);
-            if(getLoggedInUserId() != null) {
-                addressFlag = validateAddress(orderPayDto.getAddressDto());
-                cardInfoFlag = validateCardInfo(orderPayDto.getCardInfoDto());
-            }
-            OrderPay orderPaydb = saveOrderPay(orderPayDto, addressFlag, cardInfoFlag);
-            emailSenderService.sendPaymentNotification(orderPayDto);
-
-            Order order = saveOrder(orderPaydb);
-            saveOrderItem(orderPayDto, order);
-//            shoppingCartRepository.re
-
-            return new OrderPayResponseDto().builder()
-                    .message("Payment success!")
-                    .body(order.getOrderId())
-                    .orderPayStatus(orderPaydb.getOrderPayStatus().toString())
-                    .success(true)
-                    .httpStatus(HttpStatus.OK)
-                    .build();
-        } catch (StripeException e) {
-            throw new ConflictException("Invalid token!");
+        boolean addressFlag = false, cardInfoFlag = false;
+//            thirdPartyService.validateStripe(orderPayDto);
+        OrderPayInfoDto infoDto = checkCalculation(orderPayDto.getShoppingCartDtos(), new OrderPayInfoDto());
+       validateUser(orderPayDto, infoDto);
+        if(getLoggedInUserId() != null) {
+            addressFlag = validateAddress(orderPayDto.getAddressDto());
+            cardInfoFlag = validateCardInfo(orderPayDto.getCardInfoDto());
         }
 
+        Charge charge = stripePaymentService.pay(orderPayDto.getTransactionId(), infoDto.getPrice());
+        OrderPay orderPay = saveOrderPay(orderPayDto, addressFlag, cardInfoFlag);
+        emailSenderService.sendPaymentNotification(orderPayDto);
+
+        if(!charge.getPaymentMethod().equals(orderPayDto.getCardId())) {
+            orderPay.setOrderPayStatus(OrderPayStatus.FAILURE);
+        }else {
+            orderPay.setOrderPayStatus(OrderPayStatus.COMPLETE);
+        }
+        orderPay = orderPayRepository.save(orderPay);
+
+        Order order = saveOrder(orderPay, charge);
+        saveOrderItem(orderPayDto, order);
+
+        return new OrderPayResponseDto().builder()
+                .message("Payment success!")
+                .body(order.getOrderId())
+                .orderPayStatus(orderPay.getOrderPayStatus().toString())
+                .success(true)
+                .httpStatus(HttpStatus.OK)
+                .build();
     }
 
     private void saveOrderItem(OrderPayDto orderPayDto, Order order) {
@@ -155,41 +163,24 @@ public class OrderPayServiceImpl implements OrderPayService{
             orderItem.setProduct(productRepository.findById(dto.getProduct().getProductId()).get());
             orderItem.setOrder(order);
             orderItemRepository.save(orderItem);
+            shoppingCartService.removeProduct();
         }
     }
 
     @NotNull
-    private Order saveOrder(OrderPay orderPaydb) {
+    private Order saveOrder(OrderPay orderPaydb, Charge charge) {
         Order order = new Order();
         List<OrderPay> orderPayList = new ArrayList<>();
         orderPayList.add(orderPaydb);
 
-        if(orderPaydb.getOrderPayStatus().equals(OrderPayStatus.COMPLETE))
-            order.setOrderStatus(OrderStatus.CONFIRMED);
-        else if(orderPaydb.getOrderPayStatus().equals(OrderPayStatus.PENDING))
+        if(!charge.getPaymentMethod().equals(orderPaydb.getCardId())) {
             order.setOrderStatus(OrderStatus.PENDING);
-        else if(orderPaydb.getOrderPayStatus().equals(OrderPayStatus.FAILURE))
-            order.setOrderStatus(OrderStatus.CANCELED);
-        else order.setOrderStatus(OrderStatus.SHIPPED);
-
+        }else {
+            order.setOrderStatus(OrderStatus.CONFIRMED);
+        }
         order.setOrderCode(UUID.randomUUID().toString());
         order.setUser(getLoggedInUserId() != null ? userRepository.findById(getLoggedInUserId()).get() : null);
         return orderRepository.save(order);
-    }
-
-    private OrderPayInfoDto checkOrderCalculation(List<ShoppingCartDto> shoppingCartDtos, OrderPayInfoDto infoDto) {
-        double totalPrice = 0;
-        int totalQuantity = 0;
-
-        for (ShoppingCartDto dto: shoppingCartDtos) {
-            totalPrice += dto.getProduct().getPrice() * dto.getQuantity();
-            totalPrice += totalPrice * Utility.TAX/100;
-            totalPrice = Double.valueOf(String.format("%.2f", totalPrice));
-            totalQuantity += dto.getQuantity();
-        }
-        infoDto.setPrice(totalPrice);
-        infoDto.setQuantity(totalQuantity);
-        return infoDto;
     }
 
     private void validateUser(OrderPayDto orderPayDto, OrderPayInfoDto infoDto) {
@@ -206,7 +197,9 @@ public class OrderPayServiceImpl implements OrderPayService{
         List<Address> addresses = addressRepository.findByUserUserId(getLoggedInUserId());
         if(addresses.size() > 0){
             for (Address address: addresses ) {
-                if( (address.getAddress1().equals(addressDto.getAddress1()) || address.getAddress2().equals(addressDto.getAddress2())) &&
+
+//               || address.getAddress2() != null ? address.getAddress2().equals(addressDto.getAddress2()) :
+                if( (address.getAddress1().equals(addressDto.getAddress1()) ) &&
                     address.getCity().equals(addressDto.getCity()) &&
                     address.getState().equals(addressDto.getState()) &&
                     address.getZipCode().equals(addressDto.getZipCode()) &&
@@ -222,14 +215,16 @@ public class OrderPayServiceImpl implements OrderPayService{
     private boolean validateCardInfo(CardInfoDto cardInfoDto) {
         boolean cardInfoFlag = false;
         List<CardInfo> cardInfos = cardInfoRepository.findByUserUserId(getLoggedInUserId());
-        for (CardInfo cardInfo: cardInfos ) {
-            if(cardInfo.getLastFourDigits() == cardInfoDto.getLastFourDigits() &&
-                cardInfo.getExpMonth() == cardInfoDto.getExpMonth() &&
-                cardInfo.getExpYear() == cardInfoDto.getExpYear() &&
-                cardInfo.getCvc().equals(cardInfoDto.getCvc()) &&
-                cardInfo.getCardBrand().toString().toUpperCase().equals(cardInfoDto.getCardBrand().toUpperCase()))
-            cardInfoFlag = true;
-            break;
+        if(cardInfos.size() > 0) {
+            for (CardInfo cardInfo : cardInfos) {
+                if (cardInfo.getLastFourDigits() == cardInfoDto.getLast4() &&
+                        cardInfo.getExpMonth() == cardInfoDto.getExpMonth() &&
+                        cardInfo.getExpYear() == cardInfoDto.getExpYear() &&
+                        cardInfo.getCvc().equals(cardInfoDto.getCvc()) &&
+                        cardInfo.getCardBrand().toString().toUpperCase().equals(cardInfoDto.getCardBrand().toUpperCase()))
+                    cardInfoFlag = true;
+                break;
+            }
         }
         return cardInfoFlag;
     }
@@ -240,7 +235,6 @@ public class OrderPayServiceImpl implements OrderPayService{
         orderPay.setIsGuestUser(orderPayDto.getIsGuestUser());
         orderPay.setClientIp(orderPayDto.getClientIp());
         orderPay.setCardId(orderPayDto.getCardId());
-        orderPay.setOrderPayStatus(OrderPayStatus.COMPLETE);
         orderPay.setTransactionId(orderPayDto.getTransactionId());
 
         orderPay.setUserId(orderPayDto.getUserId());
@@ -271,8 +265,7 @@ public class OrderPayServiceImpl implements OrderPayService{
             orderPay.setCardInfo(cardInfo);
         }
 
-
-        return orderPayRepository.save(orderPay);
+        return orderPay;
     }
 
 
