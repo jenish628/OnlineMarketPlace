@@ -54,11 +54,50 @@ public class ReportDataRetrieveServiceImpl implements ReportDataRetrieveService 
 
     @Override
     public List<AdminProductReportDto> productReportForAdmin(LocalDate fromDate, LocalDate toDate) {
-        return null;
+        String sql = "SELECT p.name AS productName, " +
+                "SUM(oi.quantity) AS quantity, " +
+                "(SUM(ac.vendor_commission) + SUM(ac.platform_commission)) AS totalRevenue, " +
+                "(SUM(ac.vendor_commission) + SUM(ac.platform_commission))/SUM(oi.quantity) AS avgPrice, " +
+                "SUM(ac.tax) AS tax, " +
+                "(SUM(ac.platform_commission)) AS commission " +
+                "FROM account_commission ac JOIN order_item oi ON ac.order_item_id = oi.order_item_id JOIN product p ON oi.product_id = p.product_id " +
+                "WHERE ac.created_date BETWEEN ? AND ? " +
+                "GROUP BY p.product_id, p.name;";
+        List<Map<String, Object>> dataList = jdbcTemplate.queryForList(sql, fromDate, toDate);
+        AtomicInteger count = new AtomicInteger(1);
+        return dataList.stream().map(mapObj ->
+                new AdminProductReportDto(
+                        count.getAndSet(count.get() + 1),
+                        (String) mapObj.get("productName"),
+                        (Integer) mapObj.get("quantity"),
+                        (Double) mapObj.get("totalRevenue"),
+                        (Double) mapObj.get("avgPrice"),
+                        (Double) mapObj.get("commission"),
+                        (Double) mapObj.get("tax")
+                )).collect(Collectors.toList());
     }
 
     @Override
     public List<AdminVendorReportDto> vendorReportForAdmin(LocalDate fromDate, LocalDate toDate) {
-        return null;
+        String sql = "SELECT v.vendor_name AS vendorName, " +
+                "SUM(oi.quantity) AS quantity, " +
+                "(SUM(ac.vendor_commission) + SUM(ac.platform_commission)) AS totalRevenue, " +
+                "SUM(ac.tax) AS tax, " +
+                "(SUM(ac.platform_commission)) AS commission " +
+                "FROM account_commission ac JOIN order_item oi ON ac.order_item_id = oi.order_item_id " +
+                "JOIN product p ON oi.product_id = p.product_id JOIN vendor v on p.vendor_id = v.vendor_id " +
+                "WHERE ac.created_date BETWEEN ? AND ? " +
+                "GROUP BY v.vendor_id, v.vendor_name;";
+        List<Map<String, Object>> dataList = jdbcTemplate.queryForList(sql, fromDate, toDate);
+        AtomicInteger count = new AtomicInteger(1);
+        return dataList.stream().map(mapObj ->
+                new AdminVendorReportDto(
+                        count.getAndSet(count.get() + 1),
+                        (String) mapObj.get("vendorName"),
+                        (Integer) mapObj.get("quantity"),
+                        (Double) mapObj.get("totalRevenue"),
+                        (Double) mapObj.get("commission"),
+                        (Double) mapObj.get("tax")
+                )).collect(Collectors.toList());
     }
 }
