@@ -13,10 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class OrderItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long orderItemId;
     private Double price;
     private Double tax;
@@ -28,8 +26,6 @@ public class OrderItem {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "productId", referencedColumnName = "productId")
     private Product product;
-
-
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", referencedColumnName = "orderId")
     private Order order;

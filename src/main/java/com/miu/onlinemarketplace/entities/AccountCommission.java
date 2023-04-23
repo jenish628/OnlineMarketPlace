@@ -18,10 +18,11 @@ public class AccountCommission {
     private Long accountCommissionId;
     private Double vendorCommission;
     private Double platformCommission;
+    private Double tax;
     @CreationTimestamp
     private LocalDateTime createdDate;
 
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "orderItemId", referencedColumnName = "orderItemId")
     private OrderItem orderItem;
 }

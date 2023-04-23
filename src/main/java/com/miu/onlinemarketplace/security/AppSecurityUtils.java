@@ -1,6 +1,5 @@
 package com.miu.onlinemarketplace.security;
 
-import com.miu.onlinemarketplace.entities.Role;
 import com.miu.onlinemarketplace.security.models.CustomUserDetails;
 import com.miu.onlinemarketplace.security.models.EnumRole;
 import org.springframework.security.core.Authentication;

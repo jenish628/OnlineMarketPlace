@@ -5,14 +5,11 @@ import com.miu.onlinemarketplace.common.dto.OrderItemDto;
 import com.miu.onlinemarketplace.common.dto.OrderResponseDto;
 import com.miu.onlinemarketplace.entities.Order;
 import com.miu.onlinemarketplace.entities.OrderItem;
-import com.miu.onlinemarketplace.exception.AppSecurityException;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.OrderItemRepository;
 import com.miu.onlinemarketplace.repository.OrderRepository;
 import com.miu.onlinemarketplace.security.AppSecurityUtils;
-import com.miu.onlinemarketplace.security.models.EnumRole;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,8 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -39,7 +34,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
     }
 
     public Page<OrderResponseDto> getAllOrderOfCurrentUser(Pageable pageable) {
-        Long userId = AppSecurityUtils.getCurrentUserId().orElseThrow(()-> new DataNotFoundException("User ID Not Found")); //get current userId
+        Long userId = AppSecurityUtils.getCurrentUserId().orElseThrow(() -> new DataNotFoundException("User ID Not Found")); //get current userId
         Page<Order> orderPage = orderRepository.findAllByUser_UserId(userId, pageable);
         List<OrderResponseDto> orderResponseDtoList = orderPage.getContent().stream()
                 .map(order -> {
@@ -51,7 +46,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 
     public Page<OrderResponseDto> getAllOrderByVendor(Pageable pageable) {
         //EnumRole enumRole = AppSecurityUtils.getCurrentUserRole().orElseThrow(() -> new AppSecurityException("Required Role, but not available"));
-        Long vendorId = AppSecurityUtils.getCurrentUserId().orElseThrow(()-> new DataNotFoundException("User ID Not Found"));// if currentUser role is vendor, get id
+        Long vendorId = AppSecurityUtils.getCurrentUserId().orElseThrow(() -> new DataNotFoundException("User ID Not Found"));// if currentUser role is vendor, get id
 
         Page<Order> orderPage = orderRepository.findOrdersByVendorId(vendorId, pageable);
 //        Long totalOrderOfVendor = orderRepository.countOrdersByVendorId(vendorId);

@@ -6,7 +6,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface OrderManagementService {
     Page<OrderResponseDto> getAllOrderOfCurrentUser(Pageable pageable);
+
     Page<OrderResponseDto> getAllOrderByVendor(Pageable pageable);
+
     Page<OrderResponseDto> getAllOrders(Pageable pageable);
 
 

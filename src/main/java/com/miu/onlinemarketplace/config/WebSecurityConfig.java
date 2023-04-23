@@ -43,8 +43,8 @@ public class WebSecurityConfig {
                 .csrf().disable().httpBasic().and()
                 .authorizeHttpRequests(ar -> ar
                                 .requestMatchers("/**").permitAll().anyRequest().authenticated()
-//                        .requestMatchers("/", "/actuator/**", "/auth/**").permitAll()
-//                        .anyRequest().authenticated()
+//                                .requestMatchers("/", "/actuator/**", "/auth/**", "/public/**").permitAll()
+//                                .anyRequest().authenticated()
                 )
                 .exceptionHandling(eh -> eh
                         .authenticationEntryPoint((request, response, authException) ->

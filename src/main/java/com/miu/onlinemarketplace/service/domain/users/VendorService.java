@@ -1,7 +1,7 @@
-package com.miu.onlinemarketplace.service.auth;
+package com.miu.onlinemarketplace.service.domain.users;
 
-import com.miu.onlinemarketplace.common.dto.UserDto;
 import com.miu.onlinemarketplace.common.dto.VendorDto;
+import com.miu.onlinemarketplace.service.domain.users.dtos.VendorRegistrationRequest;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +12,7 @@ public interface VendorService {
 
     VendorDto getVendorById(Long vendorId);
 
-    VendorDto createVendor(UserDto userDTO, VendorDto vendorDTO);
+    VendorDto registerVendor(VendorRegistrationRequest vendorRegistrationRequest);
 
     Page<VendorDto> filterVendorData(GenericFilterRequestDTO<VendorDto> genericFilterRequest, Pageable pageable);
 

@@ -1,11 +1,9 @@
 package com.miu.onlinemarketplace.common.dto;
 
 
-import com.miu.onlinemarketplace.entities.ProductCategory;
-import com.miu.onlinemarketplace.entities.Vendor;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @AllArgsConstructor

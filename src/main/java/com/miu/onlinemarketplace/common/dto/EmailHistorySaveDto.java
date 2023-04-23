@@ -12,6 +12,5 @@ public class EmailHistorySaveDto {
     private String subject;
     private String fromEmail;
     private String toEmail;
-    private Long orderId;
-    private Boolean send = false;
+    private Boolean isSend = false;
 }

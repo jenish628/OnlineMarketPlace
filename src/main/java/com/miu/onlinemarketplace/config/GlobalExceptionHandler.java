@@ -48,4 +48,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDetails> handleAppSecurityException(AppSecurityException ex) {
         return new ResponseEntity<>(createErrorDetails(ex.getMessage(), 404, "Invalid User Input"), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorDetails> handleRuntimeException(RuntimeException ex) {
+        return new ResponseEntity<>(createErrorDetails(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

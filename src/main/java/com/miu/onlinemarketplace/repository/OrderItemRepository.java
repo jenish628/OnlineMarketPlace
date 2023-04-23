@@ -1,6 +1,5 @@
 package com.miu.onlinemarketplace.repository;
 
-import com.miu.onlinemarketplace.entities.Order;
 import com.miu.onlinemarketplace.entities.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

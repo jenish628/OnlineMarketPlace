@@ -15,6 +15,18 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  mail:
+    host: smtp.gmail.com
+    username: ${EMAIL_USERNAME:sanjayakoju42@gmail.com}
+    password: ${EMAIL_PASSWORD:fxahxqzfghwliack}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
 
 app:
   cors:
@@ -24,11 +36,6 @@ app:
   jwt:
     secret-key: ${JWT_SECRET_KEY:pm490-proj-secret}
     expire-seconds: 86400
-  mail:
-    host: ff.ff
-    port: 1
-    username: dd
-    password: dsd
 
 minio:
   bucket:

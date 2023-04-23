@@ -9,6 +9,6 @@ public class GenerateRandom {
         int num = random.nextInt(100000);
         String formatted = String.format("%05d", num);
         System.out.println(formatted);
-        return  formatted;
+        return formatted;
     }
 }

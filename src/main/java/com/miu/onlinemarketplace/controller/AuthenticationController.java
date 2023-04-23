@@ -4,19 +4,17 @@ import com.miu.onlinemarketplace.common.dto.UserDto;
 import com.miu.onlinemarketplace.common.dto.VendorDto;
 import com.miu.onlinemarketplace.security.models.EnumRole;
 import com.miu.onlinemarketplace.service.auth.AuthenticationService;
-import com.miu.onlinemarketplace.service.auth.VendorService;
 import com.miu.onlinemarketplace.service.auth.dtos.AuthResponseDTO;
 import com.miu.onlinemarketplace.service.auth.dtos.LoginRequestDTO;
 import com.miu.onlinemarketplace.service.auth.dtos.RegisterUserRequestDTO;
-import com.miu.onlinemarketplace.service.auth.dtos.RegisterVendorRequestDTO;
+import com.miu.onlinemarketplace.service.domain.users.VendorService;
+import com.miu.onlinemarketplace.service.domain.users.dtos.VendorRegistrationRequest;
+import com.miu.onlinemarketplace.service.generic.dtos.GenericResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -41,11 +39,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register-vendor")
-    public ResponseEntity<?> registerVendor(@RequestBody RegisterVendorRequestDTO registerVendorRequestDTO) {
-        log.info("Vendor API: registerVendor: ", registerVendorRequestDTO);
-        UserDto userDTO = authenticationService.createUser(registerVendorRequestDTO.getRegisterUser(), EnumRole.ROLE_VENDOR);
-        VendorDto vendorDTO = vendorService.createVendor(userDTO, registerVendorRequestDTO.getVendorDTO());
+    public ResponseEntity<?> registerVendor(@RequestBody VendorRegistrationRequest vendorRegistrationRequest) {
+        log.info("Vendor API: registerVendor: ", vendorRegistrationRequest);
+        VendorDto vendorDTO = vendorService.registerVendor(vendorRegistrationRequest);
         return new ResponseEntity<>(vendorDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/check-email-availability")
+    public ResponseEntity<?> checkEmailAvailability(@RequestParam String email) {
+        log.info("Vendor API: check email availability: ", email);
+        GenericResponseDTO<Boolean> checkEmailAvailability = authenticationService.checkEmailAvailability(email);
+        return new ResponseEntity<>(checkEmailAvailability, HttpStatus.OK);
     }
 
 
