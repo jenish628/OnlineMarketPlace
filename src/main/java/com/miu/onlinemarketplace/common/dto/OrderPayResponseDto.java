@@ -16,4 +16,5 @@ public class OrderPayResponseDto {
     private String message;
     private HttpStatus httpStatus;
     private String orderPayStatus;
+    private Object body;
 }

@@ -25,7 +25,7 @@ public class VendorController {
         this.vendorService = vendorService;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PutMapping()
     public ResponseEntity<?> verifyVendor(@RequestBody VendorDto vendorDto) {
         if (vendorDto != null)

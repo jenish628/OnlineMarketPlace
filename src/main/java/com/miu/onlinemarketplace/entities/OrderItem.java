@@ -23,10 +23,11 @@ public class OrderItem {
     private Boolean isCommissioned;
     @CreationTimestamp
     private LocalDateTime createdDate;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "productId", referencedColumnName = "productId")
     private Product product;
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "orderId", referencedColumnName = "orderId")
     private Order order;
 
