@@ -26,7 +26,7 @@ public class AccountCommissionServiceImpl implements AccountCommissionService {
     @Override
     public boolean saveCommission() {
 
-        List<OrderItem> orderItem = orderItemRepository.findAllByIsCommissionedFalse();
+        List<OrderItem> orderItem = orderItemRepository.findAllByIsCommissionedFalseAndStatusIdDelivered();
         if (orderItem.size() > 0) {
             List<AccountCommission> accountCommissions = new ArrayList<>();
             for (OrderItem o : orderItem) {

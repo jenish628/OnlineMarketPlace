@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,4 +22,5 @@ public class ProductDto {
     private Boolean isDeleted;
     private Long vendorId;
     private Long categoryId;
+    private List<String> images;
 }

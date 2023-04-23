@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class ProductCategory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
     private String category;
     @CreationTimestamp
