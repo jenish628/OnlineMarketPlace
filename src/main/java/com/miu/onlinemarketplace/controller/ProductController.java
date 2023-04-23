@@ -40,13 +40,12 @@ public class ProductController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
-    @PreAuthorize(("hasAnyRole('ROLE_VENDOR')"))
+    @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
     @GetMapping("/allProducts/vendors")
     public ResponseEntity<?> getAllVendorProducts(@PageableDefault(page = 0, size = 10, sort = "productId",
-            direction = Sort.Direction.DESC) Pageable pageable,
-                                                                 @RequestParam(required = false) Long vendorId
+            direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<ProductResponseDto> page = productService.getAllProductsOfVendor(pageable, vendorId);
+        Page<ProductResponseDto> page = productService.getAllProductsOfVendor(pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
     @PreAuthorize("hasAnyRole('ROLE_VENDOR')")

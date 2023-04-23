@@ -1,26 +1,29 @@
 package com.miu.onlinemarketplace.service.domain.product;
 
-import com.lowagie.text.pdf.codec.wmf.MetaDo;
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.entities.Product;
 import com.miu.onlinemarketplace.entities.ProductCategory;
 import com.miu.onlinemarketplace.entities.ProductTemp;
+import com.miu.onlinemarketplace.exception.AppSecurityException;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.ProductCategoryRepository;
 import com.miu.onlinemarketplace.repository.ProductRepository;
 import com.miu.onlinemarketplace.repository.ProductTempRepository;
+import com.miu.onlinemarketplace.repository.VendorRepository;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
+import com.miu.onlinemarketplace.utils.UserUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -31,11 +34,14 @@ public class ProductServiceImpl implements ProductService {
     private final ProductTempRepository productTempRepository;
     private final ProductCategoryRepository productCategoryRepository;
 
-    public ProductServiceImpl(ModelMapper modelMapper, ProductRepository productRepository, ProductTempRepository productTempRepository, ProductCategoryRepository productCategoryRepository) {
+    private final VendorRepository vendorRepository;
+
+    public ProductServiceImpl(ModelMapper modelMapper, ProductRepository productRepository, ProductTempRepository productTempRepository, ProductCategoryRepository productCategoryRepository, VendorRepository vendorRepository) {
         this.modelMapper = modelMapper;
         this.productRepository = productRepository;
         this.productTempRepository = productTempRepository;
         this.productCategoryRepository = productCategoryRepository;
+        this.vendorRepository = vendorRepository;
     }
 
     @Override
@@ -50,13 +56,21 @@ public class ProductServiceImpl implements ProductService {
         }
         return products;
     }
+
     @Override
-    public Page<ProductResponseDto> getAllProductsOfVendor(Pageable pageable, Long vendorId) {
-        Page<ProductResponseDto> products;
-        Page<Product> product = productRepository.findAllByVendor(pageable, vendorId);
-        products = productRepository.findAll(pageable)
-                .map(p -> modelMapper.map(product, ProductResponseDto.class));
-        return products;
+    public Page<ProductResponseDto> getAllProductsOfVendor(Pageable pageable) {
+        Long vendorId = vendorRepository.findByUser_UserId(UserUtils.getCurrentUserId()).orElseThrow(() ->
+                new AppSecurityException("User is not a vendor")).getVendorId();
+
+        Page<ProductResponseDto> verifiedProduct = productRepository.findAllByVendor_VendorIdAndIsDeletedIsFalse(pageable, vendorId)
+                .map(product -> modelMapper.map(product, ProductResponseDto.class));
+        Page<ProductResponseDto> unverifiedProduct = productTempRepository.findAllByVendor_VendorIdAndIsDeletedIsFalse(pageable, vendorId)
+                .map(product -> modelMapper.map(product, ProductResponseDto.class));
+
+        List<ProductResponseDto> content = Stream.concat(verifiedProduct.getContent().stream(), unverifiedProduct.getContent().stream())
+                .toList();
+        ;
+        return new PageImpl<ProductResponseDto>(content, pageable, content.size());
     }
 
     @Override
