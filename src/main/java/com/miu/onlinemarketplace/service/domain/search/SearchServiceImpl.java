@@ -1,7 +1,9 @@
 package com.miu.onlinemarketplace.service.domain.search;
 
+import com.miu.onlinemarketplace.common.dto.ProductCategoryDto;
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
+import com.miu.onlinemarketplace.common.dto.VendorDto;
 import com.miu.onlinemarketplace.entities.Product;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -95,7 +97,12 @@ public class SearchServiceImpl implements SearchService {
         query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
         query.setMaxResults(pageable.getPageSize());
         List<ProductResponseDto> resultList = query.getResultList().stream()
-                .map(product -> modelMapper.map(product, ProductResponseDto.class))
+                .map(product -> {
+                    ProductResponseDto productResponseDto = modelMapper.map(product, ProductResponseDto.class);
+                    productResponseDto.setVendor(modelMapper.map(product.getVendor(), VendorDto.class));
+                    productResponseDto.setProductCategory(modelMapper.map(product.getProductCategory(), ProductCategoryDto.class));
+                    return productResponseDto;
+                })
                 .toList();
         return new PageImpl<>(resultList, pageable, totalCount);
     }
