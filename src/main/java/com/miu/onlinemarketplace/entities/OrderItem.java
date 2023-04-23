@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.entities;
 
+import com.miu.onlinemarketplace.common.enums.OrderItemStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class OrderItem {
     private Integer quantity;
     private Double discount;
     private Boolean isCommissioned;
+    private OrderItemStatus orderItemStatus; // Set default OrderItemStatus.REQUESTED;
     @CreationTimestamp
     private LocalDateTime createdDate;
 

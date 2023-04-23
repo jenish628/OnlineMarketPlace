@@ -56,18 +56,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         System.out.println("#######Product####### " + productId);
         ShoppingCart shoppingCart = shoppingCartRepository.findByProduct_ProductIdAndUser_UserId(productId, userId)
                 .orElseThrow(() -> new DataNotFoundException("Product not found in cart for userId:" + userId + ", ProductId:" + productId));
-//        if(shoppingCartOptional.isPresent()){
-//            ShoppingCart shoppingCart = shoppingCartOptional.get();
+
         if (qty > shoppingCart.getProduct().getQuantity()) {
             log.error("Insufficient Product Quantity for ProductId:" + productId + "Qty Entered:" + qty);
             throw new QuantityInsufficientException("Insufficient Product Quantity");
         } else {
             shoppingCart.setQuantity(qty);
         }
-//        } else {
-//            log.error("Product not found in cart for userId:"+ userId + ", ProductId:"+productId);
-//            throw new DataNotFoundException("Product not found in cart for userId:"+ userId + ", ProductId:"+productId);
-//        }
+
         shoppingCartRepository.save(shoppingCart);
         return true;
     }
@@ -117,5 +113,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
         return false;
 
+    }
+
+    @Override
+    public boolean removeProduct() {
+        // remove Product by checking current userID from ShoppingCart
+        Long userId = UserUtils.getCurrentUserId();
+        List<ShoppingCart> shoppingCarts = shoppingCartRepository.findAllByUser_UserId(userId);
+        shoppingCartRepository.deleteAll(shoppingCarts);
+        return true;
     }
 }
