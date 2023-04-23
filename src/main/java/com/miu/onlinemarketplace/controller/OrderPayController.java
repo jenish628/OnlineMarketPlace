@@ -6,7 +6,6 @@ import com.miu.onlinemarketplace.common.dto.OrderPayResponseDto;
 import com.miu.onlinemarketplace.common.dto.ShoppingCartDto;
 import com.miu.onlinemarketplace.common.dto.OrderPayInfoDto;
 import com.miu.onlinemarketplace.service.orderPay.OrderPayService;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

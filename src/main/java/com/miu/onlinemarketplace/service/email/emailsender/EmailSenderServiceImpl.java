@@ -259,4 +259,44 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         }
         emailHistoryService.updateSendStatusEmailHistory(emailHistory.getEmailHistoryId(), send);
     }
+
+    @Override
+    public Boolean sendPaymentNotification(OrderPayDto orderPayDto) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MailType mailType = MailType.ORDER_PAY_NOTIFICATION;
+        EmailTemplate emailTemplate = emailTemplateService.getTemplateByMailType(mailType);
+        EmailHistorySaveDto emailHistoryDto = new EmailHistorySaveDto();
+        boolean send = true;
+        try {
+            String htmlBody = emailTemplate.getTemplate();
+
+            htmlBody = htmlBody.replace("${name}", orderPayDto.getFullName());
+            htmlBody = htmlBody.replace("${price}", orderPayDto.getFullName());
+
+            String address = orderPayDto.getAddressDto().getAddress1() +"\n"+
+                    orderPayDto.getAddressDto().getAddress2() != null ? orderPayDto.getAddressDto().getAddress2() : "" +"\n"+
+                    orderPayDto.getAddressDto().getCity() +", "+
+                    orderPayDto.getAddressDto().getState() +", "+
+                    orderPayDto.getAddressDto().getZipCode() +", "+
+                    orderPayDto.getAddressDto().getZipCode()
+                    ;
+            htmlBody = htmlBody.replace("${address}", orderPayDto.getAddressDto().getAddress1());
+
+            createMimeMessageHelper(emailTemplate.getFromEmail(), orderPayDto.getEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
+
+            emailHistoryDto.setFromEmail(emailTemplate.getFromEmail());
+            emailHistoryDto.setToEmail(orderPayDto.getEmail());
+            emailHistoryDto.setSubject(emailTemplate.getSubject());
+            emailHistoryDto.setMessage(htmlBody);
+            emailHistoryDto.setMailType(mailType);
+
+            javaMailSender.send(mimeMessage);
+        } catch (Exception e) {
+            log.error("Send Mail using Template failed Exception {} to user with email {} of mail type {}", e.getMessage(), orderPayDto.getEmail(), mailType);
+            send = false;
+        }
+        emailHistoryDto.setIsSend(send);
+        emailHistoryService.saveEmailHistory(emailHistoryDto);
+        return send;
+    }
 }

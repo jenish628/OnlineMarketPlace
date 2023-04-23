@@ -1,9 +1,6 @@
 package com.miu.onlinemarketplace.service.email.emailsender;
 
-import com.miu.onlinemarketplace.common.dto.ForgotPasswordMailSenderDto;
-import com.miu.onlinemarketplace.common.dto.OrderMailSenderDto;
-import com.miu.onlinemarketplace.common.dto.PaymentFailMailSenderDto;
-import com.miu.onlinemarketplace.common.dto.SignUpMailSenderDto;
+import com.miu.onlinemarketplace.common.dto.*;
 import com.miu.onlinemarketplace.common.enums.UserStatus;
 import com.miu.onlinemarketplace.entities.EmailHistory;
 
@@ -19,4 +16,5 @@ public interface EmailSenderService {
     Boolean sendPaymentFailNotificationMail(PaymentFailMailSenderDto mailSenderDto);
 
     void resendMail(EmailHistory emailHistory);
+    Boolean sendPaymentNotification(OrderPayDto orderPayDto);
 }

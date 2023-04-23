@@ -13,10 +13,13 @@ public class CardInfoDto {
 
     private Long cardInfoId;
     private String cardNumber;
+    private int lastFourDigits;
     private String nameOnCard;
     private Integer expYear;
     private Integer expMonth;
     private String cvc;
-    private CardBrand cardBrand;
-    private String addressType;
+    private String cardBrand;
+//    private String addressType;
+
+
 }

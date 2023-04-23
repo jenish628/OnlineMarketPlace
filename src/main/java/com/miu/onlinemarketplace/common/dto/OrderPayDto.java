@@ -20,11 +20,11 @@ public class OrderPayDto {
     private CardInfoDto cardInfoDto;
 
     // Guest User
-    private boolean isGuestUser;
+    private Boolean isGuestUser;
     private String clientIp;
     private String cardId;
-    private OrderPayStatus status;
-    private Long transactionId;
+//    private OrderPayStatus status;
+    private String transactionId;
 
     private Long userId;
     private String fullName;
@@ -33,14 +33,5 @@ public class OrderPayDto {
     private double price;
     private List<ShoppingCartDto> shoppingCartDtos;
 
-    private String cardNumber;
-    private int lastFourDigits;
-    private String nameOnCard;
-    private int expMonth;
-    private int expYear;
-    private String CVC;
-    private String cardBrand;
 
-
-//    private
 }
