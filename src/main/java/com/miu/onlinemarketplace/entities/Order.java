@@ -19,7 +19,6 @@ import java.util.List;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long orderId;
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
@@ -36,6 +35,9 @@ public class Order {
 
     @ManyToMany
     List<Payment> payments;
+
+    @ManyToMany
+    List<OrderPay> orderPays;
 
 
 }

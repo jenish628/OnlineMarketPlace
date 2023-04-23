@@ -20,6 +20,7 @@ public class CardInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardInfoId;
     private String cardNumber;
+    private Integer lastFourDigits;
     private Integer expYear;
     private Integer expMonth;
     private String cvc;

@@ -42,15 +42,6 @@ public class OrderPay {
     @JoinColumn(name = "cardInfoId")
     private CardInfo cardInfo;
 
-
-//    private String cardNumber;
-//    private int lastFourDigits;
-//    private String nameOnCard;
-//
-//    @Enumerated(value = EnumType.STRING)
-//    private CardBrand cardBrand;
-
-
     @CreationTimestamp
     private LocalDateTime createdDate;
 

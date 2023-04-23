@@ -10,5 +10,6 @@ import java.util.List;
 public interface OrderPayService {
 
     OrderPayInfoDto findOrderPayInfo(List<ShoppingCartDto> shoppingCartDtos);
+
     OrderPayResponseDto createOrderPay(OrderPayDto orderPayDto);
 }
