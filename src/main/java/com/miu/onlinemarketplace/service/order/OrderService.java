@@ -2,6 +2,7 @@ package com.miu.onlinemarketplace.service.order;
 
 import com.miu.onlinemarketplace.common.dto.CheckingOrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderDto;
+import com.miu.onlinemarketplace.common.enums.OrderStatus;
 
 import java.util.List;
 
@@ -19,5 +20,5 @@ public interface OrderService {
 
     CheckingOrderDto getAllOrderItemsByOrderCode(String orderCode);
 
-    OrderDto patchOrder(OrderDto orderDto);
+    boolean updateOrderStatus(Long orderId);
 }

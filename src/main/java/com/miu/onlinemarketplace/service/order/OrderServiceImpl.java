@@ -3,15 +3,22 @@ package com.miu.onlinemarketplace.service.order;
 import com.miu.onlinemarketplace.common.dto.CheckingOrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderItemDto;
+import com.miu.onlinemarketplace.common.enums.OrderItemStatus;
+import com.miu.onlinemarketplace.common.enums.OrderStatus;
 import com.miu.onlinemarketplace.entities.Order;
 import com.miu.onlinemarketplace.entities.OrderItem;
+import com.miu.onlinemarketplace.exception.AppSecurityException;
+import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.OrderItemRepository;
 import com.miu.onlinemarketplace.repository.OrderRepository;
+import com.miu.onlinemarketplace.security.AppSecurityUtils;
+import com.miu.onlinemarketplace.security.models.EnumRole;
 import com.miu.onlinemarketplace.utils.GenerateRandom;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,9 +92,32 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+//    @Override
+//    public OrderDto patchOrder(OrderDto orderDto) {
+//        Order order = modelMapper.map(orderDto, Order.class);
+//        return modelMapper.map(orderRepository.save(order), OrderDto.class);
+//    }
+
     @Override
-    public OrderDto patchOrder(OrderDto orderDto) {
-        Order order = modelMapper.map(orderDto, Order.class);
-        return modelMapper.map(orderRepository.save(order), OrderDto.class);
+    public boolean updateOrderStatus(Long orderId) {
+        EnumRole enumRole = AppSecurityUtils.getCurrentUserRole().orElseThrow(() -> new AppSecurityException("Must be loggedId"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new DataNotFoundException("Order Not Found"));
+        if(enumRole == EnumRole.ROLE_ADMIN){
+            // if admin, OrderStatus is set to DELIVERED
+            order.setOrderStatus(OrderStatus.DELIVERED);
+            orderRepository.save(order);
+        } else if (enumRole == EnumRole.ROLE_VENDOR) {
+            // if vendor, find all orderItems of orderId, and set to SHIPPED
+            List<OrderItem> allOrderItemByOrderId = orderItemRepository.findAllOrderItemByOrderId(order.getOrderId());
+            for(OrderItem orderItem : allOrderItemByOrderId){
+                orderItem.setOrderItemStatus(OrderItemStatus.WAREHOUSE_SHIP);
+            }
+            orderItemRepository.saveAll(allOrderItemByOrderId);
+        } else {
+            // if user, update status to RECEIVED
+            order.setOrderStatus(OrderStatus.RECEIVED);
+            orderRepository.save(order);
+        }
+        return true;
     }
 }

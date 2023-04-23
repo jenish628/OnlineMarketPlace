@@ -47,10 +47,17 @@ public class ShoppingCartController {
 
 
 
-    //delete product from shopping cart
+    //delete product item from shopping cart
     @DeleteMapping()
-    public ResponseEntity<?> removeProductFromCart(@RequestParam Long productId){
+    public ResponseEntity<?> removeProductItemFromCart(@RequestParam Long productId){
         boolean res = shoppingCartService.remove(productId);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    //delete product from shopping cart
+    @DeleteMapping("/clear")
+    public ResponseEntity<?> removeProductFromCart(){
+        boolean res = shoppingCartService.removeProduct();
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

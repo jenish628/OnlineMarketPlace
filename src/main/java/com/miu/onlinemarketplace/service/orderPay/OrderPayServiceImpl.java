@@ -2,6 +2,7 @@ package com.miu.onlinemarketplace.service.orderPay;
 
 import com.miu.onlinemarketplace.common.dto.*;
 import com.miu.onlinemarketplace.common.enums.CardBrand;
+import com.miu.onlinemarketplace.common.enums.OrderItemStatus;
 import com.miu.onlinemarketplace.common.enums.OrderPayStatus;
 import com.miu.onlinemarketplace.common.enums.OrderStatus;
 import com.miu.onlinemarketplace.entities.*;
@@ -160,6 +161,7 @@ public class OrderPayServiceImpl implements OrderPayService{
             orderItem.setTax(tax);
             orderItem.setQuantity(dto.getQuantity());
             orderItem.setIsCommissioned(false);
+            orderItem.setOrderItemStatus(OrderItemStatus.REQUESTED);
             orderItem.setProduct(productRepository.findById(dto.getProduct().getProductId()).get());
             orderItem.setOrder(order);
             orderItemRepository.save(orderItem);
