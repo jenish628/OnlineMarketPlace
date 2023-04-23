@@ -1,8 +1,13 @@
 package com.miu.onlinemarketplace.service.domain.search;
 
+import com.miu.onlinemarketplace.common.dto.ProductCategoryDto;
+import com.miu.onlinemarketplace.common.dto.ProductDto;
+import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
+import com.miu.onlinemarketplace.common.dto.VendorDto;
 import com.miu.onlinemarketplace.entities.Product;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,11 +19,17 @@ import java.util.List;
 @Service
 public class SearchServiceImpl implements SearchService {
 
-    @Autowired
-    EntityManager entityManager;
+    private EntityManager entityManager;
+
+    private ModelMapper modelMapper;
+
+    public SearchServiceImpl(EntityManager entityManager, ModelMapper modelMapper) {
+        this.entityManager = entityManager;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
-    public Page<Product> advanceSearch(String name, String categoryName, Double minPrice, Double maxPrice, String sortedPrice, Pageable pageable) {
+    public Page<ProductResponseDto> advanceSearch(String name, String categoryName, Double minPrice, Double maxPrice, String sortedPrice, Pageable pageable) {
         double minPriceValue = minPrice != null ? minPrice : 0.0;
         double maxPriceValue = maxPrice != null ? maxPrice : 0.0;
 
@@ -85,7 +96,14 @@ public class SearchServiceImpl implements SearchService {
         int totalCount = query.getResultList().size();
         query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
         query.setMaxResults(pageable.getPageSize());
-        List<Product> resultList = query.getResultList();
+        List<ProductResponseDto> resultList = query.getResultList().stream()
+                .map(product -> {
+                    ProductResponseDto productResponseDto = modelMapper.map(product, ProductResponseDto.class);
+                    productResponseDto.setVendor(modelMapper.map(product.getVendor(), VendorDto.class));
+                    productResponseDto.setProductCategory(modelMapper.map(product.getProductCategory(), ProductCategoryDto.class));
+                    return productResponseDto;
+                })
+                .toList();
         return new PageImpl<>(resultList, pageable, totalCount);
     }
 }

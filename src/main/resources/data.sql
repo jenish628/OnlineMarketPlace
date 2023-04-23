@@ -1,10 +1,11 @@
--- Populating Roles
+/**
+  ========== Initial Data: Roles, User, Address, and Vendor ==========
+ */
 INSERT INTO role (role_id, role)
 VALUES (1, 'ROLE_USER'),
        (2, 'ROLE_ADMIN'),
        (3, 'ROLE_VENDOR') ON DUPLICATE KEY
 UPDATE role_id=role_id;
-
 
 INSERT INTO user (user_id, email, password, user_status, role_id, full_name) -- all passwords are: test
 VALUES (1, 'user@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 1, 'Demo User'),
@@ -14,6 +15,17 @@ VALUES (1, 'user@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4Rk
        (5, 'apple@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'Apple Inc'),
        (6, 'miu-shop@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'MIU Shop') ON DUPLICATE KEY
 UPDATE user_id=user_id;
+
+INSERT INTO address (address_id, address1, city, country, state, zip_code, user_id)
+VALUES
+    (1, '1000N 4Th ST', 'Fairfield','USA','IOWA','52557', 1),
+    (2, '200 Elm St', 'Dallas', 'USA', 'Texas', '75202', 2),
+    (3, '101 Broadway', 'New York', 'USA', 'New York', '10007', 3),
+    (4, '345 Maple St', 'Los Angeles', 'USA', 'California', '90001', 4),
+    (5, 'Apple Park Way', 'Cupertino', 'USA', 'California', '95014', 5),
+    (6, '678 Pine St', 'San Francisco', 'USA', 'California', '94102', 6)
+ON DUPLICATE KEY
+UPDATE address_id = address_id;
 
 INSERT INTO vendor (vendor_id, vendor_name, description, logo_file_id, user_id)
 VALUES (1, 'Apple',
@@ -27,6 +39,9 @@ VALUES (1, 'Apple',
 ON DUPLICATE KEY
     UPDATE vendor_id=vendor_id;
 
+/**
+  ========== Initial Data: Product Category, Product ==========
+ */
 INSERT INTO product_category (category_id, category)
 VALUES (1, 'Computers'),
        (2, 'Books'),
@@ -87,19 +102,18 @@ VALUES (1,
 ON DUPLICATE KEY
     UPDATE product_id=product_id;
 
-INSERT INTO email_template (template_id, from_email, mail_type, subject, template)
-VALUES (1, 'abc@abc.com', 'ORDER_CONFIRM', 'test', 'template djdj') ON DUPLICATE KEY
-UPDATE template_id=template_id;
-
-insert into address(address_id, address1, city,country,state,zip_code)
-values(1,'1000N 4Th ST', 'Fairfield','USA','IOWA','52557'),
-      (2,'5000N 4Th ST', '555Fairfield','5USA','5IOWA','552557') ON DUPLICATE KEY
-update address_id=address_id;
+/**
+  ========== Initial Data: Shopping Cart(User), ShippingInfo, Orders, Order_Items ==========
+ */
+INSERT INTO shopping_cart (cart_id, created_date, quantity, product_id, user_id)
+VALUES (1, '2023-04-19', 3, 1, 1)
+    ON DUPLICATE KEY
+update cart_id=cart_id;
 
 insert into shipping(shipping_id, delivery_instruction, shipping_status, address_id)
-values (1, 'Leave infront of door', 'DELIVERED', 1)
-ON DUPLICATE KEY
-    update shipping_id=shipping_id;
+values (1, 'Leave in front of door', 'PENDING', 1)
+    ON DUPLICATE KEY
+update shipping_id=shipping_id;
 
 insert into orders(order_id, order_date, order_code, shipping_id, user_id)
 values
@@ -109,13 +123,16 @@ ON DUPLICATE KEY
     update order_id=order_id;
 
 insert into order_item(order_item_id, discount, price, quantity, tax, is_commissioned, order_id, product_id)
-values (1, 12, 200, 2, 10, 0, 1, 1),
-       (2, 10, 100, 2, 10, 0, 1, 2),
-       (3, 8, 500, 4, 10, 0, 2, 3),
-       (4, 8, 500, 4, 10, 0, 2, 4)
+values (1, 12, 200, 2, 10, 0, 1, 2),
+       (2, 10, 500, 2, 10, 0, 1, 1),
+       (3, 8, 500, 4, 10, 0, 2, 1),
+       (4, 8, 100, 4, 10, 0, 2, 4)
 ON DUPLICATE KEY
     update order_item_id=order_item_id;
 
+/**
+  ========== Initial Data: Payment, Orders_Payment, Card_Info ==========
+ */
 insert into payment(payment_id, card_brand, card_holder_name, card_number, pay_amount, payment_status, transaction_id)
 values (1, 'Visa', 'Sanjaya koju', '123456', 2600, 'CONFIRMED', 1)
 ON DUPLICATE KEY
@@ -127,21 +144,23 @@ values (1, 1),
 ON DUPLICATE KEY
     update order_order_id=order_order_id and payments_payment_id = payments_payment_id;
 
-INSERT INTO address (address_id, address1, address2, city,  zip_code, country,user_id)
-values(51, '1000N 4th St', '1001N 5th St','Fairfield', '52557', 'USA',1),
-    (52,'5000N 4th St', '5001N 5th St','Fairfieldd', '525555', 'UK',1),
-    (53, '1000N 4th St', '1001N 5th St','Fairfield', '52557', 'USA',2),
-      (54,'5000N 4th St', '5001N 5th St','Fairfieldd', '525555', 'UK',2);
-
 INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month,cvc, card_brand,address_type,user_id)
-values(51,'1234567891',1,1,'111','VISA','SHIPPING',1),
-      (52,'1234567892',2,2,222,'MASTERCARD', 'SHIPPING',2);
-
-INSERT INTO shopping_cart (cart_id, created_date, quantity, product_id, user_id)
-VALUES (1, '2023-04-19', 1, 1, 1)
+values(1,'1234567891',1,1,'111','VISA','SHIPPING',1),
+      (2,'1234567892',2,2,222,'MASTERCARD', 'SHIPPING',2)
 ON DUPLICATE KEY
-    update cart_id=cart_id;
+    update card_info_id=card_info_id;
 
+/**
+  ========== Initial Data: ............ more here .............. ==========
+*/
+
+
+
+
+
+/**
+  ========== Initial Data: Email_Template,  ==========
+ */
 INSERT INTO email_template (template_id, from_email, mail_type, subject, template)
 VALUES (1, 'prabeensoti@gmail.com', 'SIGNUP_VERIFICATION_CODE', 'Signup Verification', '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" style="font-family:arial, ''helvetica neue'', helvetica, sans-serif"><head><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1" name="viewport"><meta name="x-apple-disable-message-reformatting"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta content="telephone=no" name="format-detection"><title>Signup Verification</title><!--[if (mso 16)]><style type="text/css">     a {text-decoration: none;}     </style><![endif]--><!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]--><!--[if gte mso 9]><xml> <o:OfficeDocumentSettings> <o:AllowPNG></o:AllowPNG> <o:PixelsPerInch>96</o:PixelsPerInch> </o:OfficeDocumentSettings> </xml><![endif]--><style type="text/css">#outlook a {	padding:0;}.es-button {	mso-style-priority:100!important;	text-decoration:none!important;}a[x-apple-data-detectors] {	color:inherit!important;	text-decoration:none!important;	font-size:inherit!important;	font-family:inherit!important;	font-weight:inherit!important;	line-height:inherit!important;}.es-desk-hidden {	display:none;	float:left;	overflow:hidden;	width:0;	max-height:0;	line-height:0;	mso-hide:all;}@media only screen and (max-width:600px) {p, ul li, ol li, a { line-height:150%!important } h1, h2, h3, h1 a, h2 a, h3 a { line-height:120% } h1 { font-size:30px!important; text-align:left } h2 { font-size:24px!important; text-align:left } h3 { font-size:20px!important; text-align:left } .es-header-body h1 a, .es-content-body h1 a, .es-footer-body h1 a { font-size:30px!important; text-align:left } .es-header-body h2 a, .es-content-body h2 a, .es-footer-body h2 a { font-size:24px!important; text-align:left } .es-header-body h3 a, .es-content-body h3 a, .es-footer-body h3 a { font-size:20px!important; text-align:left } .es-menu td a { font-size:14px!important } .es-header-body p, .es-header-body ul li, .es-header-body ol li, .es-header-body a { font-size:14px!important } .es-content-body p, .es-content-body ul li, .es-content-body ol li, .es-content-body a { font-size:14px!important } .es-footer-body p, .es-footer-body ul li, .es-footer-body ol li, .es-footer-body a { font-size:14px!important } .es-infoblock p, .es-infoblock ul li, .es-infoblock ol li, .es-infoblock a { font-size:12px!important } *[class="gmail-fix"] { display:none!important } .es-m-txt-c, .es-m-txt-c h1, .es-m-txt-c h2, .es-m-txt-c h3 { text-align:center!important } .es-m-txt-r, .es-m-txt-r h1, .es-m-txt-r h2, .es-m-txt-r h3 { text-align:right!important } .es-m-txt-l, .es-m-txt-l h1, .es-m-txt-l h2, .es-m-txt-l h3 { text-align:left!important } .es-m-txt-r img, .es-m-txt-c img, .es-m-txt-l img { display:inline!important } .es-button-border { display:inline-block!important } a.es-button, button.es-button { font-size:18px!important; display:inline-block!important } .es-adaptive table, .es-left, .es-right { width:100%!important } .es-content table, .es-header table, .es-footer table, .es-content, .es-footer, .es-header { width:100%!important; max-width:600px!important } .es-adapt-td { display:block!important; width:100%!important } .adapt-img { width:100%!important; height:auto!important } .es-m-p0 { padding:0px!important } .es-m-p0r { padding-right:0px!important } .es-m-p0l { padding-left:0px!important } .es-m-p0t { padding-top:0px!important } .es-m-p0b { padding-bottom:0!important } .es-m-p20b { padding-bottom:20px!important } .es-mobile-hidden, .es-hidden { display:none!important } tr.es-desk-hidden, td.es-desk-hidden, table.es-desk-hidden { width:auto!important; overflow:visible!important; float:none!important; max-height:inherit!important; line-height:inherit!important } tr.es-desk-hidden { display:table-row!important } table.es-desk-hidden { display:table!important } td.es-desk-menu-hidden { display:table-cell!important } .es-menu td { width:1%!important } table.es-table-not-adapt, .esd-block-html table { width:auto!important } table.es-social { display:inline-block!important } table.es-social td { display:inline-block!important } .es-desk-hidden { display:table-row!important; width:auto!important; overflow:visible!important; max-height:inherit!important } }</style></head>
 <body data-new-gr-c-s-loaded="14.1028.0" style="width:100%;font-family:arial, ''helvetica neue'', helvetica, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0"><div class="es-wrapper-color" style="background-color:#F6F6F6"><!--[if gte mso 9]><v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t"> <v:fill type="tile" color="#f6f6f6"></v:fill> </v:background><![endif]--><table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;padding:0;Margin:0;width:100%;height:100%;background-repeat:repeat;background-position:center top;background-color:#F6F6F6"><tr><td valign="top" style="padding:0;Margin:0"><table class="es-header" cellspacing="0" cellpadding="0" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top"><tr><td align="center" style="padding:0;Margin:0"><table class="es-header-body" cellspacing="0" cellpadding="0" bgcolor="#ffffff" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;width:600px"><tr><td align="left" style="padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px"><table cellspacing="0" cellpadding="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"><tr><td class="es-m-p0r" valign="top" align="center" style="padding:0;Margin:0;width:560px"><table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"><tr><td align="center" bgcolor="#333333" style="padding:10px;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:''comic sans ms'', ''marker felt-thin'', arial, sans-serif;line-height:45px;color:#ffffff;font-size:30px"><strong>Online Marketplace</strong></p>
