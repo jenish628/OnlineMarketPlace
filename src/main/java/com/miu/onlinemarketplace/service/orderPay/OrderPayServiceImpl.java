@@ -1,15 +1,14 @@
 package com.miu.onlinemarketplace.service.orderPay;
 
 import com.miu.onlinemarketplace.common.dto.*;
+import com.miu.onlinemarketplace.common.enums.CardBrand;
 import com.miu.onlinemarketplace.common.enums.OrderPayStatus;
-import com.miu.onlinemarketplace.entities.Address;
-import com.miu.onlinemarketplace.entities.CardInfo;
-import com.miu.onlinemarketplace.entities.OrderPay;
-import com.miu.onlinemarketplace.entities.ShoppingCart;
+import com.miu.onlinemarketplace.entities.*;
 import com.miu.onlinemarketplace.exception.ConflictException;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.*;
 import com.miu.onlinemarketplace.security.AppSecurityUtils;
+import com.miu.onlinemarketplace.service.email.emailsender.EmailSenderService;
 import com.miu.onlinemarketplace.utils.Utility;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,13 +25,14 @@ import java.util.function.Consumer;
 @Service
 @AllArgsConstructor
 public class OrderPayServiceImpl implements OrderPayService{
-
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final CardInfoRepository cardInfoRepository;
     private final ShoppingCartRepository shoppingCartRepository;
     private final OrderPayRepository orderPayRepository;
     private final ModelMapper modelMapper;
+
+    private final EmailSenderService emailSenderService;
 
     private Long getLoggedInUserId(){
         return AppSecurityUtils.getCurrentUserId()
@@ -107,13 +107,11 @@ public class OrderPayServiceImpl implements OrderPayService{
         OrderPayInfoDto infoDto = checkCalculation(orderPayDto.getShoppingCartDtos(), new OrderPayInfoDto());
         validateUser(orderPayDto, infoDto);
         validateRegisteredUser(orderPayDto, infoDto);
-
-        OrderPay orderPay = modelMapper.map(orderPayDto, OrderPay.class);
-        orderPay.setOrderPayStatus(OrderPayStatus.PENDING);
-        OrderPay orderPaydb = orderPayRepository.save(orderPay);
-
+        OrderPay orderPaydb = saveOrderPay(orderPayDto);
+        orderPayDto.setPrice(infoDto.getPrice());
+        emailSenderService.sendPaymentNotification(orderPayDto);
         OrderPayResponseDto responseDto = new OrderPayResponseDto().builder()
-                .message("Payment on process")
+                .message("Payment success")
                 .orderPayStatus(orderPaydb.getOrderPayStatus().toString())
                 .success(true)
                 .httpStatus(HttpStatus.OK)
@@ -122,13 +120,13 @@ public class OrderPayServiceImpl implements OrderPayService{
         return responseDto;
     }
 
+
     private void validateUser(OrderPayDto orderPayDto, OrderPayInfoDto infoDto) {
-        if(getLoggedInUserId() != null && orderPayDto.isGuestUser())
+        if(getLoggedInUserId() != null && orderPayDto.getIsGuestUser())
             throw new ConflictException("Not a guest user!");
 
-        if(infoDto.getPrice() != orderPayDto.getPrice() ||
-                infoDto.getQuantity() != orderPayDto.getQuantity() ){
-            throw new ConflictException("Price and quantity do not match!");
+        if(infoDto.getPrice() != orderPayDto.getPrice()){
+            throw new ConflictException("Price on transaction do not match!");
         }
     }
     private void validateRegisteredUser(OrderPayDto orderPayDto, OrderPayInfoDto infoDto) {
@@ -144,5 +142,40 @@ public class OrderPayServiceImpl implements OrderPayService{
 //            throw new ConflictException("Validity date of card does not match.");
 //        }
     }
+
+
+    private OrderPay saveOrderPay(OrderPayDto orderPayDto) {
+        OrderPay orderPay = new OrderPay();
+        orderPay.setIsGuestUser(orderPayDto.getIsGuestUser());
+        orderPay.setClientIp(orderPayDto.getClientIp());
+        orderPay.setCardId(orderPayDto.getCardId());
+        orderPay.setOrderPayStatus(OrderPayStatus.SUCCESS);
+        orderPay.setTransactionId(orderPayDto.getTransactionId());
+
+        orderPay.setUserId(orderPayDto.getUserId());
+        orderPay.setFullName(orderPayDto.getFullName());
+        orderPay.setEmail(orderPayDto.getEmail());
+        orderPay.setPrice(orderPayDto.getPrice());
+
+        Address address = modelMapper.map(orderPayDto.getAddressDto(), Address.class);
+        CardInfo cardInfo = modelMapper.map(orderPayDto.getCardInfoDto(), CardInfo.class);
+        if(getLoggedInUserId() != null){
+            User user = userRepository.findById(getLoggedInUserId()).get();
+            address.setUser(user);
+            cardInfo.setUser(user);
+        }
+
+        if(orderPayDto.getCardInfoDto().getCardBrand().toUpperCase().equals(CardBrand.VISA.toString().toUpperCase()))
+            cardInfo.setCardBrand(CardBrand.VISA);
+        if(orderPayDto.getCardInfoDto().getCardBrand().toUpperCase().equals(CardBrand.MASTERCARD.toString().toUpperCase()))
+            cardInfo.setCardBrand(CardBrand.MASTERCARD);
+        else cardInfo.setCardBrand(CardBrand.AMEX);
+
+        orderPay.setAddress(address);
+        orderPay.setCardInfo(cardInfo);
+
+        return orderPayRepository.save(orderPay);
+    }
+
 
 }

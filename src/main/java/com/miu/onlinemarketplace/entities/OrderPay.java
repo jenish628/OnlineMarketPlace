@@ -21,19 +21,35 @@ public class OrderPay {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Double price;
+    private Long orderPayId;
 
-    private String cardNumber;
-    private String nameOnCard;
-
-    @Enumerated(value = EnumType.STRING)
-    private CardBrand cardBrand;
-
+    private Boolean isGuestUser;
+    private String clientIp;
+    private String cardId;
     @Enumerated(value = EnumType.STRING)
     private OrderPayStatus orderPayStatus;
+    private String transactionId;
 
-    private Long transactionId;
+    private Long userId;
+    private String fullName;
+    private String email;
+    private Double price;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="addressId")
+    private Address address;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cardInfoId")
+    private CardInfo cardInfo;
+
+
+//    private String cardNumber;
+//    private int lastFourDigits;
+//    private String nameOnCard;
+//
+//    @Enumerated(value = EnumType.STRING)
+//    private CardBrand cardBrand;
+
 
     @CreationTimestamp
     private LocalDateTime createdDate;

@@ -1,6 +1,7 @@
 package com.miu.onlinemarketplace.common.dto;
 
 import com.miu.onlinemarketplace.common.enums.CardBrand;
+import com.miu.onlinemarketplace.common.enums.OrderPayStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,27 +19,19 @@ public class OrderPayDto {
     private AddressDto addressDto;
     private CardInfoDto cardInfoDto;
 
-    private boolean isGuestUser;
+    // Guest User
+    private Boolean isGuestUser;
     private String clientIp;
     private String cardId;
-    private Long transactionId;
+//    private OrderPayStatus status;
+    private String transactionId;
 
     private Long userId;
     private String fullName;
     private String email;
-    private double price;
     private Integer quantity;
-
-    // Guest User
-    private String cardNumber;
-    private String nameOnCard;
-    private int expMonth;
-    private int expYear;
-    private String CVC;
-    private Double amount;
-    private CardBrand cardBrand;
+    private double price;
+    private List<ShoppingCartDto> shoppingCartDtos;
 
 
-    List<ShoppingCartDto> shoppingCartDtos;
-//    private
 }
