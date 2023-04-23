@@ -2,6 +2,7 @@ package com.miu.onlinemarketplace.config;
 
 
 import com.miu.onlinemarketplace.exception.AppSecurityException;
+import com.miu.onlinemarketplace.exception.ConflictException;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.exception.ErrorDetails;
 import com.miu.onlinemarketplace.exception.QuantityInsufficientException;
@@ -53,5 +54,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorDetails> handleRuntimeException(RuntimeException ex) {
         return new ResponseEntity<>(createErrorDetails(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorDetails> handleConflictException(
+            ConflictException ex){
+        return new ResponseEntity<>(
+                createErrorDetails(ex.getMessage(), 404, "Invalid inputs"), HttpStatus.CONFLICT);
     }
 }
