@@ -13,4 +13,5 @@ public class OrderResponseDto {
 
     private OrderDto orderDto;
     private List<OrderItemDto> relatedOrderItems;
+    private double total;
 }

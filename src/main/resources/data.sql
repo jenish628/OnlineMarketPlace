@@ -96,10 +96,10 @@ values (1, 'Leave infront of door', 'DELIVERED', 1)
 ON DUPLICATE KEY
     update shipping_id=shipping_id;
 
-insert into orders(order_id, order_code, shipping_id, user_id)
+insert into orders(order_id, order_date, order_code, shipping_id, user_id)
 values
-    (1, '12345', 1, 1),
-    (2, '12345', 1, 1)
+    (1, '2023-04-23', '12345', 1, 1),
+    (2, '2023-04-24', '12345', 1, 1)
 ON DUPLICATE KEY
     update order_id=order_id;
 
@@ -117,7 +117,8 @@ ON DUPLICATE KEY
     update payment_id=payment_id;
 
 insert into orders_payments(order_order_id, payments_payment_id)
-values (1, 1)
+values (1, 1),
+       (2, 1)
 ON DUPLICATE KEY
     update order_order_id=order_order_id and payments_payment_id = payments_payment_id;
 

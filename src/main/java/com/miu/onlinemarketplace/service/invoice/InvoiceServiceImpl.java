@@ -33,10 +33,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         List<OrderItemDto> orderItemDtoList =  orderItemList.stream()
                 .map(orderItem -> modelMapper.map(orderItem, OrderItemDto.class))
                 .collect(Collectors.toList());
-        double total = 0;
+        double totalBeforeTax = 0;
+        double saleTax = 0;
+        double totalAfterTax = 0;
         for (OrderItemDto orderItem: orderItemDtoList) {
-            total += orderItem.getQuantity() * orderItem.getPrice();
+            totalBeforeTax += orderItem.getQuantity() * orderItem.getPrice();
+            saleTax += orderItem.getTax();
         }
+        totalAfterTax = totalBeforeTax + saleTax;
 
         Order order = orderInvoiceRepository.findById(orderId).get();
         OrderDto orderDto = modelMapper.map(order, OrderDto.class);
@@ -55,8 +59,10 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceDto.setOrderItemList(orderItemDtoList);
         invoiceDto.setPaymentMethod(orderDto.getPayments());
         invoiceDto.setShippingAddress(orderDto.getShipping());
-        invoiceDto.setOrderNumber(order.getOrderId());
-        invoiceDto.setTotal(total);
+        invoiceDto.setOrderCode(order.getOrderId() +"-" + order.getOrderCode());
+        invoiceDto.setTotalBeforeTax(totalBeforeTax);
+        invoiceDto.setTax(saleTax);
+        invoiceDto.setTotalAfterTax(totalAfterTax);
         return invoiceDto;
     }
 }
