@@ -2,6 +2,7 @@ package com.miu.onlinemarketplace.service.domain.product;
 
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
+import com.miu.onlinemarketplace.entities.FileEntity;
 import com.miu.onlinemarketplace.entities.Product;
 import com.miu.onlinemarketplace.entities.ProductCategory;
 import com.miu.onlinemarketplace.entities.ProductTemp;
@@ -11,6 +12,7 @@ import com.miu.onlinemarketplace.repository.ProductCategoryRepository;
 import com.miu.onlinemarketplace.repository.ProductRepository;
 import com.miu.onlinemarketplace.repository.ProductTempRepository;
 import com.miu.onlinemarketplace.repository.VendorRepository;
+import com.miu.onlinemarketplace.service.file.FileService;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import com.miu.onlinemarketplace.utils.UserUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -36,12 +41,15 @@ public class ProductServiceImpl implements ProductService {
 
     private final VendorRepository vendorRepository;
 
-    public ProductServiceImpl(ModelMapper modelMapper, ProductRepository productRepository, ProductTempRepository productTempRepository, ProductCategoryRepository productCategoryRepository, VendorRepository vendorRepository) {
+    private final FileService fileService;
+
+    public ProductServiceImpl(ModelMapper modelMapper, ProductRepository productRepository, ProductTempRepository productTempRepository, ProductCategoryRepository productCategoryRepository, VendorRepository vendorRepository, FileService fileService) {
         this.modelMapper = modelMapper;
         this.productRepository = productRepository;
         this.productTempRepository = productTempRepository;
         this.productCategoryRepository = productCategoryRepository;
         this.vendorRepository = vendorRepository;
+        this.fileService = fileService;
     }
 
     @Override
@@ -112,10 +120,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto createNewProduct(ProductDto productDto) {
-        ProductTemp productTemp = modelMapper.map(productDto, ProductTemp.class);
-        productTemp = productTempRepository.save(productTemp);
-        return modelMapper.map(productTemp, ProductDto.class);
+    public ProductDto createNewProduct(List<MultipartFile> files, ProductDto productDto) {
+        Long vendorId = vendorRepository.findByUser_UserId(UserUtils.getCurrentUserId()).orElseThrow(() ->
+                new AppSecurityException("User is not a vendor")).getVendorId();
+        productDto.setVendorId(vendorId);
+        Product product = modelMapper.map(productDto, Product.class);
+        List<FileEntity> fileEntities = new ArrayList<>();
+        for (var file : files) {
+            FileEntity fileEntity = new FileEntity();
+            fileEntity.setFileUri(fileService.uploadFiles(file, Arrays.asList("product", vendorId.toString(), productDto.getName().toLowerCase().replace(" ", "-"))));
+            fileEntities.add(fileEntity);
+        }
+        product.setImages(fileEntities);
+        product.setIsDeleted(false);
+        product.setIsVerified(false);
+        product = productRepository.save(product);
+        return modelMapper.map(product, ProductDto.class);
     }
 
     @Override

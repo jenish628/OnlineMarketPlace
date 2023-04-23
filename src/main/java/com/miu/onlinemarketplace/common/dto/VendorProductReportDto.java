@@ -16,5 +16,4 @@ public class VendorProductReportDto {
     private Double discount;
     private Double tax;
     private Double total;
-    private String purchaseDate;
 }

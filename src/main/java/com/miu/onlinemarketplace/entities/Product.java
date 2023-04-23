@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -15,11 +17,17 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
+    @Column(nullable = false)
     private Integer quantity;
+    @Column(nullable = false)
     private Boolean isVerified;
+    @Column(nullable = false)
     private Boolean isDeleted;
+    @Column(nullable = false)
     private Double price;
     @CreationTimestamp
     private LocalDateTime createdDate;
@@ -29,5 +37,8 @@ public class Product {
     @ManyToOne(optional = false)
     @JoinColumn(name = "categoryId", referencedColumnName = "categoryId")
     private ProductCategory productCategory;
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "parent_id")
+    private List<FileEntity> images;
 
 }
