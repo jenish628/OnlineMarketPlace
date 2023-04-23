@@ -18,4 +18,6 @@ public interface OrderService {
     List<OrderDto> getAllOrderByUserId(Long userId);
 
     CheckingOrderDto getAllOrderItemsByOrderCode(String orderCode);
+
+    OrderDto patchOrder(OrderDto orderDto);
 }

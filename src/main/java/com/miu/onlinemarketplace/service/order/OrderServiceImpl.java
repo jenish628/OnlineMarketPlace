@@ -84,4 +84,10 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException();
         }
     }
+
+    @Override
+    public OrderDto patchOrder(OrderDto orderDto) {
+        Order order = modelMapper.map(orderDto, Order.class);
+        return modelMapper.map(orderRepository.save(order), OrderDto.class);
+    }
 }

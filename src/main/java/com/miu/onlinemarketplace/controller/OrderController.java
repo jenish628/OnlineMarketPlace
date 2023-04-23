@@ -35,4 +35,12 @@ public class OrderController {
     public ResponseEntity<?> getOrderItemList(@RequestParam String productCode) {
         return new ResponseEntity<>(orderService.getAllOrderItemsByOrderCode(productCode), HttpStatus.OK);
     }
+
+    // use this to ship order by admin
+    @PatchMapping()
+    public ResponseEntity<?> patch(@RequestBody OrderDto orderDto) {
+        if (orderDto != null)
+            return new ResponseEntity<>(orderService.patchOrder(orderDto), HttpStatus.OK);
+        return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
+    }
 }

@@ -5,9 +5,11 @@ import com.miu.onlinemarketplace.common.dto.OrderItemDto;
 import com.miu.onlinemarketplace.common.dto.OrderResponseDto;
 import com.miu.onlinemarketplace.entities.Order;
 import com.miu.onlinemarketplace.entities.OrderItem;
+import com.miu.onlinemarketplace.entities.Vendor;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.OrderItemRepository;
 import com.miu.onlinemarketplace.repository.OrderRepository;
+import com.miu.onlinemarketplace.repository.VendorRepository;
 import com.miu.onlinemarketplace.security.AppSecurityUtils;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -25,11 +27,13 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final VendorRepository vendorRepository;
     private final ModelMapper modelMapper;
 
-    public OrderManagementServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, ModelMapper modelMapper) {
+    public OrderManagementServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, VendorRepository vendorRepository, ModelMapper modelMapper) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
+        this.vendorRepository = vendorRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -46,8 +50,11 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 
     public Page<OrderResponseDto> getAllOrderByVendor(Pageable pageable) {
         //EnumRole enumRole = AppSecurityUtils.getCurrentUserRole().orElseThrow(() -> new AppSecurityException("Required Role, but not available"));
-        Long vendorId = AppSecurityUtils.getCurrentUserId().orElseThrow(() -> new DataNotFoundException("User ID Not Found"));// if currentUser role is vendor, get id
+        Long userId = AppSecurityUtils.getCurrentUserId().orElseThrow(() -> new DataNotFoundException("User ID Not Found"));// if currentUser role is vendor, get id
+        Vendor vendor = vendorRepository.findByUser_UserId(userId).orElseThrow(() -> new DataNotFoundException("Vendor doesn't have linked UserId"));
+        Long vendorId = vendor.getVendorId();
 
+        //        PageRequest pageRequest = PageRequest.of(0, 10);
         Page<Order> orderPage = orderRepository.findOrdersByVendorId(vendorId, pageable);
 //        Long totalOrderOfVendor = orderRepository.countOrdersByVendorId(vendorId);
         List<OrderResponseDto> orderResponseDtoList = orderPage.getContent().stream()
