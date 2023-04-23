@@ -4,6 +4,7 @@ import com.miu.onlinemarketplace.common.dto.*;
 import com.miu.onlinemarketplace.common.enums.MailType;
 import com.miu.onlinemarketplace.common.enums.OrderStatus;
 import com.miu.onlinemarketplace.common.enums.UserStatus;
+import com.miu.onlinemarketplace.config.AppProperties;
 import com.miu.onlinemarketplace.entities.EmailHistory;
 import com.miu.onlinemarketplace.entities.EmailTemplate;
 import com.miu.onlinemarketplace.entities.User;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
 
@@ -29,11 +31,14 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
 
-    public EmailSenderServiceImpl(EmailTemplateService emailTemplateService, EmailHistoryService emailHistoryService, UserRepository userRepository, JavaMailSender javaMailSender) {
+    private final AppProperties appProperties;
+
+    public EmailSenderServiceImpl(EmailTemplateService emailTemplateService, EmailHistoryService emailHistoryService, UserRepository userRepository, JavaMailSender javaMailSender, AppProperties appProperties) {
         this.emailTemplateService = emailTemplateService;
         this.emailHistoryService = emailHistoryService;
         this.userRepository = userRepository;
         this.javaMailSender = javaMailSender;
+        this.appProperties = appProperties;
     }
 
     private static void createMimeMessageHelper(String fromEmail, String toEmail, MimeMessage mimeMessage, String subject, String htmlBody) throws MessagingException {
@@ -61,7 +66,12 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
             htmlBody = htmlBody.replace("${name}", user.getFullName());
             htmlBody = htmlBody.replace("${verificationCode}", mailSenderDto.getVerificationCode());
-            htmlBody = htmlBody.replace("${verificationLink}", "http://localhost:4200/verification/" + mailSenderDto.getVerificationCode());
+            String signUpVerificationLink = UriComponentsBuilder.fromUriString(appProperties.getDomainUrl() + "/verify")
+                    .queryParam("isProcessVerifyEmail", true)
+                    .queryParam("email", mailSenderDto.getToEmail())
+                    .queryParam("emailVerificationCode", mailSenderDto.getVerificationCode())
+                    .build().toUriString();
+            htmlBody = htmlBody.replace("${verificationLink}", signUpVerificationLink);
 
             createMimeMessageHelper(emailTemplate.getFromEmail(), mailSenderDto.getToEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
 
@@ -97,10 +107,16 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             String htmlBody = emailTemplate.getTemplate();
 
             htmlBody = htmlBody.replace("${name}", user.getFullName());
-            if (passwordMailSenderDto.getVerificationCode() != null)
-                htmlBody = htmlBody.replace("${code}", passwordMailSenderDto.getVerificationCode());
+//            if (passwordMailSenderDto.getVerificationCode() != null)
+            htmlBody = htmlBody.replace("${verificationCode}", passwordMailSenderDto.getVerificationCode());
+            String resetPasswordVerificationLink = UriComponentsBuilder.fromUriString(appProperties.getDomainUrl() + "/verify")
+                    .queryParam("isProcessPasswordReset", true)
+                    .queryParam("email", passwordMailSenderDto.getToEmail())
+                    .queryParam("forgotPasswordVerCode", passwordMailSenderDto.getVerificationCode())
+                    .build().toUriString();
+            htmlBody = htmlBody.replace("${verificationLink}", resetPasswordVerificationLink);
 
-            createMimeMessageHelper(passwordMailSenderDto.getToEmail(), emailTemplate.getFromEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
+            createMimeMessageHelper(emailTemplate.getFromEmail(), passwordMailSenderDto.getToEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
 
             emailHistoryDto.setFromEmail(emailTemplate.getFromEmail());
             emailHistoryDto.setToEmail(passwordMailSenderDto.getToEmail());
@@ -137,7 +153,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
             htmlBody = htmlBody.replace("${name}", user.getFullName());
 
-            createMimeMessageHelper(user.getEmail(), emailTemplate.getFromEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
+            createMimeMessageHelper(emailTemplate.getFromEmail(), user.getEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
 
             emailHistoryDto.setFromEmail(emailTemplate.getFromEmail());
             emailHistoryDto.setToEmail(user.getEmail());
@@ -181,7 +197,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             htmlBody = htmlBody.replace("${orderCode}", orderMailSenderDto.getOrderCode());
             htmlBody = htmlBody.replace("${orderUrl}", orderMailSenderDto.getOrderUrl());
 
-            createMimeMessageHelper(orderMailSenderDto.getToEmail(), emailTemplate.getFromEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
+            createMimeMessageHelper(emailTemplate.getFromEmail(), orderMailSenderDto.getToEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
 
             emailHistoryDto.setFromEmail(emailTemplate.getFromEmail());
             emailHistoryDto.setToEmail(orderMailSenderDto.getToEmail());
@@ -212,7 +228,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             htmlBody = htmlBody.replace("${name}", mailSenderDto.getFullName());
             htmlBody = htmlBody.replace("${orderCode}", mailSenderDto.getOrderCode());
 
-            createMimeMessageHelper(mailSenderDto.getToEmail(), emailTemplate.getFromEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
+            createMimeMessageHelper(emailTemplate.getFromEmail(), mailSenderDto.getToEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
 
             emailHistoryDto.setFromEmail(emailTemplate.getFromEmail());
             emailHistoryDto.setToEmail(mailSenderDto.getToEmail());
@@ -235,7 +251,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         boolean send = true;
         try {
-            createMimeMessageHelper(emailHistory.getToEmail(), emailHistory.getFromEmail(), mimeMessage, emailHistory.getSubject(), emailHistory.getMessage());
+            createMimeMessageHelper(emailHistory.getFromEmail(), emailHistory.getToEmail(), mimeMessage, emailHistory.getSubject(), emailHistory.getMessage());
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
             log.error("Send Mail using Template failed Exception {} to user with email {} of mail type {}", e.getMessage(), emailHistory.getToEmail(), emailHistory.getMailType());

@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class VendorRegistrationRequest {
+
+    private VendorType vendorType;
     private String email;
     private String password;
     private String companyName;

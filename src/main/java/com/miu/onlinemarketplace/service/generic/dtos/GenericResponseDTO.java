@@ -1,18 +1,18 @@
 package com.miu.onlinemarketplace.service.generic.dtos;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class GenericResponseDTO<T> {
-
-    private String messageCode;
 
     private T response;
 
-    public GenericResponseDTO() {
-    }
+    private String messageCode;
 
-    public GenericResponseDTO(T response) {
-        this.response = response;
-    }
 }

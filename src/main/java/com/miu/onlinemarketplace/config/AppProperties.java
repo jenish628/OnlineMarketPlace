@@ -12,6 +12,8 @@ import java.util.List;
 @Setter
 public class AppProperties {
 
+    private String domainUrl;
+
     private final Cors cors = new Cors();
     private final Jwt jwt = new Jwt();
     private final Mail mail = new Mail();
@@ -36,5 +38,7 @@ public class AppProperties {
         private Integer port;
         private String username;
         private String password;
+        // In seconds, 10minutes=600, or 3days=259200
+        private long verificationCodeExpirationSeconds = 259200;
     }
 }

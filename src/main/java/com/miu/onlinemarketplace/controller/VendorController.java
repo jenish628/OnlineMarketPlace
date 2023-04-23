@@ -10,6 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -23,6 +25,7 @@ public class VendorController {
         this.vendorService = vendorService;
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
     @PutMapping()
     public ResponseEntity<?> verifyVendor(@RequestBody VendorDto vendorDto) {
         if (vendorDto != null)
@@ -30,6 +33,8 @@ public class VendorController {
         return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
     }
 
+
+    @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
     @GetMapping()
     public ResponseEntity<?> getAllVendors(@PageableDefault(page = 0, size = 10, sort = "vendorId",
             direction = Sort.Direction.DESC) Pageable pageable) {
@@ -37,12 +42,20 @@ public class VendorController {
         return new ResponseEntity<>(vendorPageable, HttpStatus.OK);
     }
 
+    @PostAuthorize("hasAnyRole('ROLE_ADMIN') or returnObject.userDto.id == authentication.principal.userId")
     @GetMapping("/{vendorId}")
     public ResponseEntity<?> getByVendorId(@PathVariable Long id) {
-        VendorDto vendorDto = vendorService.getVendorById(id);
-        return new ResponseEntity<>(vendorDto, HttpStatus.OK);
+        VendorDto returnedVendorDto = vendorService.getVendorById(id);
+        // If @PostAuthorize doesn't work, replace with the code below
+//        Long currentUserId = Optional.ofNullable(returnedVendorDto)
+//                .map(vendorDto -> vendorDto.getUserDto())
+//                .map(userDto -> userDto.getId())
+//                .map(userId -> userId.equals(AppSecurityUtils.getCurrentUserId()) ? userId : null)
+//                .orElseThrow(() -> new AccessDeniedException("You are not authorized to access this resource"));
+        return new ResponseEntity<>(returnedVendorDto, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
     @PostMapping("/filter")
     public ResponseEntity<?> filterVendorData(@RequestBody GenericFilterRequestDTO<VendorDto> genericFilterRequest, Pageable pageable) {
         log.info("Vendor API: Filter vendor data");

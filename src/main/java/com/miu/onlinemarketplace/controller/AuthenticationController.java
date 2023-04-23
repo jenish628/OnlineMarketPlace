@@ -8,6 +8,9 @@ import com.miu.onlinemarketplace.service.auth.dtos.AuthResponseDTO;
 import com.miu.onlinemarketplace.service.auth.dtos.LoginRequestDTO;
 import com.miu.onlinemarketplace.service.auth.dtos.RegisterUserRequestDTO;
 import com.miu.onlinemarketplace.service.domain.users.VendorService;
+import com.miu.onlinemarketplace.service.domain.users.dtos.ForgotPasswordRequestDTO;
+import com.miu.onlinemarketplace.service.domain.users.dtos.PasswordResetVerRequestDTO;
+import com.miu.onlinemarketplace.service.domain.users.dtos.SignupEmailVerificationRequestDTO;
 import com.miu.onlinemarketplace.service.domain.users.dtos.VendorRegistrationRequest;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericResponseDTO;
 import lombok.AllArgsConstructor;
@@ -34,7 +37,7 @@ public class AuthenticationController {
     @PostMapping("/register-user")
     public ResponseEntity<?> registerUser(@RequestBody RegisterUserRequestDTO registerUserRequestDTO) {
         log.info("Authentication API: registerUser: ", registerUserRequestDTO.getEmail());
-        UserDto userDTO = authenticationService.createUser(registerUserRequestDTO, EnumRole.ROLE_USER);
+        UserDto userDTO = authenticationService.createUser(registerUserRequestDTO);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
@@ -50,6 +53,27 @@ public class AuthenticationController {
         log.info("Vendor API: check email availability: ", email);
         GenericResponseDTO<Boolean> checkEmailAvailability = authenticationService.checkEmailAvailability(email);
         return new ResponseEntity<>(checkEmailAvailability, HttpStatus.OK);
+    }
+
+    @PostMapping("/check-email-verification-code")
+    public ResponseEntity<?> verifySignUpEmail(@RequestBody SignupEmailVerificationRequestDTO signupEmailVerificationRequestDTO) {
+        log.info("Authentication API: verifySignUpEmail: ", signupEmailVerificationRequestDTO.getEmail());
+        GenericResponseDTO<Boolean> resendVerificationEmailStatus = authenticationService.verifySignUpEmail(signupEmailVerificationRequestDTO);
+        return new ResponseEntity<>(resendVerificationEmailStatus, HttpStatus.OK);
+    }
+
+    @PostMapping("/send-forgot-password-email")
+    public ResponseEntity<?> sendForgotPasswordResetEmail(@RequestBody ForgotPasswordRequestDTO forgotPasswordRequestDTO) {
+        log.info("Authentication API: sendForgotPasswordResetEmail: ", forgotPasswordRequestDTO.getEmail());
+        GenericResponseDTO<Boolean> resendVerificationEmailStatus = authenticationService.sendForgotPasswordResetEmail(forgotPasswordRequestDTO);
+        return new ResponseEntity<>(resendVerificationEmailStatus, HttpStatus.OK);
+    }
+
+    @PostMapping("/process-password-update-request")
+    public ResponseEntity<?> verifyAndProcessPasswordResetVerRequest(@RequestBody PasswordResetVerRequestDTO passwordResetVerRequestDTO) {
+        log.info("Authentication API: verifyAndProcessPasswordResetVerRequest: ", passwordResetVerRequestDTO.getEmail());
+        GenericResponseDTO<Boolean> checkVerificationCodeStatus = authenticationService.verifyAndProcessPasswordResetVerRequest(passwordResetVerRequestDTO);
+        return new ResponseEntity<>(checkVerificationCodeStatus, HttpStatus.OK);
     }
 
 

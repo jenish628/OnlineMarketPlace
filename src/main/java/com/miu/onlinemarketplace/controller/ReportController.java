@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,24 +40,28 @@ public class ReportController {
         return new ResponseEntity<>(bytes, headers, 200);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
     @GetMapping("/vendor/product/sales")
     public List<VendorProductReportDto> getProductSalesReportVendor(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
         return reportDataRetrieveService.productReportForVendor(fromDate, toDate);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/admin/vendor/sales")
     public List<AdminVendorReportDto> getVendorSalesReportAdmin(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
         return reportDataRetrieveService.vendorReportForAdmin(fromDate, toDate);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/admin/product/sales")
     public List<AdminProductReportDto> getProductSalesReportAdmin(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
         return reportDataRetrieveService.productReportForAdmin(fromDate, toDate);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
     @GetMapping("/vendor/product/sales/pdf")
     public ResponseEntity<byte[]> getProductSalesReportVendorPdf(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
@@ -64,6 +69,7 @@ public class ReportController {
         return getResponseEntity(bytes);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
     @GetMapping("/admin/vendor/sales/pdf")
     public ResponseEntity<byte[]> getVendorSalesReportAdminPdf(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
@@ -71,6 +77,8 @@ public class ReportController {
         return getResponseEntity(bytes);
     }
 
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/admin/product/sales/pdf")
     public ResponseEntity<byte[]> getProductSalesReportAdminPdf(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
