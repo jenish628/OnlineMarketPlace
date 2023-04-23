@@ -2,9 +2,8 @@ package com.miu.onlinemarketplace.controller;
 
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
-import com.miu.onlinemarketplace.entities.Product;
-import com.miu.onlinemarketplace.entities.ProductTemp;
 import com.miu.onlinemarketplace.service.domain.product.ProductService;
+import com.miu.onlinemarketplace.service.file.FileService;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,62 +14,41 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @Slf4j
 public class ProductController {
 
     private final ProductService productService;
+    private final FileService fileService;
 
-    public ProductController(final ProductService productService) {
+    public ProductController(final ProductService productService, FileService fileService) {
         this.productService = productService;
+        this.fileService = fileService;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_VENDOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/allProducts")
-    public ResponseEntity<?> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "productId",
+    public ResponseEntity<?> getAllVerifiedAndUnverifiedProducts(@PageableDefault(page = 0, size = 10, sort = "productId",
             direction = Sort.Direction.DESC) Pageable pageable,
                                             @RequestParam(required = false) Long categoryId
     ) {
-        // TODO - if ROLE_VENDOR, dont show UNVERIFIED product from other-vendor
         Page<ProductResponseDto> page = productService.getAllProducts(pageable, categoryId);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
-    // TODO Public - Get All Products for Customer
-    @GetMapping("/products")
-    public ResponseEntity<?> getCustomerProducts(@PageableDefault(page = 0, size = 10, sort = "productId",
+    @PreAuthorize(("hasAnyRole('ROLE_VENDOR')"))
+    @GetMapping("/allProducts/vendors")
+    public ResponseEntity<?> getAllVendorProducts(@PageableDefault(page = 0, size = 10, sort = "productId",
             direction = Sort.Direction.DESC) Pageable pageable,
-                                                 @RequestParam(required = false) Long categoryId
+                                                                 @RequestParam(required = false) Long vendorId
     ) {
-        Page page = productService.getCustomerProducts(pageable, categoryId);
+        Page<ProductResponseDto> page = productService.getAllProductsOfVendor(pageable, vendorId);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
-
-    // TODO Public - Get All Products form Name
-    @GetMapping("/products/name/{name}")
-    public ResponseEntity<?> getProductByName(
-            @PageableDefault(page = 0, size = 10, sort = "productId",
-                    direction = Sort.Direction.DESC) Pageable pageable,
-            @PathVariable String name) {
-        Page page = productService.getProductByName(pageable, name);
-        return new ResponseEntity<>(page, HttpStatus.OK);
-    }
-
-    // TODO public -
-    @GetMapping("/allProducts/{productId}")
-    public ResponseEntity<?> getAllProductId(@PathVariable Long productId) {
-        ProductResponseDto productDto = productService.getProductByProductId(productId);
-        return new ResponseEntity<>(productDto, HttpStatus.OK);
-    }
-
-    // Get TODO Products for Customer
-    @GetMapping("/products/{productId}")
-    public ResponseEntity<?> getByProductId(@PathVariable Long productId) {
-        ProductResponseDto productDto = productService.getByProductId(productId);
-        return new ResponseEntity<>(productDto, HttpStatus.OK);
-    }
-
     @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
     @PostMapping("/products")
     public ResponseEntity<?> createNewProduct(@RequestBody ProductDto productDto) {
@@ -107,4 +85,29 @@ public class ProductController {
         return new ResponseEntity<>(productPageable, HttpStatus.OK);
     }
 
+    /**
+     *
+     * @param multipartFile
+     * @param paths
+     * @return : Returns the file uploaded
+     */
+
+    @PostMapping("/products/images")
+    public ResponseEntity<?> uploadFiles(@RequestParam MultipartFile multipartFile,
+                                         @RequestParam("path") List<String> paths){
+        String file = fileService.uploadFiles(multipartFile, paths);
+        return new ResponseEntity<>(file, HttpStatus.OK);
+
+    }
+
+    /**
+     *
+     * @param file
+     * @return Return the files
+     */
+    @GetMapping("/products/images")
+    public ResponseEntity<?> downloadImages(@RequestParam String file){
+        String files = fileService.downloadImage(file);
+        return new ResponseEntity<>(files, HttpStatus.OK);
+    }
 }

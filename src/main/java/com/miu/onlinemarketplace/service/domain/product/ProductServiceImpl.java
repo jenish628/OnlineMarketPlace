@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.service.domain.product;
 
+import com.lowagie.text.pdf.codec.wmf.MetaDo;
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.entities.Product;
@@ -17,6 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -44,6 +48,14 @@ public class ProductServiceImpl implements ProductService {
             products = productRepository.findAll(pageable)
                     .map(product -> modelMapper.map(product, ProductResponseDto.class));
         }
+        return products;
+    }
+    @Override
+    public Page<ProductResponseDto> getAllProductsOfVendor(Pageable pageable, Long vendorId) {
+        Page<ProductResponseDto> products;
+        Page<Product> product = productRepository.findAllByVendor(pageable, vendorId);
+        products = productRepository.findAll(pageable)
+                .map(p -> modelMapper.map(product, ProductResponseDto.class));
         return products;
     }
 
