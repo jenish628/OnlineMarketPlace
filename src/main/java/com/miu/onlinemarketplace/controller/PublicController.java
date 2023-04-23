@@ -37,7 +37,7 @@ public class PublicController {
             direction = Sort.Direction.DESC) Pageable pageable,
                                                  @RequestParam(required = false) Long categoryId
     ) {
-        Page page = productService.getCustomerProducts(pageable, categoryId);
+        Page<ProductResponseDto> page = productService.getCustomerProducts(pageable, categoryId);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
     @GetMapping("/products/name/{name}")

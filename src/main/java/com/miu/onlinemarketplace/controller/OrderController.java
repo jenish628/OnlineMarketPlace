@@ -3,6 +3,7 @@ package com.miu.onlinemarketplace.controller;
 import com.miu.onlinemarketplace.common.dto.OrderDto;
 import com.miu.onlinemarketplace.common.enums.OrderStatus;
 import com.miu.onlinemarketplace.service.order.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/orders")
 @PreAuthorize("isAuthenticated()")
+@Slf4j
 public class OrderController {
 
     private final OrderService orderService;
@@ -44,4 +46,5 @@ public class OrderController {
             return new ResponseEntity<>(orderService.updateOrderStatus(orderId), HttpStatus.OK);
         return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
     }
+
 }

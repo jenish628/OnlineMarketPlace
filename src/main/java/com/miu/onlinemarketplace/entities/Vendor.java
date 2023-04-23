@@ -28,7 +28,7 @@ public class Vendor {
     private FileEntity logo;
     private Boolean isVerified;
 
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
 
