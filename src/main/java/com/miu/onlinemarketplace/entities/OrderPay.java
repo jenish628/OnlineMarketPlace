@@ -21,10 +21,21 @@ public class OrderPay {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long orderPayId;
+
+    private boolean isGuestUser;
+    private String clientIp;
+    private String cardId;
+    private OrderPayStatus status;
+    private Long transactionId;
+
+    private Long userId;
+    private String fullName;
+    private String email;
     private Double price;
 
     private String cardNumber;
+    private int lastFourDigits;
     private String nameOnCard;
 
     @Enumerated(value = EnumType.STRING)
@@ -32,8 +43,6 @@ public class OrderPay {
 
     @Enumerated(value = EnumType.STRING)
     private OrderPayStatus orderPayStatus;
-
-    private Long transactionId;
 
     @CreationTimestamp
     private LocalDateTime createdDate;

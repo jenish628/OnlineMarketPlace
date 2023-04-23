@@ -1,6 +1,7 @@
 package com.miu.onlinemarketplace.service.orderPay;
 
 import com.miu.onlinemarketplace.common.dto.*;
+import com.miu.onlinemarketplace.common.enums.CardBrand;
 import com.miu.onlinemarketplace.common.enums.OrderPayStatus;
 import com.miu.onlinemarketplace.entities.Address;
 import com.miu.onlinemarketplace.entities.CardInfo;
@@ -26,8 +27,6 @@ import java.util.function.Consumer;
 @Service
 @AllArgsConstructor
 public class OrderPayServiceImpl implements OrderPayService{
-
-    private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final CardInfoRepository cardInfoRepository;
     private final ShoppingCartRepository shoppingCartRepository;
@@ -109,9 +108,16 @@ public class OrderPayServiceImpl implements OrderPayService{
         validateRegisteredUser(orderPayDto, infoDto);
 
         OrderPay orderPay = modelMapper.map(orderPayDto, OrderPay.class);
-        orderPay.setOrderPayStatus(OrderPayStatus.PENDING);
-        OrderPay orderPaydb = orderPayRepository.save(orderPay);
+        orderPay.setOrderPayStatus(orderPayDto.getStatus()); /////
 
+        if(orderPayDto.getCardBrand().toUpperCase().equals(CardBrand.VISA))
+            orderPay.setCardBrand(CardBrand.VISA);
+        if(orderPayDto.getCardBrand().toUpperCase().equals(CardBrand.MASTERCARD))
+            orderPay.setCardBrand(CardBrand.MASTERCARD);
+        else
+            orderPay.setCardBrand(CardBrand.AMEX);
+
+        OrderPay orderPaydb = orderPayRepository.save(orderPay);
         OrderPayResponseDto responseDto = new OrderPayResponseDto().builder()
                 .message("Payment on process")
                 .orderPayStatus(orderPaydb.getOrderPayStatus().toString())
@@ -126,9 +132,8 @@ public class OrderPayServiceImpl implements OrderPayService{
         if(getLoggedInUserId() != null && orderPayDto.isGuestUser())
             throw new ConflictException("Not a guest user!");
 
-        if(infoDto.getPrice() != orderPayDto.getPrice() ||
-                infoDto.getQuantity() != orderPayDto.getQuantity() ){
-            throw new ConflictException("Price and quantity do not match!");
+        if(infoDto.getPrice() != orderPayDto.getPrice()){
+            throw new ConflictException("Price on transaction do not match!");
         }
     }
     private void validateRegisteredUser(OrderPayDto orderPayDto, OrderPayInfoDto infoDto) {
