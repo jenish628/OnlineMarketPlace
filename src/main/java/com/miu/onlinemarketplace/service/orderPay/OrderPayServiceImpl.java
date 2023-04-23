@@ -45,7 +45,10 @@ public class OrderPayServiceImpl implements OrderPayService{
 
         OrderPayInfoDto infoDto = new OrderPayInfoDto();
         checkCalculation(shoppingCartDtos, infoDto);
-        checkForLoggedInUser().accept(infoDto);
+        if(getLoggedInUserId() > 0)
+            checkForLoggedInUser().accept(infoDto);
+
+        System.out.println("=================== "+getLoggedInUserId());
         return infoDto;
     }
 
@@ -55,7 +58,7 @@ public class OrderPayServiceImpl implements OrderPayService{
         for (ShoppingCartDto dto: shoppingCartDtos) {
             totalPrice += dto.getProduct().getPrice() * dto.getQuantity();
             totalPrice += totalPrice * Utility.TAX/100;
-            totalPrice = Double.valueOf(String.format("%.3f", totalPrice));
+            totalPrice = Double.valueOf(String.format("%.2f", totalPrice));
             totalQuantity += dto.getQuantity();
         }
         infoDto.setPrice(totalPrice);
