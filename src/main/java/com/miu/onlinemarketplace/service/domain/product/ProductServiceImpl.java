@@ -106,9 +106,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public ProductResponseDto verifyProduct(Long productId) {
+    public ProductResponseDto verifyProduct(Long productId, boolean isVerified) {
         Product product = productRepository.findById(productId).get();
-        product.setIsVerified(true);
+        product.setIsVerified(isVerified);
         product = productRepository.save(product);
         productTempRepository.deleteById(productId);
         return modelMapper.map(product, ProductResponseDto.class);

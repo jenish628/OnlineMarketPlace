@@ -67,10 +67,15 @@ public class OrderServiceImpl implements OrderService {
             List<OrderItemDto> orderItemDtoList = orderItems.stream()
                     .map(orderItem -> modelMapper.map(orderItem, OrderItemDto.class))
                     .collect(Collectors.toList());
+            double total = 0.0;
+            for (OrderItemDto o: orderItemDtoList) {
+                total += (o.getQuantity() * o.getPrice()) - o.getDiscount() - o.getTax();
+            }
             CheckingOrderDto checkingOrderDto = new CheckingOrderDto();
             checkingOrderDto.setOrderId(order.getOrderId());
             checkingOrderDto.setOrderDate(order.getOrderDate());
             checkingOrderDto.setOrderStatus(order.getOrderStatus());
+            checkingOrderDto.setTotal(total);
             checkingOrderDto.setOrderCode(order.getOrderCode());
             checkingOrderDto.setOrderItemDto(orderItemDtoList);
             checkingOrderDto.setShippingStatus(order.getShipping().getShippingStatus());
