@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -27,8 +29,8 @@ public class FileServiceImpl implements FileService {
     }
 
     public String uploadFiles(MultipartFile file, List<String> path) {
-
-        String objectName = pathGenerate(path) + file.getName();
+        String[] extension = Objects.requireNonNull(file.getContentType()).split("/");
+        String objectName = pathGenerate(path) + UUID.randomUUID().toString() + "." + extension[extension.length - 1];
         try {
             boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
             if (!found) {

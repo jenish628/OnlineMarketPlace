@@ -1,5 +1,7 @@
 package com.miu.onlinemarketplace.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.service.domain.product.ProductService;
@@ -48,11 +50,14 @@ public class ProductController {
         Page<ProductResponseDto> page = productService.getAllProductsOfVendor(pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
+
     @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
     @PostMapping("/products")
-    public ResponseEntity<?> createNewProduct(@RequestBody ProductDto productDto) {
-        ProductDto productDto1 = productService.createNewProduct(productDto);
-        return new ResponseEntity<>(productDto1, HttpStatus.OK);
+    public ResponseEntity<?> createNewProduct(@RequestParam("files") List<MultipartFile> files,
+                                              @RequestParam("product") String product) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ProductDto productDto = productService.createNewProduct(files, mapper.readValue(product, ProductDto.class));
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")

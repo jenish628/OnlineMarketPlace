@@ -5,6 +5,9 @@ import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 public interface ProductService {
@@ -21,7 +24,7 @@ public interface ProductService {
 
     ProductResponseDto getByProductId(Long id);
 
-    ProductDto createNewProduct(ProductDto productDto);
+    ProductDto createNewProduct(List<MultipartFile> files, ProductDto productDto);
 
     ProductResponseDto verifyProduct(Long productId, boolean isVerified);
 

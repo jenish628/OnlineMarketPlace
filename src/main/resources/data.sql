@@ -127,15 +127,19 @@ values (1, 1),
 ON DUPLICATE KEY
     update order_order_id=order_order_id and payments_payment_id = payments_payment_id;
 
-INSERT INTO address (address_id, address1, address2, city,  zip_code, country,user_id)
-values(51, '1000N 4th St', '1001N 5th St','Fairfield', '52557', 'USA',1),
-    (52,'5000N 4th St', '5001N 5th St','Fairfieldd', '525555', 'UK',1),
-    (53, '1000N 4th St', '1001N 5th St','Fairfield', '52557', 'USA',2),
-      (54,'5000N 4th St', '5001N 5th St','Fairfieldd', '525555', 'UK',2);
+INSERT INTO address (address_id, address1, address2, city, zip_code, country, user_id)
+values (51, '1000N 4th St', '1001N 5th St', 'Fairfield', '52557', 'USA', 1),
+       (52, '5000N 4th St', '5001N 5th St', 'Fairfieldd', '525555', 'UK', 1),
+       (53, '1000N 4th St', '1001N 5th St', 'Fairfield', '52557', 'USA', 2),
+       (54, '5000N 4th St', '5001N 5th St', 'Fairfieldd', '525555', 'UK', 2)
+ON DUPLICATE KEY
+    update address_id=address_id;
 
-INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month,cvc, card_brand,address_type,user_id)
-values(51,'1234567891',1,1,'111','VISA','SHIPPING',1),
-      (52,'1234567892',2,2,222,'MASTERCARD', 'SHIPPING',2);
+INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month, cvc, card_brand, address_type, user_id)
+values (51, '1234567891', 1, 1, '111', 'VISA', 'SHIPPING', 1),
+       (52, '1234567892', 2, 2, 222, 'MASTERCARD', 'SHIPPING', 2)
+ON DUPLICATE KEY
+    update card_info_id=card_info_id;
 
 INSERT INTO shopping_cart (cart_id, created_date, quantity, product_id, user_id)
 VALUES (1, '2023-04-19', 1, 1, 1)
