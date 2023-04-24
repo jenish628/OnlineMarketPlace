@@ -1,10 +1,7 @@
 package com.miu.onlinemarketplace.service.payment;
 
 import com.miu.onlinemarketplace.common.dto.*;
-import com.miu.onlinemarketplace.common.enums.CardBrand;
-import com.miu.onlinemarketplace.common.enums.OrderItemStatus;
-import com.miu.onlinemarketplace.common.enums.OrderPayStatus;
-import com.miu.onlinemarketplace.common.enums.OrderStatus;
+import com.miu.onlinemarketplace.common.enums.*;
 import com.miu.onlinemarketplace.entities.*;
 import com.miu.onlinemarketplace.exception.ConflictException;
 import com.miu.onlinemarketplace.repository.*;
@@ -31,6 +28,7 @@ public class PaymentServiceImpl implements PaymentService{
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final CardInfoRepository cardInfoRepository;
+    private final ShippingRepository shippingRepository;
 
     private final ShoppingCartService shoppingCartService;
     private final ShoppingCartRepository shoppingCartRepository;
@@ -126,6 +124,13 @@ public class PaymentServiceImpl implements PaymentService{
     }
 
     private void saveOrderItem(OrderPayDto orderPayDto, Order order) {
+        Shipping shipping = new Shipping();
+        shipping.setShippingStatus(ShippingStatus.PENDING);
+        shipping.setAddress(modelMapper.map(orderPayDto.getAddressDto(), Address.class));
+        shipping.setDeliveryInstruction("");
+        shippingRepository.save(shipping);
+        order.setShipping(shipping);
+        Order order1 = orderRepository.save(order);
         for (ShoppingCartDto dto: orderPayDto.getShoppingCartDtos()) {
             OrderItem orderItem = new OrderItem();
             orderItem.setQuantity(dto.getQuantity());
