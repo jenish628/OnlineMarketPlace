@@ -33,7 +33,7 @@ public class Order {
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     List<Payment> payments;
 
 

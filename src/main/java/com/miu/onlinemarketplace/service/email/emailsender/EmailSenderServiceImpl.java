@@ -271,16 +271,16 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             String htmlBody = emailTemplate.getTemplate();
 
             htmlBody = htmlBody.replace("${name}", orderPayDto.getFullName());
-            htmlBody = htmlBody.replace("${price}", orderPayDto.getFullName());
+            htmlBody = htmlBody.replace("${price}", String.valueOf(orderPayDto.getPrice()));
 
             String address = orderPayDto.getAddressDto().getAddress1() +"\n"+
-                    orderPayDto.getAddressDto().getAddress2() != null ? orderPayDto.getAddressDto().getAddress2() : "" +"\n"+
+//                    orderPayDto.getAddressDto().getAddress2() != null ? orderPayDto.getAddressDto().getAddress2() : "" +"\n"+
                     orderPayDto.getAddressDto().getCity() +", "+
                     orderPayDto.getAddressDto().getState() +", "+
                     orderPayDto.getAddressDto().getZipCode() +", "+
                     orderPayDto.getAddressDto().getZipCode()
                     ;
-            htmlBody = htmlBody.replace("${address}", orderPayDto.getAddressDto().getAddress1());
+            htmlBody = htmlBody.replace("${address}", address);
 
             createMimeMessageHelper(emailTemplate.getFromEmail(), orderPayDto.getEmail(), mimeMessage, emailTemplate.getSubject(), htmlBody);
 

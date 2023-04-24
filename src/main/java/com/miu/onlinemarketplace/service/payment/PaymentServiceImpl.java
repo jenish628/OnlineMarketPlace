@@ -99,8 +99,6 @@ public class PaymentServiceImpl implements PaymentService{
         }
 
         Payment payment = setPayment(orderPayDto, addressFlag, cardInfoFlag);
-        emailSenderService.sendPaymentNotification(orderPayDto);
-
         Charge charge = stripePaymentService.pay(orderPayDto.getTransactionId(), infoDto.getPrice());
         if(charge.getPaymentMethod() != null){
             if(!charge.getPaymentMethod().equals(orderPayDto.getCardId())) {
@@ -113,6 +111,7 @@ public class PaymentServiceImpl implements PaymentService{
             payment.setOrderPayStatus(OrderPayStatus.PENDING);
         }
         payment = paymentRepository.save(payment);
+        emailSenderService.sendPaymentNotification(orderPayDto);
 
         Order order = saveOrder(payment, charge);
         saveOrderItem(orderPayDto, order);
@@ -151,16 +150,23 @@ public class PaymentServiceImpl implements PaymentService{
     @NotNull
     private Order saveOrder(Payment paymentDb, Charge charge) {
         Order order = new Order();
-        List<Payment> orderPayList = new ArrayList<>();
-        orderPayList.add(paymentDb);
 
-        if(!charge.getPaymentMethod().equals(paymentDb.getCardId())) {
-            order.setOrderStatus(OrderStatus.PENDING);
+        if(charge.getPaymentMethod() != null){
+            if(!charge.getPaymentMethod().equals(paymentDb.getCardId())) {
+                order.setOrderStatus(OrderStatus.PENDING);
+            } else {
+                order.setOrderStatus(OrderStatus.CONFIRMED);
+            }
         }else {
-            order.setOrderStatus(OrderStatus.CONFIRMED);
+            order.setOrderStatus(OrderStatus.CANCELED);
         }
         order.setOrderCode(UUID.randomUUID().toString());
         order.setUser(getLoggedInUserId() != null ? userRepository.findById(getLoggedInUserId()).get() : null);
+
+        List<Payment> payments = new ArrayList<>();
+        payments.add(paymentDb);
+        order.setPayments(payments);
+
         return orderRepository.save(order);
     }
 
