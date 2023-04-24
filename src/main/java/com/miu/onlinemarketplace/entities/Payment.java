@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.entities;
 
+import com.miu.onlinemarketplace.common.enums.OrderPayStatus;
 import com.miu.onlinemarketplace.common.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,17 +15,31 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Payment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long paymentId;
-    private String cardNumber;
-    private String cardHolderName;
-    private Double payAmount;
-    private String cardBrand;
-    private Long transactionId;
+
+    private Boolean isGuestUser;
+    private String clientIp;
+    private String cardId;
+    @Enumerated(value = EnumType.STRING)
+    private OrderPayStatus orderPayStatus;
+    private String transactionId;
+
+    private Long userId;
+    private String fullName;
+    private String email;
+    private Double price;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="addressId")
+    private Address address;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cardInfoId")
+    private CardInfo cardInfo;
+
     @CreationTimestamp
     private LocalDateTime createdDate;
-    @Enumerated(value = EnumType.STRING)
-    private PaymentStatus paymentStatus;
+
 }

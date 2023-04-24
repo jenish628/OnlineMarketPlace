@@ -1,4 +1,4 @@
-package com.miu.onlinemarketplace.service.orderPay;
+package com.miu.onlinemarketplace.service.payment;
 
 import com.miu.onlinemarketplace.common.dto.*;
 import com.miu.onlinemarketplace.common.enums.CardBrand;
@@ -11,7 +11,6 @@ import com.miu.onlinemarketplace.repository.*;
 import com.miu.onlinemarketplace.security.AppSecurityUtils;
 import com.miu.onlinemarketplace.service.domain.shopping.ShoppingCartService;
 import com.miu.onlinemarketplace.service.email.emailsender.EmailSenderService;
-import com.miu.onlinemarketplace.service.payment.StripePaymentService;
 import com.miu.onlinemarketplace.service.thirdParty.ThirdPartyService;
 import com.miu.onlinemarketplace.utils.Utility;
 import com.stripe.model.Charge;
@@ -23,20 +22,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
 @Service
 @AllArgsConstructor
-public class OrderPayServiceImpl implements OrderPayService{
+public class PaymentServiceImpl implements PaymentService{
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final CardInfoRepository cardInfoRepository;
 
     private final ShoppingCartService shoppingCartService;
     private final ShoppingCartRepository shoppingCartRepository;
-    private final OrderPayRepository orderPayRepository;
+    private final PaymentRepository paymentRepository;
 
     private final ProductRepository productRepository;
 
@@ -101,7 +99,7 @@ public class OrderPayServiceImpl implements OrderPayService{
         }
 
         Charge charge = stripePaymentService.pay(orderPayDto.getTransactionId(), infoDto.getPrice());
-        OrderPay orderPay = saveOrderPay(orderPayDto, addressFlag, cardInfoFlag);
+        Payment orderPay = saveOrderPay(orderPayDto, addressFlag, cardInfoFlag);
         emailSenderService.sendPaymentNotification(orderPayDto);
 
         if(!charge.getPaymentMethod().equals(orderPayDto.getCardId())) {
@@ -109,7 +107,7 @@ public class OrderPayServiceImpl implements OrderPayService{
         }else {
             orderPay.setOrderPayStatus(OrderPayStatus.COMPLETE);
         }
-        orderPay = orderPayRepository.save(orderPay);
+        orderPay = paymentRepository.save(orderPay);
 
         Order order = saveOrder(orderPay, charge);
         saveOrderItem(orderPayDto, order);
@@ -146,12 +144,12 @@ public class OrderPayServiceImpl implements OrderPayService{
     }
 
     @NotNull
-    private Order saveOrder(OrderPay orderPaydb, Charge charge) {
+    private Order saveOrder(Payment paymentDb, Charge charge) {
         Order order = new Order();
-        List<OrderPay> orderPayList = new ArrayList<>();
-        orderPayList.add(orderPaydb);
+        List<Payment> orderPayList = new ArrayList<>();
+        orderPayList.add(paymentDb);
 
-        if(!charge.getPaymentMethod().equals(orderPaydb.getCardId())) {
+        if(!charge.getPaymentMethod().equals(paymentDb.getCardId())) {
             order.setOrderStatus(OrderStatus.PENDING);
         }else {
             order.setOrderStatus(OrderStatus.CONFIRMED);
@@ -178,10 +176,10 @@ public class OrderPayServiceImpl implements OrderPayService{
 
 //               || address.getAddress2() != null ? address.getAddress2().equals(addressDto.getAddress2()) :
                 if( (address.getAddress1().equals(addressDto.getAddress1()) ) &&
-                    address.getCity().equals(addressDto.getCity()) &&
-                    address.getState().equals(addressDto.getState()) &&
-                    address.getZipCode().equals(addressDto.getZipCode()) &&
-                    address.getCountry().equals(addressDto.getCountry())){
+                        address.getCity().equals(addressDto.getCity()) &&
+                        address.getState().equals(addressDto.getState()) &&
+                        address.getZipCode().equals(addressDto.getZipCode()) &&
+                        address.getCountry().equals(addressDto.getCountry())){
                     addressFlag = true;
                     break;
                 }
@@ -208,8 +206,8 @@ public class OrderPayServiceImpl implements OrderPayService{
     }
 
 
-    private OrderPay saveOrderPay(OrderPayDto orderPayDto,boolean addressFlag, boolean cardInfoFlag) {
-        OrderPay orderPay = new OrderPay();
+    private Payment saveOrderPay(OrderPayDto orderPayDto,boolean addressFlag, boolean cardInfoFlag) {
+        Payment orderPay = new Payment();
         orderPay.setIsGuestUser(orderPayDto.getIsGuestUser());
         orderPay.setClientIp(orderPayDto.getClientIp());
         orderPay.setCardId(orderPayDto.getCardId());

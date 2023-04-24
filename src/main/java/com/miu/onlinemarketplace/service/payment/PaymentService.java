@@ -1,13 +1,13 @@
-package com.miu.onlinemarketplace.service.orderPay;
+package com.miu.onlinemarketplace.service.payment;
 
 import com.miu.onlinemarketplace.common.dto.OrderPayDto;
+import com.miu.onlinemarketplace.common.dto.OrderPayInfoDto;
 import com.miu.onlinemarketplace.common.dto.OrderPayResponseDto;
 import com.miu.onlinemarketplace.common.dto.ShoppingCartDto;
-import com.miu.onlinemarketplace.common.dto.OrderPayInfoDto;
 
 import java.util.List;
 
-public interface OrderPayService {
+public interface PaymentService {
 
     OrderPayInfoDto findOrderPayInfo(List<ShoppingCartDto> shoppingCartDtos);
 
