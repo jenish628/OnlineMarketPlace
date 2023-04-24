@@ -34,12 +34,14 @@ public class OrderServiceImpl implements OrderService {
     private VendorRepository vendorRepository;
     private ModelMapper modelMapper;
 
-    public OrderServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, ModelMapper modelMapper) {
+
+    public OrderServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, EmailSenderService emailSenderService, VendorRepository vendorRepository, ModelMapper modelMapper) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
+        this.emailSenderService = emailSenderService;
+        this.vendorRepository = vendorRepository;
         this.modelMapper = modelMapper;
     }
-
 
     @Override
     public OrderDto saveOrder(OrderDto orderDto) {
@@ -108,7 +110,6 @@ public class OrderServiceImpl implements OrderService {
     public boolean updateOrderStatus(Long orderId) {
         EnumRole enumRole = AppSecurityUtils.getCurrentUserRole().orElseThrow(() -> new AppSecurityException("Must be loggedIn"));
         Long userId = AppSecurityUtils.getCurrentUserId().orElseThrow(() -> new DataNotFoundException("User ID Not Found"));// if currentUser role is vendor, get id
-        Vendor vendorId = vendorRepository.findByUser_UserId(userId).orElseThrow(() -> new DataNotFoundException("Vendor doesn't have linked UserId"));
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new DataNotFoundException("Order Not Found"));
         OrderMailSenderDto orderMailSenderDto = new OrderMailSenderDto();
         if(enumRole == EnumRole.ROLE_ADMIN){
@@ -117,6 +118,7 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(order);
             orderMailSenderDto.setOrderStatus(OrderStatus.DELIVERED);
         } else if (enumRole == EnumRole.ROLE_VENDOR) {
+            Vendor vendorId = vendorRepository.findByUser_UserId(userId).orElseThrow(() -> new DataNotFoundException("Vendor doesn't have linked UserId"));
             // if vendor, find all orderItems of orderId, and set to SHIPPED
             List<OrderItem> allOrderItemByOrderIdAndVendorId = orderItemRepository.findAllOrderItemByOrderIdAndVendorId(order.getOrderId(), vendorId.getVendorId() );
             for(OrderItem orderItem : allOrderItemByOrderIdAndVendorId){

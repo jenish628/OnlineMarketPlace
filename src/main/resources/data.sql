@@ -45,13 +45,13 @@ ON DUPLICATE KEY
 /**
   ========== Initial Data: Product Category, Product ==========
  */
-INSERT INTO product_category (category_id, category)
-VALUES (1, 'Computers'),
-       (2, 'Books'),
-       (3, 'Kitchen'),
-       (4, 'Fashion'),
-       (5, 'Electronic'),
-       (6, 'Clothing')
+INSERT INTO product_category (category_id, category, file_uri)
+VALUES (1, 'Computers', 'https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1'),
+       (2, 'Books' , 'https://images.pexels.com/photos/3368816/pexels-photo-3368816.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1'),
+       (3, 'Kitchen', 'https://images.pexels.com/photos/350417/pexels-photo-350417.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1'),
+       (4, 'Fashion', 'https://images.pexels.com/photos/1381556/pexels-photo-1381556.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1'),
+       (5, 'Electronic', 'https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1'),
+       (6, 'Clothing', 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1')
 ON DUPLICATE KEY
     UPDATE category_id=category_id;
 

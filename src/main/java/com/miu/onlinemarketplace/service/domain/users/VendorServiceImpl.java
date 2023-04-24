@@ -98,7 +98,7 @@ public class VendorServiceImpl implements VendorService {
         // Vendor payment
         double amount = 20000; // VendorType.GLOBAL
 
-        if (!paymentProvider.pay("", amount).getPaid()) {
+        if (paymentProvider.pay("", amount) == null ) {
             throw new CustomAppException("Payment failed, please retry again or use different card");
         }
 
