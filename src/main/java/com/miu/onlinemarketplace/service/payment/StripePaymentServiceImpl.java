@@ -25,7 +25,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             return charge;
         }catch (Exception e){
             System.out.println(e.getMessage());
-            return null;
+            return new Charge();
         }
     }
 }

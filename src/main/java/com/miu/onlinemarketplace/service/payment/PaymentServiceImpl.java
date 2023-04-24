@@ -98,24 +98,29 @@ public class PaymentServiceImpl implements PaymentService{
             cardInfoFlag = validateCardInfo(orderPayDto.getCardInfoDto());
         }
 
-        Charge charge = stripePaymentService.pay(orderPayDto.getTransactionId(), infoDto.getPrice());
-        Payment orderPay = saveOrderPay(orderPayDto, addressFlag, cardInfoFlag);
+        Payment payment = setPayment(orderPayDto, addressFlag, cardInfoFlag);
         emailSenderService.sendPaymentNotification(orderPayDto);
 
-        if(!charge.getPaymentMethod().equals(orderPayDto.getCardId())) {
-            orderPay.setOrderPayStatus(OrderPayStatus.FAILURE);
-        }else {
-            orderPay.setOrderPayStatus(OrderPayStatus.COMPLETE);
-        }
-        orderPay = paymentRepository.save(orderPay);
+        Charge charge = stripePaymentService.pay(orderPayDto.getTransactionId(), infoDto.getPrice());
+        if(charge.getPaymentMethod() != null){
+            if(!charge.getPaymentMethod().equals(orderPayDto.getCardId())) {
+                payment.setOrderPayStatus(OrderPayStatus.FAILURE);
+            } else {
+                payment.setOrderPayStatus(OrderPayStatus.COMPLETE);
+            }
 
-        Order order = saveOrder(orderPay, charge);
+        }else {
+            payment.setOrderPayStatus(OrderPayStatus.PENDING);
+        }
+        payment = paymentRepository.save(payment);
+
+        Order order = saveOrder(payment, charge);
         saveOrderItem(orderPayDto, order);
 
         return new OrderPayResponseDto().builder()
                 .message("Payment success!")
                 .body(order.getOrderId())
-                .orderPayStatus(orderPay.getOrderPayStatus().toString())
+                .orderPayStatus(payment.getOrderPayStatus().toString())
                 .success(true)
                 .httpStatus(HttpStatus.OK)
                 .build();
@@ -206,7 +211,7 @@ public class PaymentServiceImpl implements PaymentService{
     }
 
 
-    private Payment saveOrderPay(OrderPayDto orderPayDto,boolean addressFlag, boolean cardInfoFlag) {
+    private Payment setPayment(OrderPayDto orderPayDto,boolean addressFlag, boolean cardInfoFlag) {
         Payment orderPay = new Payment();
         orderPay.setIsGuestUser(orderPayDto.getIsGuestUser());
         orderPay.setClientIp(orderPayDto.getClientIp());
