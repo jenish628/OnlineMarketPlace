@@ -3,7 +3,6 @@ package com.miu.onlinemarketplace.service.report;
 import com.miu.onlinemarketplace.common.enums.ReportType;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
@@ -15,7 +14,6 @@ import org.springframework.util.ResourceUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,23 +27,23 @@ public class ReportExporterServiceImpl implements ReportExporterService {
     }
 
     @Override
-    public byte[] exportToPdf(ReportType reportType, Map<String, Object> data, List<Map<String, Object>> dataList) throws IOException, JRException {
+    public byte[] exportToPdf(ReportType reportType, Map<String, Object> data, JRDataSource listDataSource) throws IOException, JRException {
         JasperPrint jasperPrint;
-        if (dataList.isEmpty()) {
+        if (listDataSource == null) {
             jasperPrint = getJasperPrint(reportType.getName(), data);
         } else {
-            jasperPrint = getJasperPrint(reportType.getName(), data, dataList);
+            jasperPrint = getJasperPrint(reportType.getName(), data, listDataSource);
         }
         return JasperExportManager.exportReportToPdf(jasperPrint);
     }
 
     @Override
-    public byte[] exportToHtml(ReportType reportType, Map<String, Object> data, List<Map<String, Object>> dataList) throws IOException, JRException {
+    public byte[] exportToHtml(ReportType reportType, Map<String, Object> data, JRDataSource listDataSource) throws IOException, JRException {
         JasperPrint jasperPrint;
-        if (dataList.isEmpty()) {
+        if (listDataSource == null) {
             jasperPrint = getJasperPrint(reportType.getName(), data);
         } else {
-            jasperPrint = getJasperPrint(reportType.getName(), data, dataList);
+            jasperPrint = getJasperPrint(reportType.getName(), data, listDataSource);
         }
         HtmlExporter htmlExporter = new HtmlExporter();
         htmlExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
@@ -61,8 +59,8 @@ public class ReportExporterServiceImpl implements ReportExporterService {
         return JasperFillManager.fillReport(JasperCompileManager.compileReport(file.getAbsolutePath()), parameters);
     }
 
-    private JasperPrint getJasperPrint(String report, Map<String, Object> parameters, List<Map<String, Object>> dataList) throws IOException, JRException {
-        JRDataSource listDataSource = new JRBeanCollectionDataSource(dataList);
+    private JasperPrint getJasperPrint(String report, Map<String, Object> parameters, JRDataSource listDataSource) throws IOException, JRException {
+//        JRDataSource listDataSource = new JRBeanCollectionDataSource(dataList);
         Resource resource = resourceLoader.getResource("classpath:jasperreports/" + report + ".jrxml");
         File file = ResourceUtils.getFile(resource.getURI());
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());

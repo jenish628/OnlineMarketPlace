@@ -22,12 +22,12 @@ public class ScheduledTasks {
         this.emailSenderService = emailSenderService;
     }
 
-    @Scheduled(cron = "0 0 12 * * ?") // At 12:00 p.m. (noon) every day
-//    @Scheduled(fixedRate = 5000) // At every 5 seconds
-    public void saveCommission() {
-        accountCommissionService.saveCommission();
-        log.info("Schedule Start ......");
-    }
+//    @Scheduled(cron = "0 0 12 * * ?") // At 12:00 p.m. (noon) every day
+@Scheduled(fixedRate = 5000) // At every 5 seconds
+public void saveCommission() {
+    accountCommissionService.saveCommission();
+    log.info("Schedule Start ......");
+}
 
     @Scheduled(initialDelay = 60000, fixedDelay = 60000)
     public void resendUnsuccessfulMail() {

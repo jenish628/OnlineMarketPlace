@@ -10,4 +10,5 @@ public interface ReportService {
 
     byte[] getVendorSalesReportForAdmin(LocalDate fromDate, LocalDate toDate);
 
+//    byte[] getVendorSalesReport(LocalDate fromDate, LocalDate toDate);
 }
