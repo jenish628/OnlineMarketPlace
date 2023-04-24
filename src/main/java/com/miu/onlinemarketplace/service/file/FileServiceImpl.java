@@ -46,7 +46,7 @@ public class FileServiceImpl implements FileService {
             // Upload the image to MinIO
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(bucketName)
-                    .object(resource.getFilename())
+                    .object(objectName)
                     .stream(inputStream, resource.contentLength(), -1)
 //                    .contentType("image/jpeg")
                     .build());
