@@ -4,7 +4,8 @@
 INSERT INTO role (role_id, role)
 VALUES (1, 'ROLE_USER'),
        (2, 'ROLE_ADMIN'),
-       (3, 'ROLE_VENDOR') ON DUPLICATE KEY
+       (3, 'ROLE_VENDOR'),
+       (4, 'ROLE_CLIENT') ON DUPLICATE KEY
 UPDATE role_id=role_id;
 
 INSERT INTO user (user_id, email, password, user_status, role_id, full_name) -- all passwords are: test
@@ -13,7 +14,9 @@ VALUES (1, 'user@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4Rk
        (3, 'admin@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2, 'Test Admin'),
        (4, 'vendor@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'Test Vendor'),
        (5, 'apple@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'Apple Inc'),
-       (6, 'miu-shop@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'MIU Shop') ON DUPLICATE KEY
+       (6, 'miu-shop@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'MIU Shop'),
+       (7, 'client@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 4, 'Test Client'),
+ON DUPLICATE KEY
 UPDATE user_id=user_id;
 
 INSERT INTO address (address_id, address1, city, country, state, zip_code, user_id)
