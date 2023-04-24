@@ -20,5 +20,5 @@ public class OrderSearchSpecification {
         }
         return dynamicOrderSpec;
     }
-
 }
+

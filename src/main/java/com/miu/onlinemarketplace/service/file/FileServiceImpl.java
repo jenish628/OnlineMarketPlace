@@ -5,10 +5,14 @@ import io.minio.errors.MinioException;
 import io.minio.http.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -27,6 +31,31 @@ public class FileServiceImpl implements FileService {
     public FileServiceImpl(MinioClient minioClient) {
         this.minioClient = minioClient;
     }
+
+    public String uploadImagesFromClassPathResource(ClassPathResource resource) {
+        try {
+
+            boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+            if (!found) {
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+            }
+            String[] extension = resource.getFilename().split(".");
+            String objectName = pathGenerate(List.of("/products")) + UUID.randomUUID().toString() + "." + extension[extension.length - 1];;
+            InputStream inputStream = resource.getInputStream();
+            // Upload the image to MinIO
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(resource.getFilename())
+                    .stream(inputStream, resource.contentLength(), -1)
+//                    .contentType("image/jpeg")
+                    .build());
+            return downloadImage(objectName);
+        } catch (Exception e) {
+            log.error("Error on uploading file {}, {}", resource.getFilename(), e.getMessage());
+        }
+        return "http://via.placeholder.com/640x360";
+    }
+
 
     public String uploadFiles(MultipartFile file, List<String> path) {
         String[] extension = Objects.requireNonNull(file.getContentType()).split("/");

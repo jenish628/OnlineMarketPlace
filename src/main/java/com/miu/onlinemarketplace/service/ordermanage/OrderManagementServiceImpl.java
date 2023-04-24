@@ -6,11 +6,13 @@ import com.miu.onlinemarketplace.common.dto.OrderResponseDto;
 import com.miu.onlinemarketplace.entities.Order;
 import com.miu.onlinemarketplace.entities.OrderItem;
 import com.miu.onlinemarketplace.entities.Vendor;
+import com.miu.onlinemarketplace.exception.AppSecurityException;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.OrderItemRepository;
 import com.miu.onlinemarketplace.repository.OrderRepository;
 import com.miu.onlinemarketplace.repository.VendorRepository;
 import com.miu.onlinemarketplace.security.AppSecurityUtils;
+import com.miu.onlinemarketplace.security.models.EnumRole;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import com.miu.onlinemarketplace.service.order.OrderSearchSpecification;
 import jakarta.transaction.Transactional;
@@ -22,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -83,7 +86,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                 .map(orderItem -> modelMapper.map(orderItem, OrderItemDto.class))
                 .toList();
         double total = 0.0;
-        for(OrderItemDto o: orderItemDtoList) {
+        for (OrderItemDto o : orderItemDtoList) {
             total += (o.getQuantity() * o.getPrice()) + o.getTax() - o.getDiscount();
         }
         // returning OrderResponseDto
@@ -97,10 +100,32 @@ public class OrderManagementServiceImpl implements OrderManagementService {
     @Override
     public Page<OrderResponseDto> filterOrderData(GenericFilterRequestDTO<OrderDto> genericFilterRequest, Pageable pageable) {
 
-        Specification<Order> specification = Specification
-                .where(OrderSearchSpecification.processDynamicOrderFilter(genericFilterRequest));
-
-        Page<Order> filteredOrderPage = orderRepository.findAll(specification, pageable);
+        EnumRole currentUserRole = AppSecurityUtils.getCurrentUserRole()
+                .orElseThrow(() -> new AppSecurityException("The table filter not available for guest users"));
+        if (currentUserRole.equals(EnumRole.ROLE_USER)) {
+            throw new AppSecurityException("You dont have the required privilege for this.");
+        }
+        // Vendor can only see their product, ALso, no specification available for now
+        Page<Order> filteredOrderPage;
+        if (currentUserRole.equals(EnumRole.ROLE_VENDOR)) {
+            Long currentUserId = AppSecurityUtils.getCurrentUserId()
+                    .orElseThrow(() -> new AppSecurityException("The table filter not available for guest users"));
+            Vendor vendor = vendorRepository.findByUser_UserId(currentUserId)
+                    .orElseThrow(() -> new DataNotFoundException("Linked vendor with given Id, not found"));
+            Long orderId = Optional.ofNullable(genericFilterRequest)
+                    .map(orderDtoGenericFilterRequestDTO -> orderDtoGenericFilterRequestDTO.getDataFilter())
+                    .map(orderDto -> orderDto.getOrderId())
+                    .orElse(0L);
+            if (orderId > 0) {
+                filteredOrderPage = orderRepository.findOrdersByVendorIdAndOrderId(vendor.getVendorId(), genericFilterRequest.getDataFilter().getOrderId(), pageable);
+            } else {
+                filteredOrderPage = orderRepository.findOrdersByVendorId(vendor.getVendorId(), pageable);
+            }
+        } else {
+            Specification<Order> specification = Specification
+                    .where(OrderSearchSpecification.processDynamicOrderFilter(genericFilterRequest));
+            filteredOrderPage = orderRepository.findAll(specification, pageable);
+        }
         List<OrderResponseDto> orderResponseDtoList = filteredOrderPage.stream().map(order -> {
             List<OrderItem> orderItemList = orderItemRepository.findAllOrderItemByOrderId(order.getOrderId());
             return mapToOrderResponseDto(order, orderItemList);
