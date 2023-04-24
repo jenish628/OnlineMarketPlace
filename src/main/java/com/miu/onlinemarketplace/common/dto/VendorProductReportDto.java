@@ -10,7 +10,7 @@ import lombok.Setter;
 public class VendorProductReportDto {
     private Integer id;
     private String productName;
-    private Integer quantity;
+    private Double quantity;
     private Double rate;
     private Double subTotal;
     private Double discount;
