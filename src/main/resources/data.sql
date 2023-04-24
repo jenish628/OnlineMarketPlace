@@ -139,9 +139,9 @@ ON DUPLICATE KEY
 #     update payment_id=payment_id;
 
 
-INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month, cvc, card_brand, address_type, user_id, last4)
-values (1, '1234567891', 1, 1, '111', 'VISA', 'SHIPPING', 1,4242),
-       (2, '1234567892', 2, 2, 222, 'MASTERCARD', 'SHIPPING', 2, 4444)
+INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month, cvc, card_brand, address_type, user_id, card_digit)
+values (1, '1234567891', 1, 1, '111', 'VISA', 'SHIPPING', 1,'4242'),
+       (2, '1234567892', 2, 2, 222, 'MASTERCARD', 'SHIPPING', 2, '4444')
 ON DUPLICATE KEY
     update card_info_id=card_info_id;
 

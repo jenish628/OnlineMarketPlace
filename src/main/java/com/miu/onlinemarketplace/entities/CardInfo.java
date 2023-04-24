@@ -22,7 +22,7 @@ public class CardInfo {
     private Long cardInfoId;
     private String cardNumber;
     @Column(nullable = false)
-    private Integer last4;
+    private String cardDigit;
     private Integer expYear;
     private Integer expMonth;
     private String cvc;

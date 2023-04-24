@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -43,6 +45,8 @@ public class PaymentServiceImpl implements PaymentService{
     private final ThirdPartyService thirdPartyService;
     private final StripePaymentService stripePaymentService;
     private final EmailSenderService emailSenderService;
+
+    private final PasswordEncoder passwordEncoder;
 
 
     private Long getLoggedInUserId(){
@@ -125,13 +129,6 @@ public class PaymentServiceImpl implements PaymentService{
     }
 
     private void saveOrderItem(OrderPayDto orderPayDto, Order order) {
-        Shipping shipping = new Shipping();
-        shipping.setShippingStatus(ShippingStatus.PENDING);
-        shipping.setAddress(modelMapper.map(orderPayDto.getAddressDto(), Address.class));
-        shipping.setDeliveryInstruction("");
-        shippingRepository.save(shipping);
-        order.setShipping(shipping);
-        Order order1 = orderRepository.save(order);
         for (ShoppingCartDto dto: orderPayDto.getShoppingCartDtos()) {
             OrderItem orderItem = new OrderItem();
             orderItem.setQuantity(dto.getQuantity());
@@ -173,6 +170,13 @@ public class PaymentServiceImpl implements PaymentService{
         payments.add(paymentDb);
         order.setPayments(payments);
 
+        Shipping shipping = new Shipping();
+        shipping.setShippingStatus(ShippingStatus.PENDING);
+        shipping.setAddress(paymentDb.getAddress());
+        shipping.setDeliveryInstruction("");
+        shippingRepository.save(shipping);
+        order.setShipping(shipping);
+
         return orderRepository.save(order);
     }
 
@@ -210,7 +214,8 @@ public class PaymentServiceImpl implements PaymentService{
         List<CardInfo> cardInfos = cardInfoRepository.findByUserUserId(getLoggedInUserId());
         if(cardInfos.size() > 0) {
             for (CardInfo cardInfo : cardInfos) {
-                if (cardInfo.getLast4() == cardInfoDto.getLast4() &&
+                BCryptPasswordEncoder bpe = new BCryptPasswordEncoder();
+                if(bpe.matches(cardInfo.getCardDigit(), cardInfoDto.getCardDigit()) &&
                         cardInfo.getExpMonth() == cardInfoDto.getExpMonth() &&
                         cardInfo.getExpYear() == cardInfoDto.getExpYear() &&
                         cardInfo.getCvc().equals(cardInfoDto.getCvc()) &&
@@ -224,16 +229,16 @@ public class PaymentServiceImpl implements PaymentService{
 
 
     private Payment setPayment(OrderPayDto orderPayDto,boolean addressFlag, boolean cardInfoFlag) {
-        Payment orderPay = new Payment();
-        orderPay.setIsGuestUser(orderPayDto.getIsGuestUser());
-        orderPay.setClientIp(orderPayDto.getClientIp());
-        orderPay.setCardId(orderPayDto.getCardId());
-        orderPay.setTransactionId(orderPayDto.getTransactionId());
+        Payment payment = new Payment();
+        payment.setIsGuestUser(orderPayDto.getIsGuestUser());
+        payment.setClientIp(orderPayDto.getClientIp());
+        payment.setCardId(orderPayDto.getCardId());
+        payment.setTransactionId(orderPayDto.getTransactionId());
 
-        orderPay.setUserId(orderPayDto.getUserId());
-        orderPay.setFullName(orderPayDto.getFullName());
-        orderPay.setEmail(orderPayDto.getEmail());
-        orderPay.setPrice(orderPayDto.getPrice());
+        payment.setUserId(orderPayDto.getUserId());
+        payment.setFullName(orderPayDto.getFullName());
+        payment.setEmail(orderPayDto.getEmail());
+        payment.setPrice(orderPayDto.getPrice());
 
         User user = null;
         if(getLoggedInUserId() != null){
@@ -245,20 +250,21 @@ public class PaymentServiceImpl implements PaymentService{
         if(!addressFlag) {
             address = modelMapper.map(orderPayDto.getAddressDto(), Address.class);
             address.setUser(user);
-            orderPay.setAddress(address);
+            payment.setAddress(address);
         }
         if(!cardInfoFlag) {
             cardInfo = modelMapper.map(orderPayDto.getCardInfoDto(), CardInfo.class);
+            cardInfo.setCardDigit(passwordEncoder.encode(orderPayDto.getCardInfoDto().getCardDigit()));
             cardInfo.setUser(user);
             if(orderPayDto.getCardInfoDto().getCardBrand().toUpperCase().equals(CardBrand.VISA.toString().toUpperCase()))
                 cardInfo.setCardBrand(CardBrand.VISA);
             if(orderPayDto.getCardInfoDto().getCardBrand().toUpperCase().equals(CardBrand.MASTERCARD.toString().toUpperCase()))
                 cardInfo.setCardBrand(CardBrand.MASTERCARD);
             else cardInfo.setCardBrand(CardBrand.AMEX);
-            orderPay.setCardInfo(cardInfo);
+            payment.setCardInfo(cardInfo);
         }
 
-        return orderPay;
+        return payment;
     }
 
 

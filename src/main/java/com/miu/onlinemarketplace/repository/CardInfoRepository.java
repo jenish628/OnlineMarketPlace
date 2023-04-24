@@ -13,5 +13,5 @@ public interface CardInfoRepository extends JpaRepository<CardInfo, Long> {
 
     List<CardInfo> findByUserUserId(Long userId);
 
-    Optional<CardInfo> findByLast4(Integer lastFourDigits);
+    Optional<CardInfo> findByCardDigit(String lastFourDigits);
 }
