@@ -54,7 +54,7 @@ public class FileServiceImpl implements FileService {
             return downloadUrl;
         } catch (Exception e) {
             log.error("Error on uploading file {}, {}", resource.getFilename(), e.getMessage());
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return "http://via.placeholder.com/640x360";
     }

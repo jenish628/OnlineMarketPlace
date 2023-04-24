@@ -94,7 +94,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RuntimeException(e);
         }
 
