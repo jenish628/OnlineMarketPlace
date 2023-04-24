@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.service.domain.product.ProductService;
+import com.miu.onlinemarketplace.service.domain.product.dtos.ProductRequestDto;
 import com.miu.onlinemarketplace.service.file.FileService;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -82,10 +83,10 @@ public class ProductController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_VENDOR')")
-    @PostMapping("/filter")
-    public ResponseEntity<?> filterProductData(@RequestBody GenericFilterRequestDTO<ProductDto> genericFilterRequest, Pageable pageable) {
+    @PostMapping("/products/filter")
+    public ResponseEntity<?> filterProductData(@RequestBody GenericFilterRequestDTO<ProductRequestDto> genericFilterRequest, Pageable pageable) {
         log.info("Product API: Filter user data");
-        Page<ProductDto> productPageable = productService.filterProductData(genericFilterRequest, pageable);
+        Page<ProductResponseDto> productPageable = productService.filterProductData(genericFilterRequest, pageable);
         return new ResponseEntity<>(productPageable, HttpStatus.OK);
     }
 

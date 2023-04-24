@@ -11,11 +11,14 @@ import com.miu.onlinemarketplace.repository.OrderItemRepository;
 import com.miu.onlinemarketplace.repository.OrderRepository;
 import com.miu.onlinemarketplace.repository.VendorRepository;
 import com.miu.onlinemarketplace.security.AppSecurityUtils;
+import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
+import com.miu.onlinemarketplace.service.order.OrderSearchSpecification;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -89,6 +92,20 @@ public class OrderManagementServiceImpl implements OrderManagementService {
         orderResponseDto.setTotal(total);
         orderResponseDto.setRelatedOrderItems(orderItemDtoList);
         return orderResponseDto;
+    }
+
+    @Override
+    public Page<OrderResponseDto> filterOrderData(GenericFilterRequestDTO<OrderDto> genericFilterRequest, Pageable pageable) {
+
+        Specification<Order> specification = Specification
+                .where(OrderSearchSpecification.processDynamicOrderFilter(genericFilterRequest));
+
+        Page<Order> filteredOrderPage = orderRepository.findAll(specification, pageable);
+        List<OrderResponseDto> orderResponseDtoList = filteredOrderPage.stream().map(order -> {
+            List<OrderItem> orderItemList = orderItemRepository.findAllOrderItemByOrderId(order.getOrderId());
+            return mapToOrderResponseDto(order, orderItemList);
+        }).toList();
+        return new PageImpl<>(orderResponseDtoList, pageable, filteredOrderPage.getTotalElements());
     }
 
 }

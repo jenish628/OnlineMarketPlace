@@ -2,6 +2,7 @@ package com.miu.onlinemarketplace.service.domain.product;
 
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
+import com.miu.onlinemarketplace.service.domain.product.dtos.ProductRequestDto;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,6 @@ public interface ProductService {
 
     Boolean deleteProduct(Long productId);
 
-    Page<ProductDto> filterProductData(GenericFilterRequestDTO<ProductDto> genericFilterRequest, Pageable pageable);
+    Page<ProductResponseDto> filterProductData(GenericFilterRequestDTO<ProductRequestDto> genericFilterRequest, Pageable pageable);
 
 }
