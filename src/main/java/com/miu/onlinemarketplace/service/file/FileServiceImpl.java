@@ -41,11 +41,11 @@ public class FileServiceImpl implements FileService {
                     .object(objectName)
                     .stream(file.getInputStream(), file.getSize(), -1)
                     .build());
-            return objectName;
+            return downloadImage(objectName);
         } catch (Exception e) {
             log.error("Error on uploading file {}, {}", file.getOriginalFilename(), e.getMessage());
         }
-        return null;
+        return "http://via.placeholder.com/640x360";
     }
 
     public String downloadImage(String filePath) {
@@ -55,7 +55,7 @@ public class FileServiceImpl implements FileService {
                             .method(Method.GET)
                             .bucket(bucketName)
                             .object(filePath)
-                            .expiry(7, TimeUnit.DAYS)
+                            .expiry(365, TimeUnit.DAYS)
                             .build());
         } catch (MinioException | NoSuchAlgorithmException | InvalidKeyException | IOException e) {
             log.error("Error on download file from {}, {}", filePath, e.getMessage());
