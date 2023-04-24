@@ -8,7 +8,6 @@ import com.miu.onlinemarketplace.repository.*;
 import com.miu.onlinemarketplace.security.AppSecurityUtils;
 import com.miu.onlinemarketplace.service.domain.shopping.ShoppingCartService;
 import com.miu.onlinemarketplace.service.email.emailsender.EmailSenderService;
-import com.miu.onlinemarketplace.service.thirdParty.ThirdPartyService;
 import com.miu.onlinemarketplace.utils.Utility;
 import com.stripe.model.Charge;
 import lombok.AllArgsConstructor;
@@ -42,7 +41,6 @@ public class PaymentServiceImpl implements PaymentService{
     private final OrderItemRepository orderItemRepository;
     private final ModelMapper modelMapper;
 
-    private final ThirdPartyService thirdPartyService;
     private final StripePaymentService stripePaymentService;
     private final EmailSenderService emailSenderService;
 

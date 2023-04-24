@@ -1,14 +1,12 @@
 package com.miu.onlinemarketplace.service.domain.search;
 
 import com.miu.onlinemarketplace.common.dto.ProductCategoryDto;
-import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.common.dto.VendorDto;
 import com.miu.onlinemarketplace.entities.Product;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -66,14 +64,21 @@ public class SearchServiceImpl implements SearchService {
                 queryString += " WHERE p.price <= :maxPriceValue";
             }
         }
+
+        if (whereClauseAdded) {
+            queryString += " AND p.isDeleted=:isDeleted AND p.isVerified=:isVerified";
+        } else {
+            queryString += " WHERE p.isDeleted=:isDeleted AND p.isVerified=:isVerified";
+        }
+
         if (sortedPrice != null && !sortedPrice.isEmpty()) {
             if (sortedPrice.equals("ASC")) {
                 queryString += " ORDER BY p.price ASC";
             } else {
                 queryString += " ORDER BY p.price DESC";
             }
-
         }
+
 
         TypedQuery<Product> query = entityManager.createQuery(queryString, Product.class);
         if (name != null && !name.isEmpty()) {
@@ -90,6 +95,8 @@ public class SearchServiceImpl implements SearchService {
         } else if (maxPriceValue > 0) {
             query.setParameter("maxPriceValue", maxPriceValue);
         }
+        query.setParameter("isVerified", true);
+        query.setParameter("isDeleted", false);
 //        if (sortedPrice != null && !sortedPrice.isEmpty()) {
 //            query.setParameter("sortedPrice", sortedPrice);
 //        }
