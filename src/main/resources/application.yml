@@ -44,7 +44,7 @@ minio:
   bucket:
     name: pmstorage
   access:
-    key: gQUrVcSt8Y5d3060
-    secret: h5ZUzOckMPBBC1Adx46tdyeaor1g2xfQ
+    key: ${MINIO_KEY:QZP9OT5EbEV2zqHv}
+    secret: ${MINIO_SECRET:fzFsh2kebmBxFDJR0HYdCZERUaF2cq8j}
   url: http://127.0.0.1:9000
 

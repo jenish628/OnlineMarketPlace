@@ -18,4 +18,6 @@ public class ProductCategoryDto {
     @CreationTimestamp
     private LocalDateTime createdDate;
 
+    private String fileUri;
+
 }

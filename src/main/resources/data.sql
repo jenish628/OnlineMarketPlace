@@ -4,17 +4,25 @@
 INSERT INTO role (role_id, role)
 VALUES (1, 'ROLE_USER'),
        (2, 'ROLE_ADMIN'),
-       (3, 'ROLE_VENDOR') ON DUPLICATE KEY
-UPDATE role_id=role_id;
+       (3, 'ROLE_VENDOR'),
+       (4, 'ROLE_CLIENT')
+ON DUPLICATE KEY
+    UPDATE role_id=role_id;
 
 INSERT INTO user (user_id, email, password, user_status, role_id, full_name) -- all passwords are: test
 VALUES (1, 'user@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 1, 'Demo User'),
        (2, 'test@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 1, 'Test User'),
-       (3, 'admin@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2, 'Test Admin'),
-       (4, 'vendor@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'Test Vendor'),
+       (3, 'admin@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 2,
+        'Test Admin'),
+       (4, 'vendor@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3,
+        'Test Vendor'),
        (5, 'apple@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'Apple Inc'),
-       (6, 'miu-shop@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3, 'MIU Shop') ON DUPLICATE KEY
-UPDATE user_id=user_id;
+       (6, 'miu-shop@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 3,
+        'MIU Shop'),
+       (7, 'client@gmail.com', '$2a$10$bGyGVholFvN93tqon7LQeeTdOA6VFibsCbmFroFZ4RkeGHMJ7Fh9e', 'ACTIVE', 4,
+        'Test Client')
+ON DUPLICATE KEY
+    UPDATE user_id=user_id;
 
 INSERT INTO address (address_id, address1, city, country, state, zip_code, user_id)
 VALUES
@@ -42,13 +50,19 @@ ON DUPLICATE KEY
 /**
   ========== Initial Data: Product Category, Product ==========
  */
-INSERT INTO product_category (category_id, category)
-VALUES (1, 'Computers'),
-       (2, 'Books'),
-       (3, 'Kitchen'),
-       (4, 'Fashion'),
-       (5, 'Electronic'),
-       (6, 'Clothing')
+INSERT INTO product_category (category_id, category, file_uri)
+VALUES (1, 'Computers',
+        'https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1'),
+       (2, 'Books',
+        'https://images.pexels.com/photos/3368816/pexels-photo-3368816.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1'),
+       (3, 'Kitchen',
+        'https://images.pexels.com/photos/350417/pexels-photo-350417.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1'),
+       (4, 'Fashion',
+        'https://images.pexels.com/photos/1381556/pexels-photo-1381556.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1'),
+       (5, 'Electronic',
+        'https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1'),
+       (6, 'Clothing',
+        'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1')
 ON DUPLICATE KEY
     UPDATE category_id=category_id;
 
@@ -139,9 +153,10 @@ ON DUPLICATE KEY
 #     update payment_id=payment_id;
 
 
-INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month, cvc, card_brand, address_type, user_id, last4)
-values (1, '1234567891', 1, 1, '111', 'VISA', 'SHIPPING', 1,4242),
-       (2, '1234567892', 2, 2, 222, 'MASTERCARD', 'SHIPPING', 2, 4444)
+INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month, cvc, card_brand, address_type, user_id,
+                       card_digit)
+values (1, '1234567891', 1, 1, '111', 'VISA', 'SHIPPING', 1, '4242'),
+       (2, '1234567892', 2, 2, 222, 'MASTERCARD', 'SHIPPING', 2, '4444')
 ON DUPLICATE KEY
     update card_info_id=card_info_id;
 

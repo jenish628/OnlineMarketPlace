@@ -5,7 +5,9 @@ import com.miu.onlinemarketplace.common.dto.UserDto;
 import com.miu.onlinemarketplace.common.dto.VendorDto;
 import com.miu.onlinemarketplace.common.enums.UserStatus;
 import com.miu.onlinemarketplace.config.AppProperties;
-import com.miu.onlinemarketplace.entities.*;
+import com.miu.onlinemarketplace.entities.Role;
+import com.miu.onlinemarketplace.entities.User;
+import com.miu.onlinemarketplace.entities.Vendor;
 import com.miu.onlinemarketplace.exception.CustomAppException;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.RoleRepository;
@@ -15,9 +17,7 @@ import com.miu.onlinemarketplace.security.models.EnumRole;
 import com.miu.onlinemarketplace.service.domain.users.dtos.VendorRegistrationRequest;
 import com.miu.onlinemarketplace.service.email.emailsender.EmailSenderService;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
-import com.miu.onlinemarketplace.service.payment.PaymentProvider;
 import com.miu.onlinemarketplace.service.payment.StripePaymentService;
-import com.miu.onlinemarketplace.service.payment.dtos.TransactionResponseDto;
 import com.miu.onlinemarketplace.utils.GenerateRandom;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -98,7 +98,7 @@ public class VendorServiceImpl implements VendorService {
         // Vendor payment
         double amount = 20000; // VendorType.GLOBAL
 
-        if (!paymentProvider.pay("", amount).getPaid()) {
+        if (paymentProvider.pay("", amount) == null) {
             throw new CustomAppException("Payment failed, please retry again or use different card");
         }
 

@@ -1,7 +1,6 @@
 package com.miu.onlinemarketplace.repository;
 
 import com.miu.onlinemarketplace.entities.CardInfo;
-import com.miu.onlinemarketplace.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +12,5 @@ public interface CardInfoRepository extends JpaRepository<CardInfo, Long> {
 
     List<CardInfo> findByUserUserId(Long userId);
 
-    Optional<CardInfo> findByLast4(Integer lastFourDigits);
+    Optional<CardInfo> findByCardDigit(String lastFourDigits);
 }

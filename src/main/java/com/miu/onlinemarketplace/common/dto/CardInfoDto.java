@@ -1,9 +1,5 @@
 package com.miu.onlinemarketplace.common.dto;
 
-import com.miu.onlinemarketplace.common.enums.AddressType;
-import com.miu.onlinemarketplace.common.enums.CardBrand;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +9,7 @@ public class CardInfoDto {
 
     private Long cardInfoId;
     private String cardNumber;
-    private int last4;
+    private String cardDigit;
     private String nameOnCard;
     private Integer expYear;
     private Integer expMonth;
