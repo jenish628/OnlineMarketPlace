@@ -55,18 +55,13 @@ public class OrderPayServiceImpl implements OrderPayService{
 
     @Override
     public OrderPayInfoDto findOrderPayInfo(List<ShoppingCartDto> shoppingCartDtos) {
-
-        OrderPayInfoDto infoDto = new OrderPayInfoDto();
-        if(getLoggedInUserId() != null)
-            checkForLoggedInUser().accept(infoDto);
-        checkCalculation(shoppingCartDtos, infoDto);
-
-        return infoDto;
+        return checkCalculation(shoppingCartDtos);
     }
 
-    private OrderPayInfoDto checkCalculation(List<ShoppingCartDto> shoppingCartDtos, OrderPayInfoDto infoDto) {
+    private OrderPayInfoDto checkCalculation(List<ShoppingCartDto> shoppingCartDtos) {
         double totalPrice = 0;
         int totalQuantity = 0;
+        OrderPayInfoDto infoDto = new OrderPayInfoDto();
         for (ShoppingCartDto dto: shoppingCartDtos) {
             totalPrice += dto.getProduct().getPrice() * dto.getQuantity();
             totalPrice += totalPrice * Utility.TAX/100;
@@ -81,34 +76,15 @@ public class OrderPayServiceImpl implements OrderPayService{
 
     private Consumer<OrderPayInfoDto> checkForLoggedInUser() {
         return (infoDto) -> {
-            Optional<ShoppingCart> shoppingCartOpt = shoppingCartRepository.findByUserUserIdOrderByCreatedDateDesc(getLoggedInUserId());
-            if(shoppingCartOpt.isPresent()) {
-                ShoppingCart shoppingCart = shoppingCartOpt.get();
-                infoDto.setUserId(getLoggedInUserId());
-                infoDto.setFullName(shoppingCart.getUser().getFullName());
-
-                List<CardInfo> cardInfos = cardInfoRepository.findByUserUserId(getLoggedInUserId());
-                List<CardInfoDto> dtos = new ArrayList<>();
-                if(cardInfos.size() > 0){
-                    for (CardInfo cardInfo: cardInfos) {
-                        CardInfoDto cardInfoDto = modelMapper.map(cardInfo, CardInfoDto.class);
-                        String cardNumber = cardInfoDto.getCardNumber();
-                        cardNumber = cardNumber.substring(cardNumber.length()-4);
-                        cardInfoDto.setCardNumber("XXXX-XXXX-XXXX-".concat(cardNumber));
-                        dtos.add(cardInfoDto);
-                    }
-                    infoDto.setCardInfoDtos(dtos);
+            List<Address> addresses = addressRepository.findByUserUserId(getLoggedInUserId());
+            List<AddressDto> addressDtos = new ArrayList<>();
+            if(addresses.size() > 0){
+                for (Address address: addresses ) {
+                    addressDtos.add(modelMapper.map(address, AddressDto.class));
                 }
-
-                List<Address> addresses = addressRepository.findByUserUserId(getLoggedInUserId());
-                List<AddressDto> addressDtos = new ArrayList<>();
-                if(addresses.size() > 0){
-                    for (Address address: addresses ) {
-                        addressDtos.add(modelMapper.map(address, AddressDto.class));
-                    }
-                    infoDto.setAddressDtos(addressDtos);
-                }
+                infoDto.setAddressDtos(addressDtos);
             }
+
         };
     }
 
@@ -117,8 +93,8 @@ public class OrderPayServiceImpl implements OrderPayService{
 
         boolean addressFlag = false, cardInfoFlag = false;
 //            thirdPartyService.validateStripe(orderPayDto);
-        OrderPayInfoDto infoDto = checkCalculation(orderPayDto.getShoppingCartDtos(), new OrderPayInfoDto());
-       validateUser(orderPayDto, infoDto);
+        OrderPayInfoDto infoDto = checkCalculation(orderPayDto.getShoppingCartDtos());
+        validateUser(orderPayDto, infoDto);
         if(getLoggedInUserId() != null) {
             addressFlag = validateAddress(orderPayDto.getAddressDto());
             cardInfoFlag = validateCardInfo(orderPayDto.getCardInfoDto());
@@ -219,7 +195,7 @@ public class OrderPayServiceImpl implements OrderPayService{
         List<CardInfo> cardInfos = cardInfoRepository.findByUserUserId(getLoggedInUserId());
         if(cardInfos.size() > 0) {
             for (CardInfo cardInfo : cardInfos) {
-                if (cardInfo.getLastFourDigits() == cardInfoDto.getLast4() &&
+                if (cardInfo.getLast4() == cardInfoDto.getLast4() &&
                         cardInfo.getExpMonth() == cardInfoDto.getExpMonth() &&
                         cardInfo.getExpYear() == cardInfoDto.getExpYear() &&
                         cardInfo.getCvc().equals(cardInfoDto.getCvc()) &&
