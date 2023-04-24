@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -18,4 +20,6 @@ public class ProductResponseDto {
     private Boolean isDeleted;
     private VendorDto vendor;
     private ProductCategoryDto productCategory;
+    private List<FileDto> images;
+
 }

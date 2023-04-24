@@ -25,7 +25,7 @@ public class Shipping {
     @CreationTimestamp
     private LocalDateTime createdDate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "addressId")
     private Address address;
 }

@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.common.dto;
 
+import com.miu.onlinemarketplace.common.enums.OrderItemStatus;
 import com.miu.onlinemarketplace.entities.Order;
 import com.miu.onlinemarketplace.entities.Product;
 import lombok.AllArgsConstructor;
@@ -19,4 +20,5 @@ public class OrderItemDto {
     private Boolean isCommissioned;
     private ProductDto product;
     private OrderDto order;
+    private OrderItemStatus orderItemStatus;
 }

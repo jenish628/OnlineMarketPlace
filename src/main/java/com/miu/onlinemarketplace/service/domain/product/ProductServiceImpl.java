@@ -1,5 +1,6 @@
 package com.miu.onlinemarketplace.service.domain.product;
 
+import com.miu.onlinemarketplace.common.dto.FileDto;
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
 import com.miu.onlinemarketplace.common.dto.VendorDto;
@@ -86,8 +87,15 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductResponseDto> getCustomerProducts(Pageable pageable, Long categoryId) {
         Page<ProductResponseDto> products;
         if (categoryId != null) {
-            products = productRepository.findByIsDeletedAndIsVerified(pageable, true, false)
-                    .map(product -> modelMapper.map(product, ProductResponseDto.class));
+            products = productRepository.findByIsDeletedAndIsVerified(pageable, true, false, categoryId)
+                    .map(product -> {
+                        ProductResponseDto productResponseDto = modelMapper.map(product, ProductResponseDto.class);
+                        List<FileDto> images = product.getImages().stream()
+                                .map(fileEntity -> modelMapper.map(fileEntity, FileDto.class))
+                                .toList();
+                        productResponseDto.setImages(images);
+                        return productResponseDto;
+                    });
         } else {
             products = productRepository.findAll(pageable)
                     .map(product -> modelMapper.map(product, ProductResponseDto.class));
@@ -116,7 +124,6 @@ public class ProductServiceImpl implements ProductService {
                     log.error("Product category with id {} not found!!");
                     throw new DataNotFoundException("Product category with id  not found!!");
                 });
-        ;
         return productDto;
     }
 

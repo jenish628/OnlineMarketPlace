@@ -51,7 +51,7 @@ public class OrderManagementController {
         return new ResponseEntity<>(orderResponseDtos, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_VENDOR')")
     @PostMapping("/filter")
     public ResponseEntity<?> filterOrderData(@RequestBody GenericFilterRequestDTO<OrderDto> genericFilterRequest, Pageable pageable) {
         log.info("Order API: Filter order data");

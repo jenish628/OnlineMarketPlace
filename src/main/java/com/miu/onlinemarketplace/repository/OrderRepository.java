@@ -20,21 +20,22 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
 
     //order list, items [] // only vendor vendors
 
-    @Query("SELECT COUNT(DISTINCT oi.order) FROM OrderItem oi "
-            + "JOIN oi.order o "
-            + "JOIN oi.product p "
-            + "WHERE p.vendor.vendorId = :vendorId")
-    Long countOrdersByVendorId(@Param("vendorId") Long vendorId);
-
-//    @Query("SELECT DISTINCT oi.order FROM OrderItem oi "
+//    @Query("SELECT COUNT(DISTINCT oi.order) FROM OrderItem oi "
 //            + "JOIN oi.order o "
 //            + "JOIN oi.product p "
 //            + "WHERE p.vendor.vendorId = :vendorId")
+//    Long countOrdersByVendorId(@Param("vendorId") Long vendorId);
 
     @Query("SELECT DISTINCT o FROM Order o " +
             "INNER JOIN OrderItem oi on oi.order.orderId = o.orderId " +
             "INNER JOIN Product p on p.productId = oi.product.productId " +
             "WHERE p.vendor.vendorId = :vendorId")
     Page<Order> findOrdersByVendorId(@Param("vendorId") Long vendorId, Pageable pageable);
+
+    @Query("SELECT DISTINCT o FROM Order o " +
+            "INNER JOIN OrderItem oi on oi.order.orderId = o.orderId " +
+            "INNER JOIN Product p on p.productId = oi.product.productId " +
+            "WHERE p.vendor.vendorId = :vendorId and o.orderId = :orderId")
+    Page<Order> findOrdersByVendorIdAndOrderId(@Param("vendorId") Long vendorId, @Param("orderId") Long orderId, Pageable pageable);
 
 }

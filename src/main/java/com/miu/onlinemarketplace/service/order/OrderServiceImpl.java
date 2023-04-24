@@ -3,16 +3,20 @@ package com.miu.onlinemarketplace.service.order;
 import com.miu.onlinemarketplace.common.dto.CheckingOrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderDto;
 import com.miu.onlinemarketplace.common.dto.OrderItemDto;
+import com.miu.onlinemarketplace.common.dto.OrderMailSenderDto;
 import com.miu.onlinemarketplace.common.enums.OrderItemStatus;
 import com.miu.onlinemarketplace.common.enums.OrderStatus;
 import com.miu.onlinemarketplace.entities.Order;
 import com.miu.onlinemarketplace.entities.OrderItem;
+import com.miu.onlinemarketplace.entities.Vendor;
 import com.miu.onlinemarketplace.exception.AppSecurityException;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.OrderItemRepository;
 import com.miu.onlinemarketplace.repository.OrderRepository;
+import com.miu.onlinemarketplace.repository.VendorRepository;
 import com.miu.onlinemarketplace.security.AppSecurityUtils;
 import com.miu.onlinemarketplace.security.models.EnumRole;
+import com.miu.onlinemarketplace.service.email.emailsender.EmailSenderService;
 import com.miu.onlinemarketplace.utils.GenerateRandom;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,8 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
     private OrderItemRepository orderItemRepository;
+    private EmailSenderService emailSenderService;
+    private VendorRepository vendorRepository;
     private ModelMapper modelMapper;
 
     public OrderServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, ModelMapper modelMapper) {
@@ -100,24 +106,36 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean updateOrderStatus(Long orderId) {
-        EnumRole enumRole = AppSecurityUtils.getCurrentUserRole().orElseThrow(() -> new AppSecurityException("Must be loggedId"));
+        EnumRole enumRole = AppSecurityUtils.getCurrentUserRole().orElseThrow(() -> new AppSecurityException("Must be loggedIn"));
+        Long userId = AppSecurityUtils.getCurrentUserId().orElseThrow(() -> new DataNotFoundException("User ID Not Found"));// if currentUser role is vendor, get id
+        Vendor vendorId = vendorRepository.findByUser_UserId(userId).orElseThrow(() -> new DataNotFoundException("Vendor doesn't have linked UserId"));
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new DataNotFoundException("Order Not Found"));
+        OrderMailSenderDto orderMailSenderDto = new OrderMailSenderDto();
         if(enumRole == EnumRole.ROLE_ADMIN){
             // if admin, OrderStatus is set to DELIVERED
             order.setOrderStatus(OrderStatus.DELIVERED);
             orderRepository.save(order);
+            orderMailSenderDto.setOrderStatus(OrderStatus.DELIVERED);
         } else if (enumRole == EnumRole.ROLE_VENDOR) {
             // if vendor, find all orderItems of orderId, and set to SHIPPED
-            List<OrderItem> allOrderItemByOrderId = orderItemRepository.findAllOrderItemByOrderId(order.getOrderId());
-            for(OrderItem orderItem : allOrderItemByOrderId){
+            List<OrderItem> allOrderItemByOrderIdAndVendorId = orderItemRepository.findAllOrderItemByOrderIdAndVendorId(order.getOrderId(), vendorId.getVendorId() );
+            for(OrderItem orderItem : allOrderItemByOrderIdAndVendorId){
                 orderItem.setOrderItemStatus(OrderItemStatus.WAREHOUSE_SHIP);
             }
-            orderItemRepository.saveAll(allOrderItemByOrderId);
+            orderItemRepository.saveAll(allOrderItemByOrderIdAndVendorId);
+            orderMailSenderDto.setOrderStatus(OrderStatus.SHIPPED);
         } else {
             // if user, update status to RECEIVED
             order.setOrderStatus(OrderStatus.RECEIVED);
             orderRepository.save(order);
+            orderMailSenderDto.setOrderStatus(OrderStatus.RECEIVED);
         }
+
+        orderMailSenderDto.setFullName(order.getUser().getFullName());
+        orderMailSenderDto.setOrderCode(order.getOrderCode());
+        orderMailSenderDto.setOrderUrl("");
+        orderMailSenderDto.setToEmail(order.getUser().getEmail());
+        emailSenderService.sendOrderMail(orderMailSenderDto);
         return true;
     }
 

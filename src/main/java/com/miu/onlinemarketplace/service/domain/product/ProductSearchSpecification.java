@@ -75,7 +75,7 @@ public class ProductSearchSpecification {
     private static Specification<Product> getProductSpecificationByCategoryId(Long categoryId) {
         Specification<Product> categoryEntitySpecification;
         categoryEntitySpecification = (root, query, criteriaBuilder) -> {
-            Join<Product, ProductCategory> vendorJoin = root.join("category");
+            Join<Product, ProductCategory> vendorJoin = root.join("ProductCategory");
             Predicate equalPredicate = criteriaBuilder.equal(vendorJoin.get("categoryId"), categoryId);
             query.distinct(true);
             return equalPredicate;

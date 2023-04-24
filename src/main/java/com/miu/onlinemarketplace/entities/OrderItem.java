@@ -22,6 +22,8 @@ public class OrderItem {
     private Integer quantity;
     private Double discount;
     private Boolean isCommissioned;
+
+    @Enumerated(value=EnumType.STRING)
     private OrderItemStatus orderItemStatus; // Set default OrderItemStatus.REQUESTED;
     @CreationTimestamp
     private LocalDateTime createdDate;
