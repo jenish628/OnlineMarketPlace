@@ -19,7 +19,8 @@ public class PaymentDto {
     private String cardHolderName;
     private Double payAmount;
     private String cardBrand;
-    private Long transactionId;
+    private String transactionId;
+    private AddressDto addressDto;
     @Enumerated(value = EnumType.STRING)
     private PaymentStatus paymentStatus;
     @CreationTimestamp
