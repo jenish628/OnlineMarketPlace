@@ -87,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductResponseDto> getCustomerProducts(Pageable pageable, Long categoryId) {
         Page<ProductResponseDto> products;
         if (categoryId != null) {
-            products = productRepository.findByIsDeletedAndIsVerified(pageable, true, false)
+            products = productRepository.findByIsDeletedAndIsVerified(pageable, true, false, categoryId)
                     .map(product -> {
                         ProductResponseDto productResponseDto = modelMapper.map(product, ProductResponseDto.class);
                         List<FileDto> images = product.getImages().stream()

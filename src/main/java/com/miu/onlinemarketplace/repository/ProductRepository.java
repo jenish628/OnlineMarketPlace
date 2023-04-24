@@ -14,8 +14,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Page<Product> findAllByName(Pageable pageable, String name);
     Page<Product> findAllByProductCategory(Pageable pageable, Long categoryId);
 
-    @Query(value = "SELECT p from Product as p where p.isVerified = :isVerified and p.isDeleted= :isDeleted")
-    Page<Product> findByIsDeletedAndIsVerified(Pageable pageable, Boolean isVerified, Boolean isDeleted);
+    @Query(value = "SELECT p from Product as p where p.isVerified = :isVerified and p.isDeleted= :isDeleted and p.productCategory.categoryId = :categoryId")
+    Page<Product> findByIsDeletedAndIsVerified(Pageable pageable, Boolean isVerified, Boolean isDeleted, Long categoryId);
 
     Page<Product> findAllByVendor_VendorIdAndIsDeletedIsFalse(Pageable pageable, Long vendorId);
 }
