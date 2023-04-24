@@ -1,6 +1,7 @@
 package com.miu.onlinemarketplace.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.miu.onlinemarketplace.common.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class InvoiceDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderPlaced;
     private String orderCode;
+    private OrderStatus orderStatus;
     private double totalBeforeTax;
     private double tax;
     private double totalAfterTax;

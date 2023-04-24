@@ -56,6 +56,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 //            return oiDto;
 //        }).collect(Collectors.toList());
         invoiceDto.setOrderPlaced(orderDto.getOrderDate());
+        invoiceDto.setOrderStatus(order.getOrderStatus());
         invoiceDto.setOrderItemList(orderItemDtoList);
         invoiceDto.setPaymentMethod(orderDto.getPayments());
         invoiceDto.setShippingAddress(orderDto.getShipping());
