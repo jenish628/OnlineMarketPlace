@@ -2,16 +2,17 @@ package com.miu.onlinemarketplace.service.domain.product;
 
 import com.miu.onlinemarketplace.common.dto.ProductDto;
 import com.miu.onlinemarketplace.common.dto.ProductResponseDto;
-import com.miu.onlinemarketplace.entities.FileEntity;
-import com.miu.onlinemarketplace.entities.Product;
-import com.miu.onlinemarketplace.entities.ProductCategory;
-import com.miu.onlinemarketplace.entities.ProductTemp;
+import com.miu.onlinemarketplace.common.dto.VendorDto;
+import com.miu.onlinemarketplace.entities.*;
 import com.miu.onlinemarketplace.exception.AppSecurityException;
 import com.miu.onlinemarketplace.exception.DataNotFoundException;
 import com.miu.onlinemarketplace.repository.ProductCategoryRepository;
 import com.miu.onlinemarketplace.repository.ProductRepository;
 import com.miu.onlinemarketplace.repository.ProductTempRepository;
 import com.miu.onlinemarketplace.repository.VendorRepository;
+import com.miu.onlinemarketplace.security.AppSecurityUtils;
+import com.miu.onlinemarketplace.security.models.EnumRole;
+import com.miu.onlinemarketplace.service.domain.product.dtos.ProductRequestDto;
 import com.miu.onlinemarketplace.service.file.FileService;
 import com.miu.onlinemarketplace.service.generic.dtos.GenericFilterRequestDTO;
 import com.miu.onlinemarketplace.utils.UserUtils;
@@ -77,8 +78,8 @@ public class ProductServiceImpl implements ProductService {
 
         List<ProductResponseDto> content = Stream.concat(verifiedProduct.getContent().stream(), unverifiedProduct.getContent().stream())
                 .toList();
-        ;
-        return new PageImpl<ProductResponseDto>(content, pageable, content.size());
+        Long totalElements = verifiedProduct.getTotalElements() + unverifiedProduct.getTotalElements();
+        return new PageImpl<ProductResponseDto>(content, pageable, totalElements);
     }
 
     @Override
@@ -178,13 +179,43 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> filterProductData(GenericFilterRequestDTO<ProductDto> genericFilterRequest, Pageable pageable) {
+    public Page<ProductResponseDto> filterProductData(GenericFilterRequestDTO<ProductRequestDto> genericFilterRequest, Pageable pageable) {
+        EnumRole currentUserRole = AppSecurityUtils.getCurrentUserRole()
+                .orElseThrow(() -> new AppSecurityException("The table filter not available for guest users"));
+        Long currentUserId = AppSecurityUtils.getCurrentUserId()
+                .orElseThrow(() -> new AppSecurityException("The table filter not available for guest users"));
+        if (currentUserRole.equals(EnumRole.ROLE_USER)) {
+            throw new AppSecurityException("The table filter not available for normal users");
+        }
+        if (currentUserRole.equals(EnumRole.ROLE_VENDOR)) {
+            if (genericFilterRequest.getDataFilter() == null) {
+                genericFilterRequest.setDataFilter(new ProductRequestDto());
+            }
+            ProductRequestDto productRequestDto = new ProductRequestDto();
+            Vendor vendor = vendorRepository.findByUser_UserId(currentUserId)
+                    .orElseThrow(() -> new DataNotFoundException("Linked vendor with given Id, not found"));
+            VendorDto vendorDto = new VendorDto();
+            vendorDto.setVendorId(vendor.getVendorId());
+            productRequestDto.setVendor(vendorDto);
+        }
         Specification<Product> specification = Specification
                 .where(ProductSearchSpecification.processDynamicProductFilter(genericFilterRequest))
                 .and(Specification.where(ProductSearchSpecification.getProductByVendor(genericFilterRequest)))
                 .and(Specification.where(ProductSearchSpecification.getProductByCategory(genericFilterRequest)));
-        Page<ProductDto> filteredProducts = productRepository.findAll(specification, pageable).map(product ->
-                modelMapper.map(product, ProductDto.class));
-        return filteredProducts;
+        Specification<ProductTemp> specificationTemp = Specification
+                .where(ProductTempSearchSpecification.processDynamicProductTempFilter(genericFilterRequest))
+                .and(Specification.where(ProductTempSearchSpecification.getProductByVendor(genericFilterRequest)))
+                .and(Specification.where(ProductTempSearchSpecification.getProductByCategory(genericFilterRequest)));
+
+        Page<ProductResponseDto> verifiedFilteredProducts = productRepository.findAll(specification, pageable).map(product ->
+                modelMapper.map(product, ProductResponseDto.class));
+        Page<ProductResponseDto> unVerifiedFilteredProducts = productTempRepository.findAll(specificationTemp, pageable).map(product ->
+                modelMapper.map(product, ProductResponseDto.class));
+
+        List<ProductResponseDto> content = Stream
+                .concat(verifiedFilteredProducts.getContent().stream(), unVerifiedFilteredProducts.getContent().stream())
+                .toList();
+        Long totalElements = verifiedFilteredProducts.getTotalElements() + unVerifiedFilteredProducts.getTotalElements();
+        return new PageImpl<ProductResponseDto>(content, pageable, totalElements);
     }
 }

@@ -55,7 +55,7 @@ public class VendorController {
         return new ResponseEntity<>(returnedVendorDto, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_VENDOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/filter")
     public ResponseEntity<?> filterVendorData(@RequestBody GenericFilterRequestDTO<VendorDto> genericFilterRequest, Pageable pageable) {
         log.info("Vendor API: Filter vendor data");

@@ -1,7 +1,7 @@
 package com.miu.onlinemarketplace.service.payment;
 
-import com.miu.onlinemarketplace.service.payment.dtos.TransactionResponseDto;
+import com.stripe.model.Charge;
 
-public interface StripePaymentService extends PaymentProvider {
-    TransactionResponseDto pay(String code, Double totalAmount);
+public interface StripePaymentService {
+    Charge pay(String code, Double totalAmount);
 }

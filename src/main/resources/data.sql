@@ -133,22 +133,24 @@ ON DUPLICATE KEY
 /**
   ========== Initial Data: Payment, Orders_Payment, Card_Info ==========
  */
-insert into payment(payment_id, card_brand, card_holder_name, card_number, pay_amount, payment_status, transaction_id)
-values (1, 'Visa', 'Sanjaya koju', '123456', 2600, 'CONFIRMED', 1)
-ON DUPLICATE KEY
-    update payment_id=payment_id;
+# insert into payment(payment_id, card_brand, card_holder_name, card_number, pay_amount, payment_status, transaction_id)
+# values (1, 'Visa', 'Sanjaya koju', '123456', 2600, 'CONFIRMED', 1)
+# ON DUPLICATE KEY
+#     update payment_id=payment_id;
 
-insert into orders_payments(order_order_id, payments_payment_id)
-values (1, 1),
-       (2, 1)
-ON DUPLICATE KEY
-    update order_order_id=order_order_id and payments_payment_id = payments_payment_id;
 
-INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month, cvc, card_brand, address_type, user_id)
-values (1, '1234567891', 1, 1, '111', 'VISA', 'SHIPPING', 1),
-       (2, '1234567892', 2, 2, 222, 'MASTERCARD', 'SHIPPING', 2)
+INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month, cvc, card_brand, address_type, user_id, last4)
+values (1, '1234567891', 1, 1, '111', 'VISA', 'SHIPPING', 1,4242),
+       (2, '1234567892', 2, 2, 222, 'MASTERCARD', 'SHIPPING', 2, 4444)
 ON DUPLICATE KEY
     update card_info_id=card_info_id;
+
+# insert into orders_payments(order_order_id, payments_payment_id)
+# values (1, 1),
+#        (2, 1)
+# ON DUPLICATE KEY
+#     update order_order_id=order_order_id and payments_payment_id = payments_payment_id;
+
 
 
 INSERT INTO address (address_id, address1, address2, city, zip_code, country, user_id)
@@ -159,11 +161,6 @@ values (51, '1000N 4th St', '1001N 5th St', 'Fairfield', '52557', 'USA', 1),
 ON DUPLICATE KEY
     update address_id=address_id;
 
-INSERT INTO card_info (card_info_id, card_number, exp_year, exp_month, cvc, card_brand, address_type, user_id)
-values (51, '1234567891', 1, 1, '111', 'VISA', 'SHIPPING', 1),
-       (52, '1234567892', 2, 2, 222, 'MASTERCARD', 'SHIPPING', 2)
-ON DUPLICATE KEY
-    update card_info_id=card_info_id;
 
 INSERT INTO shopping_cart (cart_id, created_date, quantity, product_id, user_id)
 VALUES (1, '2023-04-19', 1, 1, 1)

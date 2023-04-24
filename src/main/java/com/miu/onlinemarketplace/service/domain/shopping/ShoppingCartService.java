@@ -19,4 +19,6 @@ public interface ShoppingCartService {
     //remove Product
     boolean remove(Long productId);
 
+    boolean removeProduct();
+
 }

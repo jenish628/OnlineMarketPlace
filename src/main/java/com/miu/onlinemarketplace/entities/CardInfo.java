@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.annotation.Nullable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,7 +21,8 @@ public class CardInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardInfoId;
     private String cardNumber;
-    private Integer lastFourDigits;
+    @Column(nullable = false)
+    private Integer last4;
     private Integer expYear;
     private Integer expMonth;
     private String cvc;

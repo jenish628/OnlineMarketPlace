@@ -36,8 +36,6 @@ public class Order {
     @ManyToMany
     List<Payment> payments;
 
-    @ManyToMany
-    List<OrderPay> orderPays;
 
 
 }
