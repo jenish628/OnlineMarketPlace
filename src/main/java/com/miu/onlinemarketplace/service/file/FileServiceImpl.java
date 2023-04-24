@@ -39,7 +39,8 @@ public class FileServiceImpl implements FileService {
             if (!found) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
-            String[] extension = resource.getFilename().split(".");
+            String fileName = resource.getFile().getName();
+            String[] extension = fileName.split("\\.");
             String objectName = pathGenerate(List.of("/products")) + UUID.randomUUID().toString() + "." + extension[extension.length - 1];;
             InputStream inputStream = resource.getInputStream();
             // Upload the image to MinIO
@@ -49,9 +50,11 @@ public class FileServiceImpl implements FileService {
                     .stream(inputStream, resource.contentLength(), -1)
 //                    .contentType("image/jpeg")
                     .build());
-            return downloadImage(objectName);
+            String downloadUrl = downloadImage(objectName);
+            return downloadUrl;
         } catch (Exception e) {
             log.error("Error on uploading file {}, {}", resource.getFilename(), e.getMessage());
+            e.printStackTrace();
         }
         return "http://via.placeholder.com/640x360";
     }
@@ -84,7 +87,7 @@ public class FileServiceImpl implements FileService {
                             .method(Method.GET)
                             .bucket(bucketName)
                             .object(filePath)
-                            .expiry(365, TimeUnit.DAYS)
+                            .expiry(7, TimeUnit.DAYS)
                             .build());
         } catch (MinioException | NoSuchAlgorithmException | InvalidKeyException | IOException e) {
             log.error("Error on download file from {}, {}", filePath, e.getMessage());

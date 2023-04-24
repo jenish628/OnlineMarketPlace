@@ -46,7 +46,8 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     }
 
     public void uploadImagesToProducts() {
-        if (fileEntityRepository.findById(1L).isPresent()) {
+        boolean populateProductImages = true;
+        if (!populateProductImages) {
             log.info("File data's already present, Not populating images");
             return;
         }
@@ -88,10 +89,12 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
                         }
                     }
                     product.setImages(fileEntityList);
+                    productRepository.save(product);
                 }
 
             }
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 
