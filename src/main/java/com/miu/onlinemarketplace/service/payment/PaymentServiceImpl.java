@@ -57,17 +57,18 @@ public class PaymentServiceImpl implements PaymentService{
     }
 
     private OrderPayInfoDto checkCalculation(List<ShoppingCartDto> shoppingCartDtos) {
-        double totalPrice = 0;
+        double totalPrice = 0, itemPrice=0;
         int totalQuantity = 0;
         OrderPayInfoDto infoDto = new OrderPayInfoDto();
         for (ShoppingCartDto dto: shoppingCartDtos) {
-            totalPrice += dto.getProduct().getPrice() * dto.getQuantity();
-            totalPrice += totalPrice * Utility.TAX/100;
+            itemPrice += dto.getProduct().getPrice() * dto.getQuantity();
             totalQuantity += dto.getQuantity();
         }
-        totalPrice = totalPrice + Utility.SHIPPING_CHARGE;
-        totalPrice = Double.valueOf(String.format("%.2f", totalPrice));
-        infoDto.setPrice(totalPrice);
+        infoDto.setItemPrice(itemPrice);
+        totalPrice = itemPrice;
+        totalPrice += itemPrice*(Utility.TAX)/100;
+        int shippingCharge = (int)(itemPrice/50) * Utility.SHIPPING_CHARGE;
+        infoDto.setPrice(Double.valueOf(String.format("%.2f", totalPrice+shippingCharge)));
         infoDto.setQuantity(totalQuantity);
         return infoDto;
     }

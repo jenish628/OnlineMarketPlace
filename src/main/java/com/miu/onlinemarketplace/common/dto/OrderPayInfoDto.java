@@ -15,7 +15,8 @@ public class OrderPayInfoDto {
     private List<AddressDto> addressDtos;
     private List<CardInfoDto> cardInfoDtos;
 
-    private double price;
+    private double itemPrice;
     private Integer quantity;
+    private double price;
 
 }
